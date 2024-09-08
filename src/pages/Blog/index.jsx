@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button, Img, Input, Line, SelectBox, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import HomepageCardblog from "components/HomepageCardblog";
+import SummaryApi from "common";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -25,6 +26,19 @@ const BlogPage = () => {
     { rectangleeighteen: "images/img_rectangle18_6.png" },
   ];
 
+  const [allBlog, setAllBlog] = useState([]);
+
+  const fetchAllBlog = async () => {
+    const response = await fetch(SummaryApi.allBlog.url);
+    const dataResponse = await response.json();
+    setAllBlog(dataResponse?.data || []);
+    console.log(dataResponse?.data || []);
+  };
+
+  useEffect(() => {
+    fetchAllBlog();
+  }, []);
+
   return (
     <>
       <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[126px] items-center justify-start mx-auto w-auto sm:w-full md:w-full">
@@ -44,15 +58,15 @@ const BlogPage = () => {
                   size="txtRubikRegular18Gray500"
                 >
                   <>
-                    We write various things related to furniture, from tips and
-                    what things <br />I need to pay attention to when choosing
-                    furniture
+                    We write various things related to health,medicines and from
+                    tips and what things <br />I need to pay attention to when
+                    choosing furniture
                   </>
                 </Text>
               </div>
               <div className="flex flex-col items-center justify-start w-full">
                 <div className="gap-5 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-center min-h-[auto] w-full">
-                  {homepageCardblogPropList.map((props, index) => (
+                  {allBlog.map((props, index) => (
                     <React.Fragment key={`HomepageCardblog${index}`}>
                       <HomepageCardblog
                         className="flex flex-1 flex-col gap-2 items-start justify-start w-full"
