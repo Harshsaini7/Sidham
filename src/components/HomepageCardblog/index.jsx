@@ -10,14 +10,14 @@ const BlogDetailCardrecent = (props) => {
           <Img
             className="h-[70px] md:h-auto object-cover w-[70px]"
             alt="image"
-            src={props?.image}
+            src={props?.blogImage}
           />
           <div className="flex flex-1 flex-col gap-2 items-start justify-start w-full">
             <Text
               className="text-base text-black-900 w-full"
               size="txtRalewayRomanBold16"
             >
-              {props?.howtochoosea}
+              {props?.title}
             </Text>
             <Text
               className="text-gray-500 text-sm tracking-[-0.50px] w-full"
