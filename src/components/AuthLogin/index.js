@@ -108,18 +108,12 @@ const handleSubmit = async (e) => {
         </Stack>
       </Stack>
       <Box>
-        <Button
-          color="primary"
-          variant="contained"
-          size="large"
-          fullWidth
-          component={Link}
-          // to="/"
-          type="submit"
+        
+          <button type="submit" class="text-white-A700 bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-bold rounded-lg text-md px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 w-full "
+
           onClick={handleSubmit}
-        >
-          Sign In
-        </Button>
+          >Log In</button>
+        
       </Box>
       {subtitle}
     </>
