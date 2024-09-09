@@ -62,6 +62,15 @@ const HomepagePage = () => {
     setAllProduct(dataResponse?.data || []);
   };
 
+  const [allBlog, setAllBlog] = useState([]);
+
+  const fetchAllBlog = async () => {
+    const response = await fetch(SummaryApi.allBlog.url);
+    const dataResponse = await response.json();
+    setAllBlog(dataResponse?.data || []);
+    console.log(dataResponse?.data || []);
+  };
+
   const handleAddToCart = async(e,id,quantity)=>{
     const res=await AddToCart(e,id,quantity,token,dispatch)  
  //    console.log(res);
@@ -70,6 +79,7 @@ const HomepagePage = () => {
 
   useEffect(() => {
     fetchAllProduct();
+    fetchAllBlog();
   }, []);
 
   return (
@@ -497,7 +507,7 @@ const HomepagePage = () => {
               className="sm:flex-col flex-row gap-5 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-start w-full"
               orientation="horizontal"
             >
-              {homepageCardblogPropList.map((props, index) => (
+              {allBlog.map((props, index) => (
                 <React.Fragment key={`HomepageCardblog${index}`}>
                   <HomepageCardblog
                     className="flex flex-1 flex-col gap-2 items-start justify-start w-full"
