@@ -15,11 +15,13 @@ const Header = (props) => {
       <header className={props.className}>
         <div className="flex md:flex-col flex-row md:gap-10 items-center justify-between w-full">
           <div className="header-row ">
+            <Link to={"/"}>
             <Img
               className="h-[30px] w-[90px]"
               src="images/img_car.svg"
               alt="car"
             />
+            </Link>
             <div className="mobile-menu">
               <div></div>
               <div></div>
