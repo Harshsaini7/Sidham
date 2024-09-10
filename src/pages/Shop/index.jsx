@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState , useMemo } from "react";
+import ProductCategories from "components/ProductCategories";
 import { Button, Img, Input, SelectBox, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
@@ -21,40 +21,66 @@ const sortOptionsList = [
 ];
 
 const ShopPage = () => {
-  const {token} = useSelector((state)=>state.auth)
-  const dispatch = useDispatch()
-  const homepageCardproductPropList = [
-    { save: "images/img_save.svg", status: "New" },
-    { image: "images/img_image_7.png" },
-    { image: "images/img_image_8.png" },
-    { image: "images/img_image_10.png" },
-    { image: "images/img_image_11.png" },
-    { image: "images/img_image_12.png" },
-    { image: "images/img_image_9.png" },
-    { image: "images/img_image_13.png" },
-    { image: "images/img_image_7.png" },
-  ];
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  // const homepageCardproductPropList = [
+  //   { save: "images/img_save.svg", status: "New" },
+  //   { image: "images/img_image_7.png" },
+  //   { image: "images/img_image_8.png" },
+  //   { image: "images/img_image_10.png" },
+  //   { image: "images/img_image_11.png" },
+  //   { image: "images/img_image_12.png" },
+  //   { image: "images/img_image_9.png" },
+  //   { image: "images/img_image_13.png" },
+  //   { image: "images/img_image_7.png" },
+  // ];
 
-  const [allProduct,setAllProduct] = useState([])
+  const [allProduct, setAllProduct] = useState([]);
+  const [allCategory, setAllCategory] = useState([]);
+  const [selectedCategory , setSelectedCategory] = useState('');
 
-  const handleAddToCart = async(e,id,quantity)=>{
-    const res=await AddToCart(e,id,quantity,token,dispatch)  
- //    console.log(res);
- //    fetchUserAddToCart()
- }
+  const handleAddToCart = async (e, id, quantity) => {
+    const res = await AddToCart(e, id, quantity, token, dispatch);
+    //    console.log(res);
+    //    fetchUserAddToCart()
+  };
 
-  const fetchAllProduct = async() =>{
-    const response = await fetch(SummaryApi.allProduct.url)
-    const dataResponse = await response.json()
+  const fetchAllProduct = async () => {
+    const response = await fetch(SummaryApi.allProduct.url);
+    const dataResponse = await response.json();
 
-    console.log("product data",dataResponse)
+    console.log("product data", dataResponse);
 
-    setAllProduct(dataResponse?.data || [])
-  }
+    setAllProduct(dataResponse?.data || []);
+  };
 
-  useEffect(()=>{
-    fetchAllProduct()
-  },[])
+
+  const fetchAllCategory = async () => {
+    const response = await fetch(SummaryApi.getCategory.url);
+    const dataResponse = await response.json();
+
+    console.log("category data", dataResponse);
+
+    setAllCategory(dataResponse?.data || []);
+  };
+
+  const categoryWiseProduct = useMemo(() => {
+    console.log("all product -> ", allProduct);
+    console.log("selected category -> ", selectedCategory);
+    if (!selectedCategory) {
+      return allProduct;
+    }
+    return allProduct.filter(product => product.category === selectedCategory);
+  }, [allProduct, selectedCategory]);
+
+  useEffect(() => {
+    fetchAllProduct();
+    fetchAllCategory();
+  }, []);
+
+  useEffect(() => {
+    console.log("selected category", selectedCategory);
+  }, [selectedCategory]);
 
   return (
     <>
@@ -154,48 +180,13 @@ const ShopPage = () => {
                   Product Categories
                 </Text>
                 <div className="flex flex-col font-poppins gap-5 items-start justify-start w-full">
-                  <Text
-                    className="text-base text-bluegray-900 tracking-[-0.50px] w-full"
-                    size="txtPoppinsRegular16"
-                  >
-                    Chair (9)
-                  </Text>
-                  <Text
-                    className="text-base text-gray-500 tracking-[-0.50px] w-full"
-                    size="txtPoppinsRegular16Gray500"
-                  >
-                    Lamp (10)
-                  </Text>
-                  <Text
-                    className="text-base text-gray-500 tracking-[-0.50px] w-full"
-                    size="txtPoppinsRegular16Gray500"
-                  >
-                    Table (12)
-                  </Text>
-                  <Text
-                    className="text-base text-gray-500 tracking-[-0.50px] w-full"
-                    size="txtPoppinsRegular16Gray500"
-                  >
-                    Sofa (6)
-                  </Text>
-                  <Text
-                    className="text-base text-gray-500 tracking-[-0.50px] w-full"
-                    size="txtPoppinsRegular16Gray500"
-                  >
-                    Table (12)
-                  </Text>
-                  <Text
-                    className="text-base text-gray-500 tracking-[-0.50px] w-full"
-                    size="txtPoppinsRegular16Gray500"
-                  >
-                    Clock (5)
-                  </Text>
-                  <Text
-                    className="text-base text-gray-500 tracking-[-0.50px] w-full"
-                    size="txtPoppinsRegular16Gray500"
-                  >
-                    Pillow (3)
-                  </Text>
+                  
+                    <ProductCategories 
+                    allCategory={allCategory} 
+                    selectedCategory={selectedCategory} 
+                    setSelectedCategory={setSelectedCategory} 
+                  />
+                 
                 </div>
               </div>
               <div className="flex flex-col gap-5 items-start justify-start w-full">
@@ -288,7 +279,7 @@ const ShopPage = () => {
               </div>
               <div className="flex flex-col items-center justify-start w-full">
                 <div className="gap-5 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-center min-h-[auto] w-full">
-                {allProduct.map((product, index) => (
+                {categoryWiseProduct.map((product, index) => (
                     <React.Fragment key={`HomepageCardproduct${index}`}>
                       <HomepageCardproduct
                         className="flex flex-1 flex-col gap-4 items-start justify-start w-full"
@@ -297,7 +288,7 @@ const ShopPage = () => {
                           <div className="flex flex-row justify-center w-full">
                             <Button
                               className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
-                              onClick={(e) => handleAddToCart(e,product._id,1)}
+                              onClick={(e) => handleAddToCart(e, product._id, 1)}
                             >
                               Add to Cart
                             </Button>

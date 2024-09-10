@@ -58,8 +58,30 @@ const SummaryApi = {
         url: `${backendDomin}/api/update-product`,
         method: 'post'
     },
+    updateBlog: {
+        url: `${backendDomin}/api/update-blog`,
+        method: 'post'
+    },
+    uploadCategory: {
+        url: `${backendDomin}/api/upload-category`,
+        method: 'post'
+
+    },
+    getCategory : {
+        url: `${backendDomin}/api/get-category`,
+        method: 'get'
+    },
+    deleteCategory: {
+        url: `${backendDomin}/api/delete-category`,
+        method: 'post'
+    },
     deleteProduct: {
         url: `${backendDomin}/api/delete-product`,
+        method: 'post'
+    },
+
+    deleteBlog: {
+        url: `${backendDomin}/api/delete-blog`,
         method: 'post'
     },
     categoryProduct: {
