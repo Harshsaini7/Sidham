@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import ProductCategories from "components/ProductCategories";
 import { Button, Img, Input, SelectBox, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
@@ -23,64 +23,87 @@ const sortOptionsList = [
 const ShopPage = () => {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  // const homepageCardproductPropList = [
-  //   { save: "images/img_save.svg", status: "New" },
-  //   { image: "images/img_image_7.png" },
-  //   { image: "images/img_image_8.png" },
-  //   { image: "images/img_image_10.png" },
-  //   { image: "images/img_image_11.png" },
-  //   { image: "images/img_image_12.png" },
-  //   { image: "images/img_image_9.png" },
-  //   { image: "images/img_image_13.png" },
-  //   { image: "images/img_image_7.png" },
-  // ];
 
   const [allProduct, setAllProduct] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
-  const [selectedCategory , setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(2000);
 
   const handleAddToCart = async (e, id, quantity) => {
     const res = await AddToCart(e, id, quantity, token, dispatch);
-    //    console.log(res);
-    //    fetchUserAddToCart()
   };
 
   const fetchAllProduct = async () => {
     const response = await fetch(SummaryApi.allProduct.url);
-    const dataResponse = await response.json();
-
-    console.log("product data", dataResponse);
-
+    const dataResponse = await response?.json();
     setAllProduct(dataResponse?.data || []);
   };
 
-
   const fetchAllCategory = async () => {
     const response = await fetch(SummaryApi.getCategory.url);
-    const dataResponse = await response.json();
-
-    console.log("category data", dataResponse);
-
+    const dataResponse = await response?.json();
     setAllCategory(dataResponse?.data || []);
   };
 
-  const categoryWiseProduct = useMemo(() => {
-    console.log("all product -> ", allProduct);
-    console.log("selected category -> ", selectedCategory);
-    if (!selectedCategory) {
-      return allProduct;
-    }
-    return allProduct.filter(product => product.category === selectedCategory);
-  }, [allProduct, selectedCategory]);
+  const filteredProducts = useMemo(() => {
+    return allProduct.filter((product) => {
+      const matchesCategory =
+        !selectedCategory || product.category === selectedCategory;
+
+      const matchesSearch = product.productName
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      // Set default values for minPrice and maxPrice when empty
+      const minPriceValue = minPrice === "" ? 0 : Number(minPrice);
+      const maxPriceValue =
+        maxPrice === "" ? Number.MAX_SAFE_INTEGER : Number(maxPrice);
+
+      const matchesPrice =
+        product.price >= minPriceValue && product.price <= maxPriceValue;
+
+      return matchesCategory && matchesSearch && matchesPrice;
+    });
+  }, [allProduct, selectedCategory, searchQuery, minPrice, maxPrice]);
 
   useEffect(() => {
     fetchAllProduct();
     fetchAllCategory();
   }, []);
 
-  useEffect(() => {
-    console.log("selected category", selectedCategory);
-  }, [selectedCategory]);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // The search is already being applied through the filteredProducts useMemo
+  };
+
+  const handleSearchChange = (e) => {
+    console.log(e.target);
+    setSearchQuery(e.target?.value);
+  };
+
+  const handleMinPriceChange = (e) => {
+    let value = e.target?.value;
+    // Allow the input to be empty
+    if (value === "") {
+      setMinPrice(value); // Set it as an empty string to allow removal in UI
+    } else {
+      // Convert the value to a number
+      setMinPrice(Number(value));
+    }
+  };
+
+  const handleMaxPriceChange = (e) => {
+    let value = e.target?.value;
+    // Allow the input to be empty
+    if (value === "") {
+      setMaxPrice(value); // Set it as an empty string to allow removal in UI
+    } else {
+      // Convert the value to a number
+      setMaxPrice(Number(value));
+    }
+  };
 
   return (
     <>
@@ -129,24 +152,26 @@ const ShopPage = () => {
                   Filter By Price
                 </Text>
                 <div className="flex flex-row gap-4 items-center justify-start w-full">
-                  <Text
-                    className="border border-gray-500_87 border-solid pl-2 sm:pr-5 pr-[35px] py-[7px] rounded text-gray-500 text-lg tracking-[-0.50px] w-auto"
-                    size="txtRubikRegular18Gray500"
-                  >
-                    $0
-                  </Text>
+                  <input
+                    type="number"
+                    value={minPrice}
+                    onChange={handleMinPriceChange}
+                    className="border border-gray-500_87 border-solid pl-2 sm:pr-5 pr-[35px] py-[7px] rounded text-gray-500 text-lg tracking-[-0.50px] w-[69%]"
+                    placeholder="$0"
+                  />
                   <Text
                     className="text-black-900 text-sm w-auto"
                     size="txtPlusJakartaSansRomanSemiBold14"
                   >
                     -
                   </Text>
-                  <Text
-                    className="border border-gray-500_87 border-solid pl-2 sm:pr-5 pr-[35px] py-[7px] rounded text-gray-500 text-lg tracking-[-0.50px] w-auto"
-                    size="txtRubikRegular18Gray500"
-                  >
-                    $2000
-                  </Text>
+                  <input
+                    type="number"
+                    value={maxPrice}
+                    onChange={handleMaxPriceChange}
+                    className="border border-gray-500_87 border-solid pl-2 sm:pr-5 pr-[35px] py-[7px] rounded text-gray-500 text-lg tracking-[-0.50px] w-[69%]"
+                    placeholder="$2000"
+                  />
                 </div>
                 <Img
                   className="h-4 w-[233px]"
@@ -180,13 +205,11 @@ const ShopPage = () => {
                   Product Categories
                 </Text>
                 <div className="flex flex-col font-poppins gap-5 items-start justify-start w-full">
-                  
-                    <ProductCategories 
-                    allCategory={allCategory} 
-                    selectedCategory={selectedCategory} 
-                    setSelectedCategory={setSelectedCategory} 
+                  <ProductCategories
+                    allCategory={allCategory}
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
                   />
-                 
                 </div>
               </div>
               <div className="flex flex-col gap-5 items-start justify-start w-full">
@@ -244,42 +267,27 @@ const ShopPage = () => {
               </div>
             </div>
             <div className="flex flex-1 flex-col font-rubik gap-[50px] items-center justify-start w-full">
-              <div className="flex sm:flex-col flex-row sm:gap-10 items-center justify-between w-full">
-                <div className="flex sm:flex-1 flex-col font-rubik items-start justify-start w-[407px] sm:w-full">
-                  <div className="flex sm:flex-col flex-row sm:gap-5 items-start justify-start w-full">
-                    <div className="flex sm:flex-1 flex-col items-center justify-start w-[74%] sm:w-full">
-                      <Input
-                        name="frame48095984"
-                        placeholder="Office Chair"
-                        className="leading-[normal] p-0 placeholder:text-black-900_3f sm:pr-5 text-black-900_3f text-left text-sm tracking-[-0.50px] w-full"
-                        wrapClassName="bg-white-A700 pl-4 pr-[35px] py-[15px] w-full"
-                      ></Input>
-                    </div>
-                    <Button className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] min-w-[107px] py-4 text-center text-sm text-yellow-100 tracking-[-0.50px]">
-                      Search
-                    </Button>
-                  </div>
+              <form
+                onSubmit={handleSearch}
+                className="flex sm:flex-col flex-row sm:gap-5 items-start justify-start w-full"
+              >
+                <div className="flex sm:flex-1 flex-col items-center justify-start w-[74%] sm:w-full">
+                  <input
+                    name="frame48095984"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="leading-[normal] p-0 placeholder:text-black-900_3f sm:pr-5 text-black-900_3f text-left text-sm tracking-[-0.50px] w-full h-[50px]"
+                    wrapClassName="bg-white-A700 pl-4 pr-[35px] py-[15px] w-full"
+                  />
                 </div>
-                <SelectBox
-                  className="sm:flex-1 font-medium font-raleway text-black-900 text-left text-sm w-[8%] sm:w-full"
-                  placeholderClassName="text-black-900"
-                  indicator={
-                    <Img
-                      className="h-5 w-5"
-                      src="images/img_arrowdown.svg"
-                      alt="arrow_down"
-                    />
-                  }
-                  isMulti={false}
-                  name="sort"
-                  options={sortOptionsList}
-                  isSearchable={false}
-                  placeholder="Sort By"
-                />
-              </div>
+                <Button className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] min-w-[107px] py-4 text-center text-sm text-yellow-100 tracking-[-0.50px]">
+                  Search
+                </Button>
+              </form>
               <div className="flex flex-col items-center justify-start w-full">
                 <div className="gap-5 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-center min-h-[auto] w-full">
-                {categoryWiseProduct.map((product, index) => (
+                  {filteredProducts?.map((product, index) => (
                     <React.Fragment key={`HomepageCardproduct${index}`}>
                       <HomepageCardproduct
                         className="flex flex-1 flex-col gap-4 items-start justify-start w-full"
@@ -288,7 +296,9 @@ const ShopPage = () => {
                           <div className="flex flex-row justify-center w-full">
                             <Button
                               className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
-                              onClick={(e) => handleAddToCart(e, product._id, 1)}
+                              onClick={(e) =>
+                                handleAddToCart(e, product._id, 1)
+                              }
                             >
                               Add to Cart
                             </Button>

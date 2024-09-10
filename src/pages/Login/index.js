@@ -6,11 +6,15 @@ import { Grid, Box, Card, Stack, Typography } from '@mui/material';
 import PageContainer from 'components/container/PageContainer';
 import Logo from '../../assets/ecommercelogo.jpg';
 import AuthLogin from 'components/AuthLogin';
+import CartNavbar from 'components/CartNavbar';
 
 const Login2 = () => {
   
   return (
+    <>
+    <CartNavbar/>
     <PageContainer title="Login" description="this is Login page">
+      
       <Box
         sx={{
           position: 'relative',
@@ -72,6 +76,7 @@ const Login2 = () => {
         </Grid>
       </Box>
     </PageContainer>
+    </>
   );
 };
 
