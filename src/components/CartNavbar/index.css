@@ -1,5 +1,48 @@
+/* Show nav on screens wider than 1024px */
 @media (min-width: 1024px) {
-  .lg-hidden2 {
+  .lg-flex2 {
+    display: flex;
+  }
+}
+
+/* Hide nav on smaller screens (less than 1024px) */
+@media (max-width: 1024px) {
+  .lg-flex2 {
     display: none;
   }
 }
+
+/* Hide nav on medium-sized screens (less than 768px) */
+@media (max-width: 768px) {
+  .md-hidden2 {
+    display: none;
+  }
+}
+
+/* Show button on smaller screens (less than 1024px) */
+@media (max-width: 1024px) {
+  .sm-flex {
+    display: flex;
+  }
+}
+
+/* Hide button on larger screens (wider than 1024px) */
+@media (min-width: 1024px) {
+  .sm-flex {
+    display: none;
+  }
+}
+/* Show menu on smaller screens (less than 1024px) */
+@media (max-width: 1024px) {
+  .sm-block {
+    display: block;
+  }
+}
+
+/* Hide menu on larger screens (wider than 1024px) */
+@media (min-width: 1024px) {
+  .lg-hidden {
+    display: none;
+  }
+}
+

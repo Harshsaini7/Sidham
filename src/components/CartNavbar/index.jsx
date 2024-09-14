@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
-
-import { Img, SelectBox, Text , Button } from "components";
+import { Img, SelectBox, Text, Button } from "components";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "services/operations/authAPI";
+
+import "./index.css";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -13,59 +14,39 @@ const homeOptionsList = [
 ];
 
 const CartNavbar = (props) => {
-  const user = useSelector(state => state.profile);
+  const user = useSelector((state) => state.profile);
   const dispatch = useDispatch();
-  const [menuDisplay, setMenuDisplay] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const {totalItems} = useSelector(state => state.cart);
+  const { totalItems } = useSelector((state) => state.cart);
+
   const handleLogout = async () => {
-    dispatch(logout(navigate))
+    dispatch(logout(navigate));
   };
 
   useEffect(() => {
     console.log(user);
-  })
+  }, [user]);
+
   return (
-    <>
-      <header className={props.className}>
-        <div className="flex md:flex-col flex-row md:gap-10 items-center justify-between w-full">
-          <div className="header-row ">
+    <header
+      className={`${props.className} bg-white-A700 shadow-md flex flex-col`}
+    >
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex-shrink-0">
             <Img
-              className="h-[30px] w-[90px] "
+              className="h-[30px] w-[90px]"
               src="images/img_car.svg"
               alt="car"
             />
-                   
-            <div className="mobile-menu">
-
-            <Link to={{
-          pathname: "/",
-          state: { fromDashboard: true },
-        }}
-        
-        ><Img
-        className=" h-6 w-[2rem] "
-        src="images/cart_test_icon.png"
-        alt="icon"
-      /></Link>
-
-              <div>
-              <div className="dash"></div>
-              <div className="dash"></div>
-              <div className="dash"></div>
-              </div>
-              
-
-              
-             
-
-
-
-            </div>
           </div>
-          <div className="flex sm:flex-1 flex-row gap-9 sm:hidden items-center justify-between w-[498px] sm:w-full">
+
+          {/* Desktop Navigation */}
+          <nav className="lg-flex2 space-x-6 md-hidden2">
             <SelectBox
-              className="font-rubik leading-[normal] text-black-900 text-left text-lg tracking-[-0.50px] w-[17%] sm:w-full"
+              className="font-rubik text-black-900 text-lg tracking-[-0.50px]"
               placeholderClassName="text-black-900"
               indicator={
                 <Img
@@ -80,121 +61,152 @@ const CartNavbar = (props) => {
               isSearchable={false}
               placeholder="Home"
             />
-            
             <Link
-        to={{
-          pathname: "/shop",
-          state: { fromDashboard: true },
-        }}
-      >
-        Shop
-      </Link>
-
-      <Link
-        to={{
-          pathname: "/blog",
-          state: { fromDashboard: true },
-        }}
-      >
-        Blog
-      </Link>
-
-      <Link
-        to={{
-          pathname: "/aboutus",
-          state: { fromDashboard: true },
-        }}
-      >
-        About
-      </Link>
-
-            
-            
-      <Link
-        to={{
-          pathname: "/contactus",
-          state: { fromDashboard: true },
-        }}
-      >
-        Contact
-      </Link>
-
-      <Link
-        to={{
-          pathname: "/team",
-          state: { fromDashboard: true },
-        }}
-      >
-        Team
-      </Link>
-
-{/*       
-      <Link
-        to={{
-          pathname: "/",
-          state: { fromDashboard: true },
-        }}
-      >
-      <img  className="h-8 w-[3rem]"     src="images/cart_test_icon.png" alt="" srcset="" />
-      </Link> */}
-        </div>
-
-        <div className="flex flex-row gap-5 items-center justify-center">
-            {
-              user.user?._id && (
-                <Link
-                  to={
-                    {
-                      pathname: "/profile",
-                      state: { fromDashboard: true },
-                    }
-                  }
-                >
-
-                <FaRegUserCircle className="h-8 w-[3rem]" />
-                </Link>
-              )
-            }
-        
-            { user.user?._id && ( 
-              <div className="relative">
-            <Link to={{ pathname: "/cart"  ,state : { fromDashboard: true }}}>
-            <Img
-              className="h-8 w-[3rem] mb-1"
-              src="images/cart_test_icon.png"
-              alt="icon"
-            />
-            <div className="bg-black-900 text-white-A700 w-5 h-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3">
-                <p className="text-sm">{totalItems}</p>
-              </div>
-            </Link></div>)
-              }
-
-            
-                
-
-            <Link
-          to={
-            {
-              pathname: "/login",
-              state: { fromDashboard: true },}
-          }
+              className="text-gray-700 hover:text-black-900 text-lg tracking-[-0.50px]"
+              to="/shop"
             >
-              <button type="button" class="text-white-A700 bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                {
-                  user.user?._id ? "Logout" : "Login"
-                }
-              </button>
+              Shop
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 text-lg tracking-[-0.50px]"
+              to="/blog"
+            >
+              Blog
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 text-lg tracking-[-0.50px]"
+              to="/aboutus"
+            >
+              About
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 text-lg tracking-[-0.50px]"
+              to="/contactus"
+            >
+              Contact
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 text-lg tracking-[-0.50px]"
+              to="/team"
+            >
+              Team
+            </Link>
+          </nav>
+
+          {/* User Actions */}
+          <div className="flex items-center space-x-4">
+            {user.user?._id && (
+              <Link to="/profile">
+                <FaRegUserCircle className="h-8 w-8 text-gray-700" />
               </Link>
-
-    
-
+            )}
+            {user.user?._id && (
+              <div className="relative">
+                <Link to="/cart">
+                  <Img
+                    className="h-8 w-8"
+                    src="images/cart_test_icon.png"
+                    alt="icon"
+                  />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-black-900 text-white-A700 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </Link>
+              </div>
+            )}
+            <Link to={user.user?._id ? "/" : "/login"}>
+              <button
+                onClick={user.user?._id ? handleLogout : null}
+                className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium"
+              >
+                {user.user?._id ? "Logout" : "Login"}
+              </button>
+            </Link>
           </div>
-          
+
+          {/* Mobile menu button */}
+          <div className="sm-flex md-hidden">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-black-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+            >
+              <span className="sr-only">Open main menu</span>
+              <svg
+                className={`${menuOpen ? "hidden" : "block"} h-6 w-6`}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                className={`${menuOpen ? "block" : "hidden"} h-6 w-6`}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </header>
-    </>
-  )
+      </div>
+
+      {/* Mobile menu, show/hide based on menu state */}
+      {menuOpen && (
+        <div className="sm-block lg-hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <Link
+              className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="/shop"
+            >
+              Shop
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="/blog"
+            >
+              Blog
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="/aboutus"
+            >
+              About
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="/contactus"
+            >
+              Contact
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="/team"
+            >
+              Team
+            </Link>
+          </div>
+        </div>
+      )}
+    </header>
+  );
 };
 
 CartNavbar.defaultProps = {};

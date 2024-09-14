@@ -6,6 +6,7 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import HomepageCardblog from "components/HomepageCardblog";
 import SummaryApi from "common";
+import CartNavbar from "components/CartNavbar";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -42,7 +43,7 @@ const BlogPage = () => {
   return (
     <>
       <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[126px] items-center justify-start mx-auto w-auto sm:w-full md:w-full">
-        <Header className="bg-white-A700 flex items-center justify-center md:px-5 px-[75px] py-[35px] w-full" />
+        <CartNavbar className="bg-white-A700 flex items-center justify-center md:px-5 px-[75px] py-[35px] w-full" />
         <div className="flex flex-col items-start justify-center md:px-10 sm:px-5 px-[75px] w-full">
           <div className="flex flex-col gap-[54px] items-center justify-start max-w-[1291px] mx-auto w-full">
             <div className="flex flex-col gap-[50px] items-center justify-start w-full">
