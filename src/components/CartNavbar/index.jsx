@@ -24,10 +24,10 @@ const CartNavbar = (props) => {
     dispatch(logout(navigate));
   };
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
+  // useEffect(() => {
+    // console.log(user);
+  // }, [user]);
+// 
   return (
     <header
       className={`${props.className} bg-white-A700 shadow-md flex flex-col`}
