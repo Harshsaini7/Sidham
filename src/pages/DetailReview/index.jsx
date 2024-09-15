@@ -1,7 +1,6 @@
-import React from "react";
 
-import { useNavigate } from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   CheckBox,
@@ -18,16 +17,55 @@ import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
 import HomepageCardproduct from "components/HomepageCardproduct";
+import SummaryApi from "common";
+import { useSelector } from "react-redux";
 
-const homeOptionsList = [
-  { label: "Option1", value: "option1" },
-  { label: "Option2", value: "option2" },
-  { label: "Option3", value: "option3" },
-];
 
 const DetailReviewPage = () => {
   const navigate = useNavigate();
+  const id = sessionStorage.getItem("productId");
+  const {product} = useSelector((state) => state.product);
+  const [currProduct, setProduct] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  const fetchProduct = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(SummaryApi.productDetails.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const dataResponse = await response.json();
+
+      if (dataResponse.success && dataResponse.data) {
+        setProduct(dataResponse.data);
+        console.log("product data", dataResponse.data);
+      } else {
+        throw new Error(dataResponse.message || "Failed to fetch product");
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProduct();
+  }, [id]);
   const homepageCardproductPropList = [
     { image: "images/img_image_10.png" },
     { image: "images/img_image_11.png" },
@@ -47,143 +85,124 @@ const DetailReviewPage = () => {
     window.location.href = "https://accounts.google.com/";
   }
 
+
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <>
       <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[100px] items-center justify-start mx-auto w-auto sm:w-full md:w-full">
         <div className="flex flex-col items-start justify-start w-full">
           <CartNavbar className="bg-white-A700 flex items-center justify-center md:px-5 px-[75px] py-[35px] w-full" />
           <div className="flex flex-col items-start justify-start pt-[75px] md:px-10 sm:px-5 px-[75px] w-full">
-            <div className="flex md:flex-col flex-row gap-[47px] items-center justify-start max-w-[1290px] mx-auto w-full">
-              <Img
-                className="flex-1 md:flex-none md:h-[595px] sm:h-auto h-full max-h-[595px] object-cover sm:w-[] md:w-[]"
-                src="images/img_rectangle1475.png"
-                alt="rectangle1475"
-              />
-              <div className="flex flex-1 flex-col gap-[30px] items-start justify-start w-full">
-                <div className="flex flex-col gap-[33px] items-start justify-start w-full">
-                  <Text
-                    className="max-w-[621px] md:max-w-full md:text-3xl sm:text-[28px] text-[32px] text-black-900 tracking-[-0.50px]"
-                    size="txtRalewayRomanBold32Black900"
-                  >
-                    Complete set of sofa, pillows and bed sheets
-                  </Text>
-                  <div className="flex flex-row font-rubik gap-[15px] items-center justify-start w-full">
-                    <Img
-                      className="h-5 w-[140px]"
-                      src="images/img_frame135.svg"
-                      alt="frame135"
-                    />
+            {currProduct && (
+              <div className="flex md:flex-col flex-row gap-[47px] items-center justify-start max-w-[1290px] mx-auto w-full">
+                <Img
+                  className="flex-1 md:flex-none md:h-[595px] sm:h-auto h-full max-h-[595px] object-cover sm:w-[] md:w-[]"
+                  src={currProduct.productImage[0]}
+                  alt={currProduct.productName}
+                />
+                <div className="flex flex-1 flex-col gap-[30px] items-start justify-start w-full">
+                  <div className="flex flex-col gap-[33px] items-start justify-start w-full">
                     <Text
-                      className="text-gray-500 text-sm tracking-[-0.50px] w-auto"
-                      size="txtRubikRegular14"
+                      className="max-w-[621px] md:max-w-full md:text-3xl sm:text-[28px] text-[32px] text-black-900 tracking-[-0.50px]"
+                      size="txtRalewayRomanBold32Black900"
                     >
-                      ( 1 review )
+                      {currProduct.productName}
                     </Text>
-                  </div>
-                  <Text
-                    className="text-4xl sm:text-[32px] md:text-[34px] text-bluegray-900 tracking-[-0.50px] w-full"
-                    size="txtRubikBold36"
-                  >
-                    $ 75.00
-                  </Text>
-                  <div className="flex flex-col font-rubik gap-5 items-start justify-start w-full">
-                    <Text
-                      className="text-black-900 text-lg tracking-[-0.50px] w-full"
-                      size="txtRubikSemiBold18"
-                    >
-                      <span className="text-gray-500 font-rubik text-left font-normal">
-                        Stok :
-                      </span>
-                      <span className="text-black-900 font-rubik text-left font-normal">
-                        {" "}
-                        18
-                      </span>
-                    </Text>
-                    <Text
-                      className="text-black-900 text-lg tracking-[-0.50px] w-full"
-                      size="txtRubikSemiBold18"
-                    >
-                      <span className="text-gray-500 font-rubik text-left font-normal">
-                        SKU :
-                      </span>
-                      <span className="text-black-900 font-rubik text-left font-normal">
-                        {" "}
-                        BA65
-                      </span>
-                      <span className="text-black-900 font-rubik text-left font-semibold">
-                        {" "}
-                      </span>
-                    </Text>
-                    <Text
-                      className="text-black-900 text-lg tracking-[-0.50px] w-full"
-                      size="txtRubikSemiBold18"
-                    >
-                      <span className="text-gray-500 font-rubik text-left font-normal">
-                        Categories :
-                      </span>
-                      <span className="text-black-900 font-rubik text-left font-normal">
-                        {" "}
-                        Chair, New Arrivals, Special
-                      </span>
-                    </Text>
-                    <Text
-                      className="text-black-900 text-lg tracking-[-0.50px] w-full"
-                      size="txtRubikSemiBold18"
-                    >
-                      <span className="text-gray-500 font-rubik text-left font-normal">
-                        Tags :
-                      </span>
-                      <span className="text-black-900 font-rubik text-left font-normal">
-                        {" "}
-                        Black, Chair
-                      </span>
-                    </Text>
-                  </div>
-                  <Text
-                    className="leading-[35.00px] max-w-[621px] md:max-w-full text-gray-500 text-lg tracking-[-0.50px]"
-                    size="txtRubikRegular18Gray500"
-                  >
-                    In order to sit comfortably for long periods, people need
-                    freedom of movement. The Form rocking chair has a molded
-                    plastic shell with a wide, curved seat, which gives plenty
-                    of opportunity for changing one’s sitting position.
-                  </Text>
-                </div>
-                <div className="flex flex-col items-start justify-start w-full">
-                  <div className="flex flex-row gap-[19px] items-start justify-start w-[337px]">
-                    <div className="border border-black-900 border-solid flex flex-row gap-[15px] items-center justify-start p-2.5 w-[38%]">
+                    <div className="flex flex-row font-rubik gap-[15px] items-center justify-start w-full">
                       <Img
-                        className="common-pointer h-6 ml-1 w-6"
-                        src="images/img_google.svg"
-                        alt="google"
-                        onClick={handleNavigate1}
+                        className="h-5 w-[140px]"
+                        src="images/img_frame135.svg"
+                        alt="frame135"
                       />
                       <Text
-                        className="text-black-900 text-lg tracking-[-0.50px]"
-                        size="txtRubikRegular18"
+                        className="text-gray-500 text-sm tracking-[-0.50px] w-auto"
+                        size="txtRubikRegular14"
                       >
-                        1
+                        ( 1 review )
                       </Text>
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_plus.svg"
-                        alt="plus"
-                      />
                     </div>
                     <Text
-                      className="common-pointer bg-black-900 flex-1 justify-center sm:pl-5 pl-[25px] pr-[13px] py-[11px] text-lg text-white-A700 tracking-[-0.50px] w-auto"
-                      size="txtRubikRegular18WhiteA700"
-                      onClick={() => navigate("/")}
+                      className="text-4xl sm:text-[32px] md:text-[34px] text-bluegray-900 tracking-[-0.50px] w-full"
+                      size="txtRubikBold36"
                     >
-                      Add to Cart
+                      $ {currProduct.sellingPrice.toFixed(2)}
                     </Text>
-                    <Button className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px]">
-                      <Img src="images/img_favorite.svg" alt="favorite" />
-                    </Button>
+                    <div className="flex flex-col font-rubik gap-5 items-start justify-start w-full">
+                      <Text
+                        className="text-black-900 text-lg tracking-[-0.50px] w-full"
+                        size="txtRubikSemiBold18"
+                      >
+                        <span className="text-gray-500 font-rubik text-left font-normal">
+                          Brand:
+                        </span>
+                        <span className="text-black-900 font-rubik text-left font-normal">
+                          {" "}
+                          {currProduct.brandName}
+                        </span>
+                      </Text>
+                      <Text
+                        className="text-black-900 text-lg tracking-[-0.50px] w-full"
+                        size="txtRubikSemiBold18"
+                      >
+                        <span className="text-gray-500 font-rubik text-left font-normal">
+                          Category:
+                        </span>
+                        <span className="text-black-900 font-rubik text-left font-normal">
+                          {" "}
+                          {currProduct.category}
+                        </span>
+                      </Text>
+                    </div>
+                    <Text
+                      className="leading-[35.00px] max-w-[621px] md:max-w-full text-gray-500 text-lg tracking-[-0.50px]"
+                      size="txtRubikRegular18Gray500"
+                    >
+                      {currProduct?.description}
+                    </Text>
+                  </div>
+                  <div className="flex flex-col items-start justify-start w-full">
+                    <div className="flex flex-row gap-[19px] items-start justify-start w-[337px]">
+                      <div className="border border-black-900 border-solid flex flex-row gap-[15px] items-center justify-start p-2.5 w-[38%]">
+                        <Img
+                          className="common-pointer h-6 ml-1 w-6"
+                          src="images/img_google.svg"
+                          alt="google"
+                          onClick={handleNavigate1}
+                        />
+                        <Text
+                          className="text-black-900 text-lg tracking-[-0.50px]"
+                          size="txtRubikRegular18"
+                        >
+                          1
+                        </Text>
+                        <Img
+                          className="h-6 w-6"
+                          src="images/img_plus.svg"
+                          alt="plus"
+                        />
+                      </div>
+                      <Text
+                        className="common-pointer bg-black-900 flex-1 justify-center sm:pl-5 pl-[25px] pr-[13px] py-[11px] text-lg text-white-A700 tracking-[-0.50px] w-auto"
+                        size="txtRubikRegular18WhiteA700"
+                        onClick={() => navigate("/")}
+                      >
+                        Add to Cart
+                      </Text>
+                      <Button className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px]">
+                        <Img src="images/img_favorite.svg" alt="favorite" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
         <div className="flex flex-col font-josefinsans items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">

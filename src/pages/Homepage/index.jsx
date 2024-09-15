@@ -21,6 +21,7 @@ import HomepageCardproduct from "components/HomepageCardproduct";
 import SummaryApi from "common";
 import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
+import { setProduct } from "slices/productSlice";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -30,6 +31,7 @@ const homeOptionsList = [
 
 const HomepagePage = () => {
   const {token} = useSelector((state)=>state.auth)
+  const {product} = useSelector((state)=>state.product)
   const dispatch = useDispatch()
   const navigate = useNavigate();
 
@@ -60,6 +62,8 @@ const HomepagePage = () => {
     console.log("product data", dataResponse);
 
     setAllProduct(dataResponse?.data || []);
+    dispatch(setProduct(dataResponse?.data || []));
+    // console.log(product);
   };
 
   const [allBlog, setAllBlog] = useState([]);

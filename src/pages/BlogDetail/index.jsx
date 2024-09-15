@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect , useState} from "react";
 
 import {
   Button,
@@ -16,6 +16,8 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import HomepageCardblog from "components/HomepageCardblog";
 import CartNavbar from "components/CartNavbar";
+import SummaryApi from "common";
+import { useNavigate } from "react-router-dom";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -24,6 +26,49 @@ const homeOptionsList = [
 ];
 
 const BlogDetailPage = () => {
+  const navigate = useNavigate();
+ 
+
+  const id = sessionStorage.getItem("blogId");
+  const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchBlog = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${SummaryApi.blogDetails.url}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            blogId: id,
+          }),
+        }
+      );
+
+      // console.log("response", response);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setBlog(data?.data);
+      console.log(data.data);
+    } catch (error) {
+      console.error("Error fetching blog:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlog();
+  }, []);
+ 
   const blogDetailCardrecentPropList = [
     {},
     { image: "images/img_image_70x70.png" },
@@ -43,6 +88,10 @@ const BlogDetailPage = () => {
     window.location.href = "https://twitter.com/login/";
   }
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!blog) return null;
+
   return (
     <>
       <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[100px] items-start justify-start mx-auto w-auto sm:w-full md:w-full">
@@ -56,7 +105,7 @@ const BlogDetailPage = () => {
                     className="sm:text-4xl md:text-[38px] text-[40px] text-black-900 text-center tracking-[-0.50px] w-full"
                     size="txtRalewayBold40"
                   >
-                    Why should you choose good wood
+                    {blog?.title}
                   </Text>
                   <div className="flex flex-row font-rubik gap-[18px] items-center justify-center max-w-[1290px] w-full">
                     <div className="flex flex-row gap-2.5 items-center justify-start w-auto">
@@ -83,7 +132,7 @@ const BlogDetailPage = () => {
                         className="text-black-900 text-lg tracking-[-0.50px] w-auto"
                         size="txtRubikRegular18"
                       >
-                        December 10, 2022
+                        {new Date(blog.createdAt).toLocaleDateString()}
                       </Text>
                     </div>
                   </div>
@@ -93,15 +142,13 @@ const BlogDetailPage = () => {
                   size="txtRubikRegular16"
                 >
                   <>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the
-                    industry&#39;s standard dummy text ever.
+                    {blog?.description}
                   </>
                 </Text>
               </div>
               <Img
                 className="h-[450px] md:h-auto object-cover w-full"
-                src="images/img_rectangle1488.png"
+                src={blog?.blogImage[0]}
                 alt="rectangle1488"
               />
             </div>

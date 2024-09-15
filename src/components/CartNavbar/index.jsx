@@ -17,6 +17,7 @@ const CartNavbar = (props) => {
   const user = useSelector((state) => state.profile);
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const { totalItems } = useSelector((state) => state.cart);
 
@@ -24,10 +25,21 @@ const CartNavbar = (props) => {
     dispatch(logout(navigate));
   };
 
-  // useEffect(() => {
-    // console.log(user);
-  // }, [user]);
-// 
+  const toggleProfileDropdown = () => {
+    setProfileDropdownOpen(!profileDropdownOpen);
+  };
+
+  useEffect(() => {
+    const closeDropdown = (e) => {
+      if (!e.target.closest('.profile-dropdown')) {
+        setProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', closeDropdown);
+    return () => document.removeEventListener('click', closeDropdown);
+  }, []);
+
   return (
     <header
       className={`${props.className} bg-white-A700 shadow-md flex flex-col`}
@@ -96,9 +108,29 @@ const CartNavbar = (props) => {
           {/* User Actions */}
           <div className="flex items-center space-x-4">
             {user.user?._id && (
-              <Link to="/profile">
-                <FaRegUserCircle className="h-8 w-8 text-gray-700" />
-              </Link>
+              <div className="relative profile-dropdown">
+                <button onClick={toggleProfileDropdown}>
+                  <FaRegUserCircle className="h-8 w-8 text-gray-900 md-hidden2" />
+                </button>
+                {profileDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
+                    <Link 
+                      to="/profile" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 bg-white-A700"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      My Profile
+                    </Link>
+                    <Link 
+                      to="/myorder" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 bg-white-A700"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      My Order
+                    </Link>
+                  </div>
+                )}
+              </div>
             )}
             {user.user?._id && (
               <div className="relative">
@@ -202,6 +234,19 @@ const CartNavbar = (props) => {
             >
               Team
             </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="/myorder"
+            >
+              My Order
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="/profile"
+            >
+              My Profile
+            </Link>
+
           </div>
         </div>
       )}

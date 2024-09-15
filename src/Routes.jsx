@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import Home from "pages/Home";
 import NotFound from "pages/NotFound";
 import Login2 from "pages/Login";
+import DetailReviewPage from "pages/DetailReview";
+import MyOrderPage from "pages/MyOrder";
 // import Profile from "pages/Profile";
 const Aboutus = React.lazy(() => import("pages/Aboutus"));
 const Contactus = React.lazy(() => import("pages/Contactus"));
@@ -12,7 +14,7 @@ const Team = React.lazy(() => import("pages/Team"));
 const Wishlist = React.lazy(() => import("pages/Wishlist"));
 const Checkout = React.lazy(() => import("pages/Checkout"));
 const Profile = React.lazy(() => import("pages/Profile"));
-const DetailReview = React.lazy(() => import("pages/DetailReview"));
+// const DetailReview = React.lazy(() => import("pages/DetailReview"));
 const ShopDetailDescription = React.lazy(
   () => import("pages/ShopDetailDescription"),
 );
@@ -33,7 +35,9 @@ const ProjectRoutes = () => {
           path="/shopdeataildescription"
           element={<ShopDetailDescription />}
         />
-        <Route path="/detailreview" element={<DetailReview />} />
+        <Route path="/detailreview/:id" element={<DetailReviewPage/>} />
+        <Route path="/detailreview" element={<DetailReviewPage/>} />
+
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/team" element={<Team />} />
@@ -43,6 +47,7 @@ const ProjectRoutes = () => {
         <Route path="/aboutus" element={<Aboutus />} />
         <Route path="/dhiwise-dashboard" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/myorder" element = {<MyOrderPage/>}/>
       </Routes>
     </React.Suspense>
   );

@@ -8,6 +8,8 @@ import HomepageCardproduct from "components/HomepageCardproduct";
 import SummaryApi from "common/index";
 import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
+import { setProduct, setCategory } from "slices/productSlice";
+import { useNavigate } from "react-router-dom";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -22,7 +24,9 @@ const sortOptionsList = [
 
 const ShopPage = () => {
   const { token } = useSelector((state) => state.auth);
+  const { product, category } = useSelector((state) => state.product);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [allProduct, setAllProduct] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
@@ -39,6 +43,7 @@ const ShopPage = () => {
     const response = await fetch(SummaryApi.allProduct.url);
     const dataResponse = await response?.json();
     setAllProduct(dataResponse?.data || []);
+    dispatch(setProduct(dataResponse?.data || []));
   };
 
   const fetchAllCategory = async () => {
@@ -48,7 +53,7 @@ const ShopPage = () => {
   };
 
   const filteredProducts = useMemo(() => {
-    return allProduct.filter((product) => {
+    return allProduct?.filter((product) => {
       const matchesCategory =
         !selectedCategory || product.category === selectedCategory;
 
@@ -69,8 +74,20 @@ const ShopPage = () => {
   }, [allProduct, selectedCategory, searchQuery, minPrice, maxPrice]);
 
   useEffect(() => {
-    fetchAllProduct();
-    fetchAllCategory();
+    console.log("product", product);
+    if(!product || product?.length === 0) {
+      fetchAllProduct();
+    } else {
+      setAllProduct(product);
+    }
+
+    if(!category || category?.length === 0) {
+      fetchAllCategory();
+    } else {
+      setAllCategory(category);
+    }
+
+    // fetchAllCategory();
   }, []);
 
   const handleSearch = (e) => {
@@ -288,7 +305,13 @@ const ShopPage = () => {
               <div className="flex flex-col items-center justify-start w-full">
                 <div className="gap-5 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-center min-h-[auto] w-full">
                   {filteredProducts?.map((product, index) => (
-                    <React.Fragment key={`HomepageCardproduct${index}`}>
+                    <div
+                      key={`HomepageCardproduct${index}`}
+                      onClick={() => {
+                        sessionStorage.setItem("productId", product._id);
+                        navigate(`/detailreview`);
+                      }}
+                    >
                       <HomepageCardproduct
                         className="flex flex-1 flex-col gap-4 items-start justify-start w-full"
                         {...product}
@@ -305,7 +328,7 @@ const ShopPage = () => {
                           </div>
                         )}
                       />
-                    </React.Fragment>
+                    </div>
                   ))}
                 </div>
               </div>

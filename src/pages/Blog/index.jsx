@@ -7,6 +7,7 @@ import Header from "components/Header";
 import HomepageCardblog from "components/HomepageCardblog";
 import SummaryApi from "common";
 import CartNavbar from "components/CartNavbar";
+import { useNavigate } from "react-router-dom";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -15,6 +16,7 @@ const homeOptionsList = [
 ];
 
 const BlogPage = () => {
+  const navigate = useNavigate();
   const homepageCardblogPropList = [
     {},
     { rectangleeighteen: "images/img_rectangle18_400x416.png" },
@@ -68,12 +70,18 @@ const BlogPage = () => {
               <div className="flex flex-col items-center justify-start w-full">
                 <div className="gap-5 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-center min-h-[auto] w-full">
                   {allBlog.map((props, index) => (
-                    <React.Fragment key={`HomepageCardblog${index}`}>
+                    <div key={`HomepageCardblog${index}`}
+                    onClick={() => {
+                      sessionStorage.setItem("blogId", props?._id);
+                      navigate(`/blogdetail`);
+                    }}
+                    
+                    >
                       <HomepageCardblog
                         className="flex flex-1 flex-col gap-2 items-start justify-start w-full"
                         {...props}
                       />
-                    </React.Fragment>
+                    </div>
                   ))}
                 </div>
               </div>

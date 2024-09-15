@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
   step: 1,
   product: null,
+  category : null,
+  blog : null,
   editProduct: false,
   paymentLoading: false,
 }
@@ -15,7 +17,13 @@ const productSlice = createSlice({
       state.step = action.payload
     },
     setProduct: (state, action) => {
-      state.course = action.payload
+      state.product = action.payload
+    },
+    setCategory: (state, action) => {
+      state.category = action.payload
+    },
+    setBlog: (state, action) => {
+      state.blog = action.payload
     },
     setEditProduct: (state, action) => {
       state.editCourse = action.payload

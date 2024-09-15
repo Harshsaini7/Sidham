@@ -71,6 +71,10 @@ const SummaryApi = {
         method: 'post'
 
     },
+    getOrderById:{
+        url: `${backendDomin}/api/get-order-id`,
+        method: 'get'
+    },
     getCategory : {
         url: `${backendDomin}/api/get-category`,
         method: 'get'
@@ -98,6 +102,10 @@ const SummaryApi = {
     },
     productDetails: {
         url: `${backendDomin}/api/product-details`,
+        method: 'post'
+    },
+    blogDetails: {
+        url: `${backendDomin}/api/get-blog-details`,
         method: 'post'
     },
     addToCartProduct: {

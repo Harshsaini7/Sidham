@@ -1,8 +1,10 @@
 import React from "react";
 
 import { Button, Img, Line, Text } from "components";
+import { useNavigate } from "react-router-dom";
 
 const HomepageCardblog = (props) => {
+  const navigate = useNavigate();
   return (
     <>
       <div className={props.className}>
@@ -56,7 +58,12 @@ const HomepageCardblog = (props) => {
             >
               {props?.description}
             </Text>
-            <Button className="border border-black-900 border-solid cursor-pointer font-rubik font-semibold leading-[normal] min-w-[139px] py-[11px] text-black-900 text-center text-lg tracking-[-0.50px]">
+            <Button className="border border-black-900 border-solid cursor-pointer font-rubik font-semibold leading-[normal] min-w-[139px] py-[11px] text-black-900 text-center text-lg tracking-[-0.50px]"
+              onClick={() => {
+                sessionStorage.setItem("blogId", props?._id);
+                navigate(`/blogdetail`);
+              }}
+            >
               {props?.readMore}
             </Button>
           </div>
