@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
@@ -13,21 +12,65 @@ import {
   Slider,
   Text,
 } from "components";
+import { FiMinusCircle } from "react-icons/fi";
+
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
 import HomepageCardproduct from "components/HomepageCardproduct";
 import SummaryApi from "common";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import AddToCart from "helpers/addToCart";
+import { setProduct } from "slices/productSlice";
 
 const DetailReviewPage = () => {
   const navigate = useNavigate();
   const id = sessionStorage.getItem("productId");
-  const {product} = useSelector((state) => state.product);
-  const [currProduct, setProduct] = useState(null);
+  const { product } = useSelector((state) => state.product);
+  const [currProduct, setCurrProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [allProduct, setAllProduct] = useState([]);
+  const [productCount, setProductCount] = useState(1);
+
+  const handleAddToCart = async (e, id, quantity) => {
+    const res = await AddToCart(e, id, quantity, token, dispatch);
+  };
+  const renderProductCard = (product) => (
+    <div className="w-1/3 px-2" key={product._id}>
+      <HomepageCardproduct
+        className="flex flex-col gap-4 items-start justify-start w-full"
+        image={product.productImage[0]}
+        title={product.productName}
+        price={`$${product.sellingPrice.toFixed(2)}`}
+        renderActions={() => (
+          <div className="flex flex-row justify-center w-full">
+            <Button
+              className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
+              onClick={(e) => handleAddToCart(e, product._id, 1)}
+            >
+              Add to Cart
+            </Button>
+          </div>
+        )}
+      />
+    </div>
+  );
+
+  const fetchAllProduct = async () => {
+    try {
+      const response = await fetch(SummaryApi.allProduct.url);
+      const dataResponse = await response?.json();
+      setAllProduct(dataResponse?.data || []);
+      dispatch(setProduct(dataResponse?.data || [])); // Use the proper action creator
+    } catch (error) {
+      console.error("Error fetching all products:", error);
+    }
+  };
+  const [sliderState, setSliderState] = useState(0);
+  const sliderRef = useRef(null);
 
   const fetchProduct = async () => {
     setLoading(true);
@@ -50,8 +93,7 @@ const DetailReviewPage = () => {
       const dataResponse = await response.json();
 
       if (dataResponse.success && dataResponse.data) {
-        setProduct(dataResponse.data);
-        console.log("product data", dataResponse.data);
+        setCurrProduct(dataResponse.data);
       } else {
         throw new Error(dataResponse.message || "Failed to fetch product");
       }
@@ -66,26 +108,22 @@ const DetailReviewPage = () => {
   useEffect(() => {
     fetchProduct();
   }, [id]);
-  const homepageCardproductPropList = [
-    { image: "images/img_image_10.png" },
-    { image: "images/img_image_11.png" },
-    { image: "images/img_image_12.png" },
-    { image: "images/img_image_13.png" },
-  ];
-  const sliderRef = React.useRef(null);
-  const [sliderState, setsliderState] = React.useState(0);
-  const homepageCardproductPropList1 = [
-    { image: "images/img_image_10.png" },
-    { image: "images/img_image_11.png" },
-    { image: "images/img_image_12.png" },
-    { image: "images/img_image_13.png" },
-  ];
 
-  function handleNavigate1() {
-    window.location.href = "https://accounts.google.com/";
-  }
+  useEffect(() => {
+    if (!product || product?.length === 0) {
+      fetchAllProduct();
+    } else {
+      setAllProduct(product);
+    }
+  }, [product]);
 
+  const incrementCount = () => {
+    setProductCount((prevCount) => prevCount + 1);
+  };
 
+  const decrementCount = () => {
+    setProductCount((prevCount) => (prevCount > 1 ? prevCount - 1 : 1));
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -170,32 +208,42 @@ const DetailReviewPage = () => {
                   <div className="flex flex-col items-start justify-start w-full">
                     <div className="flex flex-row gap-[19px] items-start justify-start w-[337px]">
                       <div className="border border-black-900 border-solid flex flex-row gap-[15px] items-center justify-start p-2.5 w-[38%]">
-                        <Img
-                          className="common-pointer h-6 ml-1 w-6"
-                          src="images/img_google.svg"
-                          alt="google"
-                          onClick={handleNavigate1}
-                        />
+                        {productCount === 1 && (
+                          <Img
+                            className={`common-pointer h-6 ml-1 w-6`}
+                            src="images/img_google.svg"
+                            alt="google"
+                            onClick={decrementCount}
+                          />
+                        )}
+                        {productCount > 1 && (
+                          <FiMinusCircle
+                            className={`common-pointer h-6 ml-1 w-6`}
+                            onClick={decrementCount}
+                          />
+                        )}
                         <Text
                           className="text-black-900 text-lg tracking-[-0.50px]"
                           size="txtRubikRegular18"
                         >
-                          1
+                          {productCount}
                         </Text>
                         <Img
                           className="h-6 w-6"
                           src="images/img_plus.svg"
                           alt="plus"
+                          onClick={incrementCount}
                         />
                       </div>
-                      <Text
+                      <Button
                         className="common-pointer bg-black-900 flex-1 justify-center sm:pl-5 pl-[25px] pr-[13px] py-[11px] text-lg text-white-A700 tracking-[-0.50px] w-auto"
-                        size="txtRubikRegular18WhiteA700"
-                        onClick={() => navigate("/")}
+                        onClick={() =>
+                          handleAddToCart(null, currProduct._id, productCount)
+                        }
                       >
                         Add to Cart
-                      </Text>
-                      <Button className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px]">
+                      </Button>
+                      <Button className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px] mt-1">
                         <Img src="images/img_favorite.svg" alt="favorite" />
                       </Button>
                     </div>
@@ -440,72 +488,95 @@ const DetailReviewPage = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col font-raleway items-center justify-start md:px-10 sm:px-5 px-[75px] w-full">
-          <div className="flex flex-col gap-[43px] items-center justify-start max-w-[1290px] mx-auto w-full">
-            <Text
-              className="sm:text-4xl md:text-[38px] text-[40px] text-black-900 text-center tracking-[-0.50px] w-auto"
-              size="txtRalewayBold40"
-            >
-              Related Products
-            </Text>
-            <div className="flex flex-col font-rubik gap-[43px] items-center justify-start w-full">
-              <Slider
-                autoPlay
-                autoPlayInterval={2000}
-                activeIndex={sliderState}
-                responsive={{
-                  0: { items: 1 },
-                  550: { items: 1 },
-                  1050: { items: 1 },
-                }}
-                onSlideChanged={(e) => {
-                  setsliderState(e?.item);
-                }}
-                ref={sliderRef}
-                className="w-full"
-                items={[...Array(3)].map(() => (
-                  <React.Fragment key={Math.random()}>
-                    <List
-                      className="sm:flex-col flex-row gap-[19px] grid sm:grid-cols-1 md:grid-cols-2 grid-cols-4 justify-center mx-2.5"
-                      orientation="horizontal"
-                    >
-                      {homepageCardproductPropList1.map((props, index) => (
-                        <React.Fragment key={`HomepageCardproduct${index}`}>
-                          <HomepageCardproduct
-                            className="flex flex-col gap-4 items-start justify-start w-full"
-                            {...props}
-                          />
-                        </React.Fragment>
-                      ))}
-                    </List>
-                  </React.Fragment>
-                ))}
-                renderDotsItem={({ isActive }) => {
-                  if (isActive) {
-                    return (
-                      <div className="inline-block cursor-pointer rounded-[50%] h-[15px] bg-bluegray-900 w-[15px]" />
-                    );
-                  }
-                  return (
-                    <div
-                      className="inline-block cursor-pointer rounded-[50%] h-[15px] bg-gray-200 w-[15px]"
-                      role="button"
-                      tabIndex={0}
-                    />
-                  );
-                }}
-              />
-              <PagerIndicator
-                className="flex gap-[15px] h-[15px] items-start justify-center max-w-[1289px] w-full"
-                count={3}
-                activeCss="inline-block cursor-pointer rounded-[50%] h-[15px] bg-bluegray-900 w-[15px]"
-                activeIndex={sliderState}
-                inactiveCss="inline-block cursor-pointer rounded-[50%] h-[15px] bg-gray-200 w-[15px]"
-                sliderRef={sliderRef}
-                selectedWrapperCss="inline-block"
-                unselectedWrapperCss="inline-block"
-              />
+        <div className="flex flex-col items-center justify-start md:px-10 sm:px-5 px-[75px] w-full">
+          <div className="flex flex-col gap-[46px] items-center justify-start max-w-[1290px] mx-auto w-full">
+            <div className="flex flex-col gap-[13px] items-center justify-start w-full">
+              <Text
+                className="sm:text-4xl md:text-[38px] text-[40px] text-black-900 text-center tracking-[-0.50px] w-full"
+                size="txtRalewayBold40"
+              >
+                {/* <span className="text-black-900 font-raleway font-bold">
+                  Our{" "}
+                </span> */}
+                <span className="text-black-900 font-raleway font-bold">
+                  Related
+                </span>
+                <span className="text-black-900 font-raleway font-bold">
+                  {" "}
+                  Product
+                </span>
+              </Text>
+              {/* <Text
+                className="text-center text-gray-500 text-lg tracking-[-0.50px] w-full"
+                size="txtRubikRegular18Gray500"
+              >
+                Made of the best materials and with a design that follows the
+                times
+              </Text> */}
             </div>
+            <Slider
+              autoPlay
+              autoPlayInterval={2000}
+              activeIndex={sliderState}
+              responsive={{
+                0: { items: 1 },
+                550: { items: 1 },
+                1050: { items: 1 },
+              }}
+              onSlideChanged={(e) => {
+                setSliderState(e?.item);
+              }}
+              ref={sliderRef}
+              className="w-full"
+              items={[...Array(3)].map(() => (
+                <React.Fragment key={Math.random()}>
+                  <List
+                    className="flex flex-col gap-[47px] items-center mx-2.5"
+                    orientation="vertical"
+                  >
+                    <div className="gap-[19px] grid sm:grid-cols-1 md:grid-cols-2 grid-cols-4 items-start justify-start w-full">
+                      {allProduct.slice(0, 8).map((product, index) => (
+                        <div
+                          onClick={() => {
+                            sessionStorage.setItem("productId", product._id);
+                            navigate(`/detailreview`);
+                          }}
+                        >
+                          <HomepageCardproduct
+                            key={`HomepageCardproduct${index}`}
+                            className="flex flex-1 flex-col gap-4 items-start justify-start w-full"
+                            {...product}
+                            renderActions={() => (
+                              <div className="flex flex-row justify-center w-full">
+                                <Button
+                                  className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
+                                  onClick={(e) =>
+                                    handleAddToCart(e, product._id, 1)
+                                  }
+                                >
+                                  Add to Cart
+                                </Button>
+                              </div>
+                            )}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </List>
+                </React.Fragment>
+              ))}
+            />
+
+            <PagerIndicator
+              className="flex gap-[15px] h-[15px] items-center justify-center max-w-[1289px] w-full"
+              count={3}
+              activeCss="inline-block cursor-pointer rounded-[50%] h-[15px] bg-bluegray-900 w-[15px]"
+              activeIndex={sliderState}
+              inactiveCss="inline-block cursor-pointer rounded-[50%] h-[15px] bg-gray-200 w-[15px]"
+              sliderRef={sliderRef}
+              selectedWrapperCss="inline-block"
+              unselectedWrapperCss="inline-block"
+            />
           </div>
         </div>
         <div className="flex flex-col font-rubik items-start justify-start max-w-[1428px] mx-auto md:px-5 w-full">

@@ -291,6 +291,12 @@ const HomepagePage = () => {
                   >
                     <div className="gap-[19px] grid sm:grid-cols-1 md:grid-cols-2 grid-cols-4 items-start justify-start w-full">
                       {allProduct.slice(0, 8).map((product, index) => (
+                        <div
+                          onClick={() => {
+                            sessionStorage.setItem("productId", product._id);
+                            navigate(`/detailreview`);
+                          }}
+                        >
                         <HomepageCardproduct
                           key={`HomepageCardproduct${index}`}
                           className="flex flex-1 flex-col gap-4 items-start justify-start w-full"
@@ -306,7 +312,9 @@ const HomepagePage = () => {
                             </div>
                           )}
                         />
+                        </div>
                       ))}
+                     
                     </div>
                   </List>
                 </React.Fragment>

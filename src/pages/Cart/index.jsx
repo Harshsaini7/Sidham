@@ -15,6 +15,7 @@ import { getUserDetails } from "../../services/operations/profileAPI"
 import SummaryApi from "../../common/index";
 import displayINRCurrency from "../../helpers/displayCurrency"
 import EditProfileDetails from "components/BuyerEditDetails";
+import { setUserCart } from "../../slices/cartSlice";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -111,6 +112,7 @@ const CartPage = () => {
 
     if (responseData.success) {
       setData(responseData.cart);
+      dispatch(setUserCart(responseData.cart)); 
       
     } else {
       toast.error("Something went wrong");
@@ -335,7 +337,8 @@ const CartPage = () => {
                     </div>
                     <Button
                       className="common-pointer bg-bluegray-900 cursor-pointer font-rubik font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full"
-                      onClick={handleBuyProduct}
+                      // onClick={handleBuyProduct}
+                      onClick={() => navigate("/checkout")}
                     >
                       Checkout Now
                     </Button>

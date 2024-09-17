@@ -1,22 +1,30 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Button, Img, Input, Line, SelectBox, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
 
-const homeOptionsList = [
-  { label: "Option1", value: "option1" },
-  { label: "Option2", value: "option2" },
-  { label: "Option3", value: "option3" },
-];
 const unitedStatesUsOptionsList = [
-  { label: "Option1", value: "option1" },
-  { label: "Option2", value: "option2" },
-  { label: "Option3", value: "option3" },
+  { label: "India", value: "india" },
+  { label: "United States (US)", value: "us" },
+  { label: "United Kingdom (UK)", value: "uk" },
 ];
 
 const CheckoutPage = () => {
+  const { user } = useSelector((state) => state.profile);
+  const { cart } = useSelector((state) => state.cart);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    if (cart && cart.length > 0) {
+      const total = cart.reduce((acc, item) => {
+        return acc + item.productId.sellingPrice * item.quantity;
+      }, 0);
+      setTotalPrice(total);
+    }
+  }, [cart]);
+
   return (
     <>
       <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[100px] items-center justify-start mx-auto w-auto sm:w-full md:w-full">
@@ -48,11 +56,12 @@ const CheckoutPage = () => {
                           First Name
                         </Text>
                         <Input
-                          name="frame48096050"
+                          name="firstName"
                           placeholder="Your first name here.."
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="text"
+                          value={user.name.split(" ")[0]}
                         ></Input>
                       </div>
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
@@ -63,11 +72,12 @@ const CheckoutPage = () => {
                           Last Name
                         </Text>
                         <Input
-                          name="frame48096051"
+                          name="lastName"
                           placeholder="Your last name here.."
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="text"
+                          value={user.name.split(" ")[1] || ""}
                         ></Input>
                       </div>
                     </div>
@@ -80,11 +90,12 @@ const CheckoutPage = () => {
                           Phone
                         </Text>
                         <Input
-                          name="frame48096053"
+                          name="phone"
                           placeholder="Your phone here.."
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="number"
+                          value={user.additionalDetails.contactNumber}
                         ></Input>
                       </div>
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
@@ -95,11 +106,12 @@ const CheckoutPage = () => {
                           Email
                         </Text>
                         <Input
-                          name="frame48096054"
+                          name="email"
                           placeholder="Your email here.."
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="email"
+                          value={user.email}
                         ></Input>
                       </div>
                     </div>
@@ -166,10 +178,10 @@ const CheckoutPage = () => {
                         />
                       }
                       isMulti={false}
-                      name="frame48096062"
+                      name="country"
                       options={unitedStatesUsOptionsList}
                       isSearchable={false}
-                      placeholder="United States (US)"
+                      placeholder={user.additionalDetails.country}
                     />
                   </div>
                   <div className="flex flex-col gap-3 items-start justify-start w-full">
@@ -179,14 +191,11 @@ const CheckoutPage = () => {
                     >
                       Street address{" "}
                     </Text>
-                    <div className="border border-bluegray-100 border-solid flex flex-col font-rubik h-[150px] md:h-auto items-start justify-start sm:px-5 px-[22px] py-[19px] w-full">
-                      <Text
-                        className="text-gray-500 text-sm tracking-[-0.50px] w-auto"
-                        size="txtRubikRegular14"
-                      >
-                        Write your full address
-                      </Text>
-                    </div>
+                    <textarea
+                      className="border border-bluegray-100 border-solid flex flex-col font-rubik h-[150px] md:h-auto items-start justify-start sm:px-5 px-[22px] py-[19px] w-full resize-none"
+                      placeholder="Write your full address"
+                      value={`${user.additionalDetails.address1}, ${user.additionalDetails.address2}, ${user.additionalDetails.city}, ${user.additionalDetails.state}, ${user.additionalDetails.pincode}`}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-9 items-start justify-start w-full">
@@ -231,34 +240,25 @@ const CheckoutPage = () => {
                   </Text>
                   <div className="flex flex-col font-rubik gap-[25px] items-start justify-start w-full">
                     <div className="flex flex-col gap-[25px] items-start justify-start w-full">
-                      <div className="flex flex-row items-center justify-between w-full">
-                        <Text
-                          className="text-gray-500 text-xl tracking-[-0.50px] w-auto"
-                          size="txtRalewayRomanRegular20"
+                      {cart.map((item) => (
+                        <div
+                          key={item._id}
+                          className="flex flex-row items-center justify-between w-full"
                         >
-                          Complete set of sofa... 1x
-                        </Text>
-                        <Text
-                          className="text-black-900 text-xl tracking-[-0.50px] w-auto"
-                          size="txtPoppinsSemiBold20"
-                        >
-                          $ 75.00
-                        </Text>
-                      </div>
-                      <div className="flex flex-row items-center justify-between w-full">
-                        <Text
-                          className="text-gray-500 text-xl tracking-[-0.50px] w-auto"
-                          size="txtRalewayRomanRegular20"
-                        >
-                          Teak wood chair 1x
-                        </Text>
-                        <Text
-                          className="text-black-900 text-xl tracking-[-0.50px] w-auto"
-                          size="txtPoppinsSemiBold20"
-                        >
-                          $ 24.00
-                        </Text>
-                      </div>
+                          <Text
+                            className="text-gray-500 text-xl tracking-[-0.50px] w-auto"
+                            size="txtRalewayRomanRegular20"
+                          >
+                            {item.productId.productName} {item.quantity}x
+                          </Text>
+                          <Text
+                            className="text-black-900 text-xl tracking-[-0.50px] w-auto"
+                            size="txtPoppinsSemiBold20"
+                          >
+                            $ {item.productId.sellingPrice * item.quantity}
+                          </Text>
+                        </div>
+                      ))}
                       <Line className="bg-black-900 h-px w-full" />
                     </div>
                     <div className="flex flex-col gap-[25px] items-start justify-start w-full">
@@ -273,22 +273,22 @@ const CheckoutPage = () => {
                           className="text-black-900 text-xl tracking-[-0.50px] w-auto"
                           size="txtPoppinsSemiBold20"
                         >
-                          $ 99.00
+                          $ {totalPrice.toFixed(2)}
                         </Text>
                       </div>
                       <div className="flex flex-row items-center justify-between w-full">
-                        <Text
+                        {/* <Text
                           className="text-gray-500 text-xl tracking-[-0.50px] w-auto"
                           size="txtRalewayRomanRegular20"
                         >
                           Discount (30%)
-                        </Text>
-                        <Text
+                        </Text> */}
+                        {/* <Text
                           className="text-deep_orange-A400 text-xl tracking-[-0.50px] w-auto"
                           size="txtPoppinsSemiBold20DeeporangeA400"
                         >
-                          - $ 29.70
-                        </Text>
+                          - $ {(totalPrice*0.3).toFixed(2)}
+                        </Text> */}
                       </div>
                     </div>
                     <Line className="bg-black-900 h-px w-full" />
@@ -303,7 +303,7 @@ const CheckoutPage = () => {
                         className="text-black-900 text-xl tracking-[-0.50px] w-auto"
                         size="txtPoppinsSemiBold20"
                       >
-                        $ 69.30
+                        $ {(totalPrice ).toFixed(2)}
                       </Text>
                     </div>
                     <Button className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full">

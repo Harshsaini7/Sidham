@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { toast } from "react-hot-toast"
+import { setUser } from "./profileSlice"
 
 const initialState = {
   cart: localStorage.getItem("cart")
@@ -17,6 +18,9 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    setUserCart: (state, value) => {
+      state.cart = value.payload;
+    },
     addToCart: (state) => {
       state.totalItems++
     },
@@ -32,6 +36,6 @@ const cartSlice = createSlice({
   },
 })
 
-export const { addToCart, removeFromCart, emptyCart, setCartCount } = cartSlice.actions
+export const { addToCart, removeFromCart, emptyCart, setCartCount,setUserCart } = cartSlice.actions
 
 export default cartSlice.reducer
