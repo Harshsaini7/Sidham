@@ -11,7 +11,7 @@ import displayINRCurrency from "../../helpers/displayCurrency";
 import TrackOrderModal from "./TrackOrderModal";
 
 const MyOrderPage = () => {
-  const [orderDetails, setOrderDetails] = useState(null);
+  const [orderDetails, setOrderDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [trackModalOpen, setTrackModalOpen] = useState(false);
   const [currentOrderStatus, setCurrentOrderStatus] = useState("");
@@ -20,7 +20,7 @@ const MyOrderPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const fetchOrderDetails = async () => {
+  const fetchOrderDetails = async (id) => {
     try {
       const response = await fetch(SummaryApi.getOrderById.url, {
         method: "POST",
@@ -29,11 +29,13 @@ const MyOrderPage = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          orderId: "66e7343f389cfb9b30db76ef" // You might want to make this dynamic
+          orderId: id,
         })
       });
       const responseData = await response.json();
-      setOrderDetails(responseData?.data);
+      setOrderDetails([...orderDetails, responseData?.data]);
+      console.log(responseData?.data);
+      // console.log(responseData?.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -44,8 +46,13 @@ const MyOrderPage = () => {
   useEffect(() => {
     if (token && !user) {
       dispatch(getUserDetails(token, navigate));
+    }else{
+      // console.log(user);
+      user?.additionalDetails?.myOrders?.forEach((item) => {
+        fetchOrderDetails(item?.orderId);
+      })
     }
-    fetchOrderDetails();
+   
   }, [dispatch, navigate, token, user]);
 
   const handleTrackOrder = (status) => {
@@ -74,44 +81,39 @@ const MyOrderPage = () => {
               Your Order
             </Text>
             <div className="flex flex-col gap-[30px] items-start w-full">
-              {orderDetails.productIds.map((product, index) => (
-                <div key={product._id} className="bg-white-A700 flex flex-col gap-5 items-start justify-start p-5 rounded-md shadow-sm w-full">
-                  <div className="flex flex-row justify-between w-full">
-                    <div className="flex flex-1">
-                      <Img
-                        className="h-[120px] w-[120px] object-cover mr-5"
-                        src={product.productImage[0]}
-                        alt={product.productName}
-                      />
-                      <div className="flex flex-col justify-center">
-                        <Text className="text-xl font-semibold">{product.productName}</Text>
-                        <Text className="text-gray-500 capitalize">{product.category}</Text>
-                        <Text className="text-gray-500">Quantity: {orderDetails.quantities[index]}</Text>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end justify-between">
-                      <Text className="text-lg font-semibold">
-                        {displayINRCurrency(product.sellingPrice * orderDetails.quantities[index])}
-                      </Text>
-                      <div className="flex flex-row gap-2">
-                      <Button
-                        className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium"
-                        onClick={() => handleTrackOrder(orderDetails.orderStatus)}
-                      >
-                        Track Order
-                      </Button>
-                      <Button
-                        className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium"
-                        
-                      >
-                        Cancel Order
-                      </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+  {orderDetails.map((order, orderIndex) => (
+    <div key={orderIndex} className="flex flex-col gap-[30px] items-start w-full">
+      {order.productIds.map((product, productIndex) => (
+        <div key={product._id} className="bg-white-A700 flex flex-col gap-5 items-start justify-start p-5 rounded-md shadow-sm w-full">
+          <div className="flex flex-row justify-between w-full">
+            <div className="flex flex-1">
+              <Img className="h-[120px] w-[120px] object-cover mr-5" src={product.productImage[0]} alt={product.productName} />
+              <div className="flex flex-col justify-center">
+                <Text className="text-xl font-semibold">{product.productName}</Text>
+                <Text className="text-gray-500 capitalize">{product.category}</Text>
+                <Text className="text-gray-500">Quantity: {order.quantities[productIndex]}</Text>
+              </div>
             </div>
+            <div className="flex flex-col items-end justify-between">
+              <Text className="text-lg font-semibold">
+                {displayINRCurrency(product.sellingPrice * order.quantities[productIndex])}
+              </Text>
+              <div className="flex flex-row gap-2">
+                <Button className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium" onClick={() => handleTrackOrder(order.orderStatus)}>
+                  Track Order
+                </Button>
+                <Button className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium">
+                  Cancel Order
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  ))}
+</div>
+
             {/* <div className="w-full">
               <Text className="text-lg font-semibold">Order Status: {orderDetails.orderStatus}</Text>
               <Text className="text-lg font-semibold">Payment Status: {orderDetails.paymentStatus}</Text>

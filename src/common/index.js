@@ -43,7 +43,7 @@ const SummaryApi = {
         method: 'post'
     },
     uploadMyOrder: {
-        url: `${backendDomin}/api/upload-category`,
+        url: `${backendDomin}/api/upload-order`,
         method: 'post'
     },
     uploadBlog: {
