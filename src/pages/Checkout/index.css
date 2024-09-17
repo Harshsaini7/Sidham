@@ -1,0 +1,12 @@
+/* Default behavior
+.flex-col {
+  display: flex;
+  flex-direction: column;
+} */
+
+/* On small screens (sm) - above 550px in your config */
+@media (min-width: 550px) {
+  .sm-flex-row {
+    flex-direction: row;
+  }
+}

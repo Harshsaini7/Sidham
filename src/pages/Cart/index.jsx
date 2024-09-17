@@ -85,7 +85,8 @@ const CartPage = () => {
     BuyProduct(products, totalPrice, token, user, navigate, dispatch, data, true);
   };
 
-  const handleBuyProduct = async () => {
+  const handleBuyProduct =  () => {
+    console.log("handleBuyProduct called");
     let products = data.map((product) => ({
       _id: product.productId._id,
       quantity: product.quantity,
@@ -96,7 +97,10 @@ const CartPage = () => {
       return;
     }
 
-    BuyProduct(products, totalPrice, token, user, navigate, dispatch, data, cod);
+    navigate("/checkout");
+
+
+    // BuyProduct(products, totalPrice, token, user, navigate, dispatch, data, cod);
   };
 
   const fetchData = async () => {
@@ -225,6 +229,18 @@ const CartPage = () => {
                   className="flex flex-1 flex-col gap-[30px] items-start w-full"
                   orientation="vertical"
                 >
+                  {
+                    data?.length === 0 && loading === false && (
+                      <Text
+                        className="text-black-900 text-xl mx-auto tracking-[-0.50px] w-auto "
+                        size="txtPoppinsBold20"
+                      >
+                        Cart is empty
+                      </Text>
+                    )
+                  }
+
+                  
                   {data.map((item, index) => (
                     <div key={index} className="flex flex-1 md:flex-col flex-row gap-[49px] items-center justify-start my-0 w-full">
                       <div className="flex flex-1 sm:flex-col flex-row gap-5 items-center justify-start w-full">
@@ -338,7 +354,10 @@ const CartPage = () => {
                     <Button
                       className="common-pointer bg-bluegray-900 cursor-pointer font-rubik font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full"
                       // onClick={handleBuyProduct}
-                      onClick={() => navigate("/checkout")}
+                      onClick={ 
+                        handleBuyProduct
+                        
+                      }
                     >
                       Checkout Now
                     </Button>
