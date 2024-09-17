@@ -4,17 +4,20 @@ import { Button, Img, Input, Line, SelectBox, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
+import { FaAmazonPay } from "react-icons/fa";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 const unitedStatesUsOptionsList = [
   { label: "India", value: "india" },
-  { label: "United States (US)", value: "us" },
-  { label: "United Kingdom (UK)", value: "uk" },
+  // { label: "United States (US)", value: "us" },
+  // { label: "United Kingdom (UK)", value: "uk" },
 ];
 
 const CheckoutPage = () => {
   const { user } = useSelector((state) => state.profile);
   const { cart } = useSelector((state) => state.cart);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("Online Payment");
 
   useEffect(() => {
     if (cart && cart.length > 0) {
@@ -61,7 +64,7 @@ const CheckoutPage = () => {
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="text"
-                          value={user.name.split(" ")[0]}
+                          value={user?.name.split(" ")[0]}
                         ></Input>
                       </div>
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
@@ -77,7 +80,7 @@ const CheckoutPage = () => {
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="text"
-                          value={user.name.split(" ")[1] || ""}
+                          value={user?.name.split(" ")[1] || ""}
                         ></Input>
                       </div>
                     </div>
@@ -95,7 +98,7 @@ const CheckoutPage = () => {
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="number"
-                          value={user.additionalDetails.contactNumber}
+                          value={user?.additionalDetails?.contactNumber}
                         ></Input>
                       </div>
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
@@ -111,7 +114,7 @@ const CheckoutPage = () => {
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="email"
-                          value={user.email}
+                          value={user?.email}
                         ></Input>
                       </div>
                     </div>
@@ -123,43 +126,46 @@ const CheckoutPage = () => {
                       className="text-2xl md:text-[22px] text-black-900 sm:text-xl tracking-[-0.50px] w-full"
                       size="txtRalewayBold24"
                     >
-                      Shipping Method
+                      Payment Method
                     </Text>
                     <div className="flex flex-row font-rubik gap-[21px] items-start justify-start w-full">
                       <Button
-                        className="border border-bluegray-100 border-solid cursor-pointer flex items-center justify-center min-w-[154px] px-[29px] py-[15px]"
+                        className={`border ${
+                          paymentMethod === "Online Payment"
+                            ? "border-black-900 bg-white-A700 text-black-900" // White background and black text for selected tab
+                            : "border-bluegray-100 bg-gray-200 text-gray-500" // Gray background and gray text for unselected tab
+                        } border-solid cursor-pointer flex items-center justify-center min-w-[175px] px-[29px] py-[15px]`}
                         leftIcon={
                           <div className="h-10 mr-2.5 w-10 bg-gray-201 p-2 rounded-[50%] flex justify-center items-center">
-                            <Img
-                              className="h-6"
-                              src="images/img_computer.svg"
-                              alt="computer"
-                            />
+                            <FaAmazonPay className="h-6" />
                           </div>
                         }
+                        onClick={() => setPaymentMethod("Online Payment")}
                       >
-                        <div className="leading-[normal] sm:px-5 text-gray-500 text-left text-lg tracking-[-0.50px]">
-                          Store
+                        <div className="leading-[normal] sm:px-5 text-left text-lg tracking-[-0.50px]">
+                          Online Payment
                         </div>
                       </Button>
                       <Button
-                        className="bg-gray-100 border border-bluegray-900 border-solid cursor-pointer flex items-center justify-center min-w-[175px] px-[29px] py-[15px]"
+                        className={`border ${
+                          paymentMethod === "Cash on Delivery"
+                            ? "border-black-900 bg-white-A700 text-black-900" // White background and black text for selected tab
+                            : "border-bluegray-100 bg-gray-200 text-gray-500" // Gray background and gray text for unselected tab
+                        } border-solid cursor-pointer flex items-center justify-center min-w-[175px] px-[29px] py-[15px]`}
                         leftIcon={
-                          <div className="h-10 mr-2.5 w-10 bg-bluegray-900 p-2 rounded-[50%] flex justify-center items-center">
-                            <Img
-                              className="h-6"
-                              src="images/img_airplane.svg"
-                              alt="airplane"
-                            />
+                          <div className="h-10 mr-2.5 w-10 bg-gray-201 p-2 rounded-[50%] flex justify-center items-center">
+                            <FaIndianRupeeSign className="h-8" />
                           </div>
                         }
+                        onClick={() => setPaymentMethod("Cash on Delivery")}
                       >
-                        <div className="leading-[normal] sm:px-5 text-black-900 text-left text-lg tracking-[-0.50px]">
-                          Delivery
+                        <div className="leading-[normal] sm:px-5 text-left text-lg tracking-[-0.50px]">
+                          Cash on Delivery
                         </div>
                       </Button>
                     </div>
                   </div>
+
                   <div className="flex flex-col gap-3 items-start justify-start w-full">
                     <Text
                       className="text-black-900 text-xl tracking-[-0.50px] w-full"
@@ -181,7 +187,7 @@ const CheckoutPage = () => {
                       name="country"
                       options={unitedStatesUsOptionsList}
                       isSearchable={false}
-                      placeholder={user.additionalDetails.country}
+                      placeholder={user?.additionalDetails?.country}
                     />
                   </div>
                   <div className="flex flex-col gap-3 items-start justify-start w-full">
@@ -194,11 +200,11 @@ const CheckoutPage = () => {
                     <textarea
                       className="border border-bluegray-100 border-solid flex flex-col font-rubik h-[150px] md:h-auto items-start justify-start sm:px-5 px-[22px] py-[19px] w-full resize-none"
                       placeholder="Write your full address"
-                      value={`${user.additionalDetails.address1}, ${user.additionalDetails.address2}, ${user.additionalDetails.city}, ${user.additionalDetails.state}, ${user.additionalDetails.pincode}`}
+                      value={`${user?.additionalDetails?.address1}, ${user?.additionalDetails?.address2}, ${user?.additionalDetails?.city}, ${user?.additionalDetails?.state}, ${user?.additionalDetails?.pincode}`}
                     />
                   </div>
                 </div>
-                <div className="flex flex-col gap-9 items-start justify-start w-full">
+                {/* <div className="flex flex-col gap-9 items-start justify-start w-full">
                   <Text
                     className="text-2xl md:text-[22px] text-black-900 sm:text-xl tracking-[-0.50px] w-full"
                     size="txtRalewayBold24"
@@ -228,7 +234,7 @@ const CheckoutPage = () => {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className="bg-gray-53 flex sm:flex-1 flex-col items-start justify-start sm:px-5 px-[27px] py-[34px] w-[416px] sm:w-full">
                 <div className="flex flex-col gap-[30px] items-start justify-start w-full">
@@ -242,20 +248,20 @@ const CheckoutPage = () => {
                     <div className="flex flex-col gap-[25px] items-start justify-start w-full">
                       {cart.map((item) => (
                         <div
-                          key={item._id}
+                          key={item?._id}
                           className="flex flex-row items-center justify-between w-full"
                         >
                           <Text
                             className="text-gray-500 text-xl tracking-[-0.50px] w-auto"
                             size="txtRalewayRomanRegular20"
                           >
-                            {item.productId.productName} {item.quantity}x
+                            {item?.productId?.productName} {item?.quantity}x
                           </Text>
                           <Text
                             className="text-black-900 text-xl tracking-[-0.50px] w-auto"
                             size="txtPoppinsSemiBold20"
                           >
-                            $ {item.productId.sellingPrice * item.quantity}
+                            $ {item?.productId?.sellingPrice * item?.quantity}
                           </Text>
                         </div>
                       ))}
@@ -303,7 +309,7 @@ const CheckoutPage = () => {
                         className="text-black-900 text-xl tracking-[-0.50px] w-auto"
                         size="txtPoppinsSemiBold20"
                       >
-                        $ {(totalPrice ).toFixed(2)}
+                        $ {totalPrice.toFixed(2)}
                       </Text>
                     </div>
                     <Button className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full">
