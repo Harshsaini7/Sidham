@@ -22,7 +22,7 @@ const WishlistPage = () => {
               className="sm:text-4xl md:text-[38px] text-[40px] text-black-900 text-center tracking-[-0.50px] w-full"
               size="txtRalewayBold40"
             >
-              Wishlist
+              Your Wishlist
             </Text>
             <List
               className="flex flex-col font-rubik gap-[30px] items-start w-full"
