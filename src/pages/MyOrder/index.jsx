@@ -47,6 +47,7 @@ const MyOrderPage = () => {
     if (token && !user) {
       dispatch(getUserDetails(token, navigate));
     } else {
+      setOrderDetails([]);
       user?.additionalDetails?.myOrders?.forEach((item) => {
         fetchOrderDetails(item?.orderId);
       });
