@@ -25,11 +25,13 @@ import { setProduct } from "slices/productSlice";
 import { FcLike } from "react-icons/fc";
 // import toast from "react-hot-toast";
 import { toast } from 'react-toastify';
+import { getUserDetails } from "services/operations/profileAPI";
 
 
 const DetailReviewPage = () => {
   const navigate = useNavigate();
   const id = sessionStorage.getItem("productId");
+  const {user} = useSelector((state) => state.profile);
   const { product } = useSelector((state) => state.product);
   const [currProduct, setCurrProduct] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -168,6 +170,24 @@ const DetailReviewPage = () => {
   const decrementCount = () => {
     setProductCount((prevCount) => (prevCount > 1 ? prevCount - 1 : 1));
   };
+  useEffect(() => {
+    // Initialize addedToWishlist based on whether the product is in the user's wishlist
+    if (user && user.additionalDetails && user.additionalDetails.wishlist && currProduct) {
+      const isInWishlist = user.additionalDetails.wishlist.some(
+        (item) => item.productId === currProduct._id
+      );
+      setAddedToWishlist(!isInWishlist);
+      console.log("isInWishlist", isInWishlist);
+    }
+    else{
+      console.log("hello from else part");
+    }
+  }, [user, currProduct]);
+  useEffect(() => {
+    if (token && !user) {
+      dispatch(getUserDetails(token, navigate));
+    }
+  }, [user]);
 
   if (loading) {
     return <div>Loading...</div>;
