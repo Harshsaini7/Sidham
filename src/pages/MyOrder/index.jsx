@@ -33,9 +33,9 @@ const MyOrderPage = () => {
         })
       });
       const responseData = await response.json();
-      setOrderDetails([...orderDetails, responseData?.data]);
-      console.log(responseData?.data);
-      // console.log(responseData?.data);
+      if (responseData?.data) {
+        setOrderDetails((prev) => [...prev, responseData.data]); // Use functional update for state
+      }
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -46,27 +46,21 @@ const MyOrderPage = () => {
   useEffect(() => {
     if (token && !user) {
       dispatch(getUserDetails(token, navigate));
-    }else{
-      // console.log(user);
+    } else {
       user?.additionalDetails?.myOrders?.forEach((item) => {
         fetchOrderDetails(item?.orderId);
-      })
+      });
     }
-   
-  }, [dispatch, navigate, token, user]);
+  }, [user]);
 
   const handleTrackOrder = (status) => {
     setCurrentOrderStatus(status);
     setTrackModalOpen(true);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!orderDetails) {
-    return <div>No order details found.</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[100px] items-start justify-start mx-auto w-auto sm:w-full md:w-full">
@@ -81,43 +75,42 @@ const MyOrderPage = () => {
               Your Order
             </Text>
             <div className="flex flex-col gap-[30px] items-start w-full">
-  {orderDetails.map((order, orderIndex) => (
-    <div key={orderIndex} className="flex flex-col gap-[30px] items-start w-full">
-      {order.productIds.map((product, productIndex) => (
-        <div key={product._id} className="bg-white-A700 flex flex-col gap-5 items-start justify-start p-5 rounded-md shadow-sm w-full">
-          <div className="flex flex-row justify-between w-full">
-            <div className="flex flex-1">
-              <Img className="h-[120px] w-[120px] object-cover mr-5" src={product.productImage[0]} alt={product.productName} />
-              <div className="flex flex-col justify-center">
-                <Text className="text-xl font-semibold">{product.productName}</Text>
-                <Text className="text-gray-500 capitalize">{product.category}</Text>
-                <Text className="text-gray-500">Quantity: {order.quantities[productIndex]}</Text>
-              </div>
+              {orderDetails.length === 0 ? (
+                <h1 className="text-lg text-center">No orders found.</h1>
+              ) : (
+                orderDetails.map((order, orderIndex) => (
+                  <div key={orderIndex} className="flex flex-col gap-[30px] items-start w-full">
+                    {order.productIds.map((product, productIndex) => (
+                      <div key={product._id} className="bg-white-A700 flex flex-col gap-5 items-start justify-start p-5 rounded-md shadow-sm w-full">
+                        <div className="flex flex-row justify-between w-full">
+                          <div className="flex flex-1">
+                            <Img className="h-[120px] w-[120px] object-cover mr-5" src={product.productImage[0]} alt={product.productName} />
+                            <div className="flex flex-col justify-center">
+                              <Text className="text-xl font-semibold">{product.productName}</Text>
+                              <Text className="text-gray-500 capitalize">{product.category}</Text>
+                              <Text className="text-gray-500">Quantity: {order.quantities[productIndex]}</Text>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end justify-between">
+                            <Text className="text-lg font-semibold">
+                              {displayINRCurrency(product.sellingPrice * order.quantities[productIndex])}
+                            </Text>
+                            <div className="flex flex-row gap-2">
+                              <Button className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium" onClick={() => handleTrackOrder(order.orderStatus)}>
+                                Track Order
+                              </Button>
+                              <Button className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium">
+                                Cancel Order
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))
+              )}
             </div>
-            <div className="flex flex-col items-end justify-between">
-              <Text className="text-lg font-semibold">
-                {displayINRCurrency(product.sellingPrice * order.quantities[productIndex])}
-              </Text>
-              <div className="flex flex-row gap-2">
-                <Button className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium" onClick={() => handleTrackOrder(order.orderStatus)}>
-                  Track Order
-                </Button>
-                <Button className="bg-gray-800 text-white-A700 hover:bg-gray-900 px-4 py-2 rounded-lg text-sm font-medium">
-                  Cancel Order
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  ))}
-</div>
-
-            {/* <div className="w-full">
-              <Text className="text-lg font-semibold">Order Status: {orderDetails.orderStatus}</Text>
-              <Text className="text-lg font-semibold">Payment Status: {orderDetails.paymentStatus}</Text>
-            </div> */}
           </div>
         </div>
       </div>

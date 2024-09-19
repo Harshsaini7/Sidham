@@ -167,6 +167,7 @@ const CheckoutPage = () => {
   };
 
   const handleBuyProduct = async () => {
+    await handleSubmit();
     let products = data.map((product) => ({
       _id: product.productId._id,
       quantity: product.quantity,
