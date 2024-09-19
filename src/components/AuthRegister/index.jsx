@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Stack } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CustomTextField from 'components/forms/theme-elements/CustomTextField';
 import GoogleLoginButton from 'components/GoogleLoginButton';
+import { useDispatch } from 'react-redux';
+import { setSignupData } from 'slices/authSlice';
+import { sendOtp } from 'services/operations/authAPI';
+import { toast } from 'react-toastify';
 
 const AuthRegister = ({ title, subtitle, subtext }) => {
   const ACCOUNT_TYPE = {
@@ -11,6 +15,8 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     ADMIN: "Admin",
   };
   const [accountType, setAccountType] = useState(ACCOUNT_TYPE.BUYER);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -28,8 +34,30 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted", formData);
-    // Here you would typically handle the registration logic
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords Do Not Match")
+      return
+    } 
+    const signupData = {
+      ...formData,
+      accountType,
+    }
+
+    // Setting signup data to state
+    // To be used after otp verification
+    dispatch(setSignupData(signupData))
+    // Send OTP to user for verification
+    dispatch(sendOtp(formData.email, navigate))
+
+    // Reset
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    })
+    setAccountType(ACCOUNT_TYPE.BUYER)
   };
 
   return (

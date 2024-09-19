@@ -47,32 +47,23 @@ const CartNavbar = (props) => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <Link className="flex-shrink-0"
+            to="/">
             <Img
               className="h-[30px] w-[90px]"
               src="images/img_car.svg"
               alt="car"
             />
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="lg-flex2 space-x-6 md-hidden2">
-            <SelectBox
-              className="font-rubik text-black-900 text-lg tracking-[-0.50px]"
-              placeholderClassName="text-black-900"
-              indicator={
-                <Img
-                  className="h-6 w-6"
-                  src="images/img_arrowdown_black_900.svg"
-                  alt="arrow_down"
-                />
-              }
-              isMulti={false}
-              name="frameFour"
-              options={homeOptionsList}
-              isSearchable={false}
-              placeholder="Home"
-            />
+          <Link
+              className="text-gray-700 hover:text-black-900 text-lg tracking-[-0.50px]"
+              to="/"
+            >
+              Home
+            </Link>
             <Link
               className="text-gray-700 hover:text-black-900 text-lg tracking-[-0.50px]"
               to="/shop"

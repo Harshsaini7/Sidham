@@ -151,6 +151,10 @@ const SummaryApi = {
     updateWishlist:{
         url: `${backendDomin}/api/update-wishlist`,
         method:'post'
+    },
+    googleLogin:{
+        url : `${backendDomin}/api/google-login`,
+        method : 'post'
     }
 
 }
