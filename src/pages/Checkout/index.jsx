@@ -15,7 +15,7 @@ import { getUserDetails } from "../../services/operations/profileAPI";
 import SummaryApi from "../../common/index";
 import displayINRCurrency from "../../helpers/displayCurrency";
 import EditProfileDetails from "components/BuyerEditDetails";
-import "./index.css"
+import "./index.css";
 // import { setUserCart } from "../../slices/cartSlice";
 const unitedStatesUsOptionsList = [
   // { label: "India", value: "india" },
@@ -112,6 +112,42 @@ const CheckoutPage = () => {
       toast.error("Cart is empty");
       return;
     }
+    // Check for address1
+    if (
+      !additionalDetails.address1 ||
+      additionalDetails.address1.trim() === ""
+    ) {
+      toast.error("Please provide a valid address");
+      return;
+    }
+
+    // Check for pincode length
+    if (!additionalDetails.pincode || additionalDetails.pincode.length !== 6) {
+      toast.error("Please provide a valid 6-digit pincode");
+      return;
+    }
+
+    // Check for state
+    if (!additionalDetails.state || additionalDetails.state.trim() === "") {
+      toast.error("Please provide a valid state");
+      return;
+    }
+
+    if(!additionalDetails.country || additionalDetails.country.trim() === "") {
+      toast.error("Please provide a valid country");
+      return;
+    }
+
+    if(!additionalDetails.contactNumber || additionalDetails.contactNumber.trim() === "") {
+      toast.error("Please provide a valid contact number");
+      return;
+    } 
+
+    if(!additionalDetails.city || additionalDetails.city.trim() === "") {
+      toast.error("Please provide a valid city");
+      return;
+    }
+
 
     BuyProduct(
       products,
