@@ -5,6 +5,7 @@ import NotFound from "pages/NotFound";
 import Login2 from "pages/Login";
 import DetailReviewPage from "pages/DetailReview";
 import MyOrderPage from "pages/MyOrder";
+import Signup from "pages/Signup";
 // import Profile from "pages/Profile";
 const Aboutus = React.lazy(() => import("pages/Aboutus"));
 const Contactus = React.lazy(() => import("pages/Contactus"));
@@ -31,6 +32,7 @@ const ProjectRoutes = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/login" element={<Login2 />} />
+        <Route path="/signup" element={<Signup />} />
         <Route
           path="/shopdeataildescription"
           element={<ShopDetailDescription />}
@@ -48,6 +50,7 @@ const ProjectRoutes = () => {
         <Route path="/dhiwise-dashboard" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/myorder" element = {<MyOrderPage/>}/>
+
       </Routes>
     </React.Suspense>
   );

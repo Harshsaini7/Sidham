@@ -147,6 +147,10 @@ const SummaryApi = {
     uploadImage : {
         url : `${backendDomin}/api/upload-file`,
         method : 'post',
+    },
+    updateWishlist:{
+        url: `${backendDomin}/api/update-wishlist`,
+        method:'post'
     }
 
 }

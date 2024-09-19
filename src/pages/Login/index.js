@@ -12,7 +12,8 @@ const Login2 = () => {
   
   return (
     <>
-    <CartNavbar/>
+          <CartNavbar className="bg-white-A700 flex items-center justify-center md:px-5 px-[75px] py-[35px] w-full" />
+     
     <PageContainer title="Login" description="this is Login page">
       
       <Box
@@ -55,11 +56,11 @@ const Login2 = () => {
                 subtitle={
                   <Stack direction="row" spacing={1} justifyContent="center" mt={3}>
                     <Typography color="textSecondary" variant="h6" fontWeight="500">
-                      New to Modernize?
+                      New to Sidham?
                     </Typography>
                     <Typography
                       component={Link}
-                      to="/auth/register"
+                      to="/signup"
                       fontWeight="500"
                       sx={{
                         textDecoration: 'none',

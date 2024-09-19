@@ -22,6 +22,10 @@ import SummaryApi from "common";
 import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
 import { setProduct } from "slices/productSlice";
+import { FcLike } from "react-icons/fc";
+// import toast from "react-hot-toast";
+import { toast } from 'react-toastify';
+
 
 const DetailReviewPage = () => {
   const navigate = useNavigate();
@@ -34,6 +38,7 @@ const DetailReviewPage = () => {
   const dispatch = useDispatch();
   const [allProduct, setAllProduct] = useState([]);
   const [productCount, setProductCount] = useState(1);
+  const [addedToWishlist, setAddedToWishlist] = useState(true);
 
   const handleAddToCart = async (e, id, quantity) => {
     const res = await AddToCart(e, id, quantity, token, dispatch);
@@ -71,6 +76,45 @@ const DetailReviewPage = () => {
   };
   const [sliderState, setSliderState] = useState(0);
   const sliderRef = useRef(null);
+
+  const handleUpdateWishlist = async (id, addedToWishlist) => {
+    setAddedToWishlist(addedToWishlist);
+    try {
+      const action = addedToWishlist ? "remove" : "add";
+      console.log("action" ,action);
+
+      const response = await fetch(SummaryApi.updateWishlist.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Include any authentication tokens if required
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          productId: id,
+          action: action,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      else {
+        toast.success("Wishlist Updated Successfully");
+      }
+
+      const result = await response.json();
+
+      // Handle the result as needed
+      console.log("Wishlist updated:", result);
+
+      // Optionally update the UI or state based on the response
+      // Example: updateState(result);
+    } catch (error) {
+      console.error("Failed to update wishlist:", error);
+      // Optionally handle errors (e.g., show a notification to the user)
+    }
+  };
 
   const fetchProduct = async () => {
     setLoading(true);
@@ -243,8 +287,17 @@ const DetailReviewPage = () => {
                       >
                         Add to Cart
                       </Button>
-                      <Button className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px] mt-1">
-                        <Img src="images/img_favorite.svg" alt="favorite" />
+                      <Button
+                        className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px] mt-1"
+                        onClick={() => {
+                          // setAddedToWishlist(!addedToWishlist);
+                          handleUpdateWishlist(currProduct._id , !addedToWishlist);
+                        }}
+                      >
+                        {addedToWishlist && (
+                          <Img src="images/img_favorite.svg" alt="favorite" />
+                        )}
+                        {!addedToWishlist && <FcLike />}
                       </Button>
                     </div>
                   </div>

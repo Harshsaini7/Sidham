@@ -128,6 +128,13 @@ const CartNavbar = (props) => {
                     >
                       My Order
                     </Link>
+                    <Link 
+                      to="/wishlist" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 bg-white-A700"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      My Wishlist
+                    </Link>
                   </div>
                 )}
               </div>
@@ -245,6 +252,12 @@ const CartNavbar = (props) => {
               to="/profile"
             >
               My Profile
+            </Link>
+            <Link
+              className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="/wishlist"
+            >
+              My Wishlist
             </Link>
 
           </div>

@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'; // Added useDispatch import
 import CustomTextField from 'components/forms/theme-elements/CustomTextField';
 import toast from "react-hot-toast"
 import { login } from 'services/operations/authAPI';
+import GoogleLoginButton from 'components/GoogleLoginButton';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
   const clientId = '571441638341-45rnsf56sp2qa2tr5tbdd31m9b3jin7n.apps.googleusercontent.com';
@@ -47,6 +48,7 @@ const handleSubmit = async (e) => {
       {subtext}
 
       <Stack>
+      <GoogleLoginButton loginType='login' />
         <Box>
           <Typography
             variant="subtitle1"
