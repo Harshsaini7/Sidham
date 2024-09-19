@@ -4,21 +4,17 @@ import { Button, Img, Input, Line, SelectBox, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
-import { FaAmazonPay } from "react-icons/fa";
-import { FaIndianRupeeSign } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { setUserCart, emptyCart, removeFromCart } from "slices/cartSlice";
+import { setUserCart } from "slices/cartSlice";
 import { BuyProduct } from "components/BuyProduct";
 import { toast } from "react-toastify";
-import CODModal from "components/CODModal";
 import { getUserDetails } from "../../services/operations/profileAPI";
 import SummaryApi from "../../common/index";
-import displayINRCurrency from "../../helpers/displayCurrency";
-import EditProfileDetails from "components/BuyerEditDetails";
+import { FaAmazonPay } from "react-icons/fa";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 import "./index.css";
-// import { setUserCart } from "../../slices/cartSlice";
+
 const unitedStatesUsOptionsList = [
-  // { label: "India", value: "india" },
   { label: "Domestic", value: "domestic" },
   { label: "International", value: "international" },
 ];
@@ -26,40 +22,52 @@ const unitedStatesUsOptionsList = [
 const CheckoutPage = () => {
   const { user } = useSelector((state) => state.profile);
   const { cart } = useSelector((state) => state.cart);
-  const [currCart, setCurrCart] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState("Online Payment");
   const [data, setData] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [cod, setCod] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(false);
-  const loadingCart = new Array(4).fill(null);
   const { token } = useSelector((state) => state.auth);
-  // const { user } = useSelector((state) => state.profile);
   const [additionalDetails, setAdditionalDetails] = useState({});
-  const [editModal, setShowEditModal] = useState(false);
+  const [cod, setCod] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("Online Payment");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address1: "",
+    address2: "",
+    city: "",
+    state: "",
+    pincode: "",
+    country: "domestic",
+  });
 
   const fetchAdditionalDetails = async () => {
     if (!token) return;
 
-    const response = await fetch(SummaryApi.showAdditionalDetails.url, {
-      method: SummaryApi.showAdditionalDetails.method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const response = await fetch(SummaryApi.showAdditionalDetails.url, {
+        method: SummaryApi.showAdditionalDetails.method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const responseData = await response.json();
-    if (response.ok) {
-      setAdditionalDetails(responseData?.data ?? {});
-    } else {
-      console.error(
-        "Failed to fetch additional details:",
-        responseData.message
-      );
+      const responseData = await response.json();
+      if (response.ok) {
+        setAdditionalDetails(responseData?.data ?? {});
+      } else {
+        console.error(
+          "Failed to fetch additional details:",
+          responseData.message
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching additional details:", error);
     }
   };
 
@@ -74,32 +82,88 @@ const CheckoutPage = () => {
     if (user) {
       setAdditionalDetails(user.additionalDetails ?? {});
     }
-    console.log(additionalDetails);
   }, [user]);
 
-  const handleCashOnDelivery = () => {
-    let products = data.map((product) => ({
-      _id: product.productId._id,
-      quantity: product.quantity,
-    }));
-
-    setShowModal(false);
-
-    if (products.length === 0) {
-      toast.error("Cart is empty");
+  useEffect(() => {
+    if (user) {
+      const [firstName, ...lastNameParts] = user.name?.split(" ") || [""];
+      const lastName = lastNameParts.join(" ");
+      setUserData((prevData) => ({
+        ...prevData,
+        firstName: firstName || "",
+        lastName: lastName || "",
+        email: user.email || "",
+        phone: user.additionalDetails?.contactNumber || "",
+        address1: user.additionalDetails?.address1 || "",
+        address2: user.additionalDetails?.address2 || "",
+        city: user.additionalDetails?.city || "",
+        state: user.additionalDetails?.state || "",
+        pincode: user.additionalDetails?.pincode || "",
+        country: user.additionalDetails?.country || "domestic",
+      }));
+    }
+  }, [user]);
+  const handleInputChange = (e) => {
+    if (!e || !e.target) {
+      console.error("Invalid event object:", e);
       return;
     }
 
-    BuyProduct(
-      products,
-      totalPrice,
-      token,
-      user,
-      navigate,
-      dispatch,
-      data,
-      true
-    );
+    const { name, value } = e.target;
+    if (!name) {
+      console.error("Input name is undefined:", e.target);
+      return;
+    }
+
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleCountryChange = (selectedOption) => {
+    setUserData((prevData) => ({
+      ...prevData,
+      country: selectedOption.value,
+    }));
+  };
+  const handleSubmit = async () => {
+    // e.preventDefault();
+    const response = await fetch(SummaryApi.editAdditionalDetails.url, {
+      method: SummaryApi.editAdditionalDetails.method,
+      credentials: "include",
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(userData),
+    });
+    const responseData = await response.json();
+    if (responseData.success) {
+      toast.success(responseData?.message);
+      dispatch(getUserDetails(token, navigate));
+      // onClose();
+    } else if (responseData.error) {
+      toast.error(responseData?.message);
+    }
+    // setOpenFullScreenImage(false);
+  };
+
+  const handleEditUserData = () => {
+    const hasChanges = Object.keys(userData).some((key) => {
+      const originalValue = user[key] || user.additionalDetails?.[key] || "";
+      const currentValue = userData[key] || "";
+
+      // Normalize undefined, null, and empty strings to avoid false positives
+      return (currentValue ?? "") !== (originalValue ?? "");
+    });
+
+    if (hasChanges) {
+      handleSubmit();
+      // toast.success("User data updated successfully");
+    } else {
+      toast.info("No changes detected in the user data");
+    }
   };
 
   const handleBuyProduct = async () => {
@@ -112,7 +176,8 @@ const CheckoutPage = () => {
       toast.error("Cart is empty");
       return;
     }
-    // Check for address1
+
+    // Validation checks
     if (
       !additionalDetails.address1 ||
       additionalDetails.address1.trim() === ""
@@ -121,33 +186,30 @@ const CheckoutPage = () => {
       return;
     }
 
-    // Check for pincode length
     if (!additionalDetails.pincode || additionalDetails.pincode.length !== 6) {
       toast.error("Please provide a valid 6-digit pincode");
       return;
     }
 
-    // Check for state
     if (!additionalDetails.state || additionalDetails.state.trim() === "") {
       toast.error("Please provide a valid state");
       return;
     }
 
-    if(!additionalDetails.country || additionalDetails.country.trim() === "") {
+    if (!additionalDetails.country || additionalDetails.country.trim() === "") {
       toast.error("Please provide a valid country");
       return;
     }
 
-    if(!additionalDetails.contactNumber) {
+    if (!additionalDetails.contactNumber) {
       toast.error("Please provide a valid contact number");
-      return;
-    } 
-
-    if(!additionalDetails.city || additionalDetails.city.trim() === "") {
-      toast.error("Please provide a valid city");
       return;
     }
 
+    if (!additionalDetails.city || additionalDetails.city.trim() === "") {
+      toast.error("Please provide a valid city");
+      return;
+    }
 
     BuyProduct(
       products,
@@ -162,22 +224,27 @@ const CheckoutPage = () => {
   };
 
   const fetchData = async () => {
-    const response = await fetch(SummaryApi.cartProductView.url, {
-      method: SummaryApi.cartProductView.method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const response = await fetch(SummaryApi.cartProductView.url, {
+        method: SummaryApi.cartProductView.method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const responseData = await response.json();
+      const responseData = await response.json();
 
-    if (responseData.success) {
-      console.log(responseData.cart);
-      setData(responseData.cart);
-      dispatch(setUserCart(responseData.cart));
-    } else {
-      toast.error("Something went wrong");
+      if (responseData.success) {
+        console.log(responseData.cart);
+        setData(responseData.cart);
+        dispatch(setUserCart(responseData.cart));
+      } else {
+        toast.error("Something went wrong");
+      }
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+      toast.error("Failed to fetch cart data");
     }
   };
 
@@ -193,10 +260,6 @@ const CheckoutPage = () => {
     } else {
       handleLoading();
     }
-
-    console.log(cart);
-
-    console.log(data);
   }, []);
 
   useEffect(() => {
@@ -230,6 +293,8 @@ const CheckoutPage = () => {
                     Contact Information
                   </Text>
                   <div className="flex flex-col gap-[35px] items-start justify-start w-full">
+                    {/* Input fields for user data */}
+                    {/* First Name and Last Name */}
                     <div className="flex md:flex-col flex-row gap-5 items-start justify-start w-full">
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
                         <Text
@@ -238,14 +303,14 @@ const CheckoutPage = () => {
                         >
                           First Name
                         </Text>
-                        <Input
+                        <input
                           name="firstName"
                           placeholder="Your first name here.."
-                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
-                          wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
+                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
                           type="text"
-                          value={user?.name.split(" ")[0]}
-                        ></Input>
+                          value={userData.firstName || ""} // Ensure controlled input
+                          onChange={handleInputChange}
+                        />
                       </div>
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
                         <Text
@@ -254,16 +319,19 @@ const CheckoutPage = () => {
                         >
                           Last Name
                         </Text>
-                        <Input
+                        <input
                           name="lastName"
                           placeholder="Your last name here.."
-                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
+                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="text"
-                          value={user?.name.split(" ")[1] || ""}
-                        ></Input>
+                          value={userData.lastName}
+                          onChange={(e) => handleInputChange(e)}
+                        />
                       </div>
                     </div>
+
+                    {/* Phone and Email */}
                     <div className="flex md:flex-col flex-row gap-5 items-start justify-start w-full">
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
                         <Text
@@ -272,14 +340,15 @@ const CheckoutPage = () => {
                         >
                           Phone
                         </Text>
-                        <Input
+                        <input
                           name="phone"
                           placeholder="Your phone here.."
-                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
+                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
-                          type="number"
-                          value={additionalDetails?.contactNumber}
-                        ></Input>
+                          type="tel"
+                          value={userData.phone}
+                          onChange={(e) => handleInputChange(e)}
+                        />
                       </div>
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
                         <Text
@@ -288,152 +357,201 @@ const CheckoutPage = () => {
                         >
                           Email
                         </Text>
-                        <Input
+                        <input
                           name="email"
                           placeholder="Your email here.."
-                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
+                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="email"
-                          value={user?.email}
-                        ></Input>
+                          value={userData.email}
+                          onChange={(e) => handleInputChange(e)}
+                        />
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-[30px] items-start justify-start w-full">
-                  <div className="flex flex-col gap-9 items-start justify-start w-full">
-                    <Text
-                      className="text-2xl md:text-[22px] text-black-900 sm:text-xl tracking-[-0.50px] w-full"
-                      size="txtRalewayBold24"
-                    >
-                      Payment Method
-                    </Text>
-                    <div className="flex flex-col sm-flex-row font-rubik gap-[21px] items-start justify-start w-full">
-                      <Button
-                        className={`border ${
-                          paymentMethod === "Online Payment"
-                            ? "border-black-900 bg-white-A700 text-black-900" // White background and black text for selected tab
-                            : "border-bluegray-100 bg-gray-200 text-gray-500" // Gray background and gray text for unselected tab
-                        } border-solid cursor-pointer flex items-center justify-center min-w-[175px] px-[29px] py-[15px]`}
-                        leftIcon={
-                          <div className="h-10 mr-2.5 w-10 bg-gray-201 p-2 rounded-[50%] flex justify-center items-center">
-                            <FaAmazonPay className="h-6" />
-                          </div>
-                        }
-                        onClick={() => {
-                          setPaymentMethod("Online Payment");
-                          setCod(false);
-                        }}
-                      >
-                        <div className="leading-[normal] sm:px-5 text-left text-lg tracking-[-0.50px]">
-                          Online Payment
-                        </div>
-                      </Button>
 
-                      <Button
-                        className={`border ${
-                          paymentMethod === "Cash on Delivery"
-                            ? "border-black-900 bg-white-A700 text-black-900" // White background and black text for selected tab
-                            : "border-bluegray-100 bg-gray-200 text-gray-500" // Gray background and gray text for unselected tab
-                        } border-solid cursor-pointer flex items-center justify-center min-w-[175px] px-[29px] py-[15px]`}
-                        leftIcon={
-                          <div className="h-10 mr-2.5 w-10 bg-gray-201 p-2 rounded-[50%] flex justify-center items-center">
-                            <FaIndianRupeeSign className="h-8" />
-                          </div>
-                        }
-                        onClick={() => {
-                          setPaymentMethod("Cash on Delivery");
-                          setCod(true);
-                        }}
+                    {/* Country / Region */}
+                    <div className="flex flex-col gap-3 items-start justify-start w-full">
+                      <Text
+                        className="text-black-900 text-xl tracking-[-0.50px] w-full"
+                        size="txtRalewayRomanRegular20Black900"
                       >
-                        <div className="leading-[normal] sm:px-5 text-left text-lg tracking-[-0.50px]">
-                          Cash on Delivery
-                        </div>
-                      </Button>
+                        Country / Region
+                      </Text>
+                      <SelectBox
+                        className="border border-bluegray-100 border-solid font-rubik leading-[normal] sm:px-5 px-[25px] py-[18px] text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
+                        placeholderClassName="text-gray-500"
+                        indicator={
+                          <Img
+                            className="h-6 w-6"
+                            src="images/img_arrowdown_black_900.svg"
+                            alt="arrow_down"
+                          />
+                        }
+                        isMulti={false}
+                        name="country"
+                        options={unitedStatesUsOptionsList}
+                        isSearchable={false}
+                        placeholder="Select Country"
+                        value={unitedStatesUsOptionsList.find(
+                          (option) => option.value === userData.country
+                        )}
+                        onChange={(e) => handleInputChange(e)}
+                      />
                     </div>
-                  </div>
 
-                  <div className="flex flex-col gap-3 items-start justify-start w-full">
-                    <Text
-                      className="text-black-900 text-xl tracking-[-0.50px] w-full"
-                      size="txtRalewayRomanRegular20Black900"
-                    >
-                      Country / Region{" "}
-                    </Text>
-                    <SelectBox
-                      className="border border-bluegray-100 border-solid font-rubik leading-[normal] sm:px-5 px-[25px] py-[18px] text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
-                      placeholderClassName="text-gray-500"
-                      indicator={
-                        <Img
-                          className="h-6 w-6"
-                          src="images/img_arrowdown_black_900.svg"
-                          alt="arrow_down"
+                    {/* Address Line 1 */}
+                    <div className="flex flex-col gap-3 items-start justify-start w-full">
+                      <Text
+                        className="text-black-900 text-xl tracking-[-0.50px] w-full"
+                        size="txtRalewayRomanRegular20Black900"
+                      >
+                        Address Line 1
+                      </Text>
+                      <input
+                        name="address1"
+                        placeholder="Address Line 1"
+                        className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
+                        wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
+                        type="text"
+                        value={userData.address1}
+                        onChange={(e) => handleInputChange(e)}
+                      />
+                    </div>
+
+                    {/* Address Line 2 */}
+                    <div className="flex flex-col gap-3 items-start justify-start w-full">
+                      <Text
+                        className="text-black-900 text-xl tracking-[-0.50px] w-full"
+                        size="txtRalewayRomanRegular20Black900"
+                      >
+                        Address Line 2
+                      </Text>
+                      <input
+                        name="address2"
+                        placeholder="Address Line 2"
+                        className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
+                        wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
+                        type="text"
+                        value={userData.address2}
+                        onChange={(e) => handleInputChange(e)}
+                      />
+                    </div>
+
+                    {/* City and State */}
+                    <div className="flex md:flex-col flex-row gap-5 items-start justify-start w-full">
+                      <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
+                        <Text
+                          className="text-black-900 text-xl tracking-[-0.50px] w-full"
+                          size="txtRalewayRomanRegular20Black900"
+                        >
+                          City
+                        </Text>
+                        <input
+                          name="city"
+                          placeholder="City"
+                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
+                          wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
+                          type="text"
+                          value={userData.city}
+                          onChange={(e) => handleInputChange(e)}
                         />
-                      }
-                      isMulti={false}
-                      name="country"
-                      options={unitedStatesUsOptionsList}
-                      isSearchable={false}
-                      placeholder="Domestic"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-3 items-start justify-start w-full">
-                    <Text
-                      className="text-black-900 text-xl tracking-[-0.50px] w-full"
-                      size="txtRalewayRomanRegular20Black900"
-                    >
-                      Street address{" "}
-                    </Text>
-                    <textarea
-                      className="border border-bluegray-100 border-solid flex flex-col font-rubik h-[150px] md:h-auto items-start justify-start sm:px-5 px-[22px] py-[19px] w-full resize-none text-gray-500 text-sm tracking-[-0.50px]"
-                      placeholder="Write your full address"
-                      value={`${additionalDetails?.address1}, ${additionalDetails?.address2}, ${additionalDetails?.city}, ${additionalDetails?.state}, ${additionalDetails?.pincode}`}
-                    />
-                  </div>
+                      </div>
+                      <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
+                        <Text
+                          className="text-black-900 text-xl tracking-[-0.50px] w-full"
+                          size="txtRalewayRomanRegular20Black900"
+                        >
+                          State
+                        </Text>
+                        <input
+                          name="state"
+                          placeholder="State"
+                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
+                          wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
+                          type="text"
+                          value={userData.state}
+                          onChange={(e) => handleInputChange(e)}
+                        />
+                      </div>
+                    </div>
 
-                  <Button
-                    className="common-pointer bg-bluegray-900 cursor-pointer font-rubik font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-[40%] mx-auto"
-                    onClick={() => {
-                      setShowEditModal(true);
-                    }}
-                  >
-                    Edit Address
-                  </Button>
-                </div>
-                {/* <div className="flex flex-col gap-9 items-start justify-start w-full">
-                  <Text
-                    className="text-2xl md:text-[22px] text-black-900 sm:text-xl tracking-[-0.50px] w-full"
-                    size="txtRalewayBold24"
-                  >
-                    Payment Method
-                  </Text>
-                  <div className="flex sm:flex-col flex-row gap-5 items-start justify-start w-auto sm:w-full">
-                    <div className="border border-bluegray-100 border-solid flex flex-col h-[73px] md:h-auto items-center justify-center p-[25px] sm:px-5 w-[155px]">
-                      <Img
-                        className="h-[19px] md:h-auto object-cover w-[60px] sm:w-full"
-                        src="images/img_visa.png"
-                        alt="visa"
+                    {/* Pincode */}
+                    <div className="flex flex-col gap-3 items-start justify-start w-full">
+                      <Text
+                        className="text-black-900 text-xl tracking-[-0.50px] w-full"
+                        size="txtRalewayRomanRegular20Black900"
+                      >
+                        Pincode
+                      </Text>
+                      <input
+                        name="pincode"
+                        placeholder="Pincode"
+                        className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
+                        wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
+                        type="text"
+                        value={userData.pincode}
+                        onChange={(e) => handleInputChange(e)}
                       />
                     </div>
-                    <div className="border border-bluegray-100 border-solid flex flex-col h-[73px] md:h-auto items-center justify-center p-[25px] sm:px-5 w-[155px]">
-                      <Img
-                        className="h-[23px] w-[60px]"
-                        src="images/img_signal.svg"
-                        alt="signal"
-                      />
-                    </div>
-                    <div className="border border-bluegray-100 border-solid flex flex-col h-[73px] md:h-auto items-center justify-center p-[25px] sm:px-5 w-[155px]">
-                      <Img
-                        className="h-[19px] w-20"
-                        src="images/img_refresh.svg"
-                        alt="refresh"
-                      />
-                    </div>
+
+                    {/* Update User Data Button */}
+                    <Button
+                      className="common-pointer bg-bluegray-900 cursor-pointer font-rubik font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-[40%] mx-auto"
+                      onClick={handleEditUserData}
+                    >
+                      Update User Data
+                    </Button>
                   </div>
-                </div> */}
+                </div>
               </div>
+
+              {/* Order Summary */}
               <div className="bg-gray-53 flex sm:flex-1 flex-col items-start justify-start sm:px-5 px-[27px] py-[34px] w-[416px] sm:w-full">
                 <div className="flex flex-col gap-[30px] items-start justify-start w-full">
+                  <div className="flex flex-col sm-flex-row font-rubik gap-[21px] items-start justify-start w-full">
+                    <Button
+                      className={`border ${
+                        paymentMethod === "Online Payment"
+                          ? "border-black-900 bg-white-A700 text-black-900" // White background and black text for selected tab
+                          : "border-bluegray-100 bg-gray-200 text-gray-500" // Gray background and gray text for unselected tab
+                      } border-solid cursor-pointer flex items-center justify-center min-w-[175px] px-[29px] py-[15px]`}
+                      leftIcon={
+                        <div className="h-10 mr-2.5 w-10 bg-gray-201 p-2 rounded-[50%] flex justify-center items-center">
+                          <FaAmazonPay className="h-6" />
+                        </div>
+                      }
+                      onClick={() => {
+                        setPaymentMethod("Online Payment");
+                        setCod(false);
+                      }}
+                    >
+                      <div className="leading-[normal] sm:px-5 text-left text-lg tracking-[-0.50px]">
+                        Online Payment
+                      </div>
+                    </Button>
+
+                    <Button
+                      className={`border ${
+                        paymentMethod === "Cash on Delivery"
+                          ? "border-black-900 bg-white-A700 text-black-900" // White background and black text for selected tab
+                          : "border-bluegray-100 bg-gray-200 text-gray-500" // Gray background and gray text for unselected tab
+                      } border-solid cursor-pointer flex items-center justify-center min-w-[175px] px-[29px] py-[15px]`}
+                      leftIcon={
+                        <div className="h-10 mr-2.5 w-10 bg-gray-201 p-2 rounded-[50%] flex justify-center items-center">
+                          <FaIndianRupeeSign className="h-8" />
+                        </div>
+                      }
+                      onClick={() => {
+                        setPaymentMethod("Cash on Delivery");
+                        setCod(true);
+                      }}
+                    >
+                      <div className="leading-[normal] sm:px-5 text-left text-lg tracking-[-0.50px]">
+                        Cash on Delivery
+                      </div>
+                    </Button>
+                  </div>
+
                   <Text
                     className="text-black-900 text-xl tracking-[-0.50px] w-full"
                     size="txtRalewayRomanBold20"
@@ -478,20 +596,6 @@ const CheckoutPage = () => {
                           Rs {totalPrice.toFixed(2)}
                         </Text>
                       </div>
-                      <div className="flex flex-row items-center justify-between w-full">
-                        {/* <Text
-                          className="text-gray-500 text-xl tracking-[-0.50px] w-auto"
-                          size="txtRalewayRomanRegular20"
-                        >
-                          Discount (30%)
-                        </Text> */}
-                        {/* <Text
-                          className="text-deep_orange-A400 text-xl tracking-[-0.50px] w-auto"
-                          size="txtPoppinsSemiBold20DeeporangeA400"
-                        >
-                          - $ {(totalPrice*0.3).toFixed(2)}
-                        </Text> */}
-                      </div>
                     </div>
                     <Line className="bg-black-900 h-px w-full" />
                     <div className="flex flex-row items-center justify-between w-full">
@@ -510,7 +614,11 @@ const CheckoutPage = () => {
                     </div>
                     <Button
                       className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full"
-                      onClick={() => handleBuyProduct()}
+                      onClick={() => {
+                          handleSubmit();
+                      handleBuyProduct();
+                     
+                      }}
                     >
                       Place Order
                     </Button>
@@ -525,12 +633,6 @@ const CheckoutPage = () => {
         </div>
         <CartSectionfooter className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
       </div>
-      {editModal && (
-        <EditProfileDetails
-          onClose={() => setShowEditModal(false)}
-          additionalDetails={additionalDetails}
-        />
-      )}
     </>
   );
 };
