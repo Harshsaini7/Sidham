@@ -138,7 +138,7 @@ const CheckoutPage = () => {
       return;
     }
 
-    if(!additionalDetails.contactNumber || additionalDetails.contactNumber.trim() === "") {
+    if(!additionalDetails.contactNumber) {
       toast.error("Please provide a valid contact number");
       return;
     } 
