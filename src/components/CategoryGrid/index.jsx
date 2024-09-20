@@ -19,7 +19,10 @@ const CategoryItem = ({ title, description, imageSrc }) => {
       <img src={imageSrc} alt={title} className="w-32 h-32 object-cover mb-4" />
       <Button
         className="border-2 border-gray-50 font-medium py-2 px-4 text-gray-50 hover:bg-gray-50 hover:text-gray-900 transition-colors font-raleway"
-        onClick={() => navigate("/shop")}
+        onClick={() => {
+          sessionStorage.setItem("selectedCategory", title);
+          navigate("/shop")
+        }}
       >
         Shop Now
       </Button>
@@ -35,12 +38,12 @@ const CategoryGrid = () => {
       imageSrc: Kids
     },
     {
-      title: "Men's Health",
+      title: "Men",
       description: "Advanced healthcare solutions addressing male-specific wellness and hormonal balance.",
       imageSrc: Men
     },
     {
-      title: "Women's Health",
+      title: "Women",
       description: "Tailored medical products focusing on women's reproductive health, hormonal balance, and wellness.",
       imageSrc: Woman
     },
@@ -56,7 +59,9 @@ const CategoryGrid = () => {
     <div className="container mx-auto px-4">
       <div className="custom-grid">
         {categories.map((category, index) => (
-          <CategoryItem key={index} {...category} />
+          <CategoryItem key={index} {...category}
+          
+          />
         ))}
       </div>
     </div>

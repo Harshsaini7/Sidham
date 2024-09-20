@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
 import { setProduct, setCategory } from "slices/productSlice";
 import { useNavigate } from "react-router-dom";
-import ShopPageImage from "../../assets/Shop or contact us page ki top photo.png"
+import ShopPageImage from "../../assets/shop page photo.svg"
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -31,7 +31,7 @@ const ShopPage = () => {
 
   const [allProduct, setAllProduct] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(sessionStorage.getItem("selectedCategory") ?? "");
   const [searchQuery, setSearchQuery] = useState("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
@@ -123,6 +123,14 @@ const ShopPage = () => {
     }
   };
 
+  useEffect(() => {
+
+    setTimeout(() => {
+      sessionStorage.setItem("selectedCategory", "");
+    }, 5000);
+
+  },[]);
+
   return (
     <>
       <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[100px] items-center justify-start mx-auto w-auto sm:w-full md:w-full">
@@ -138,22 +146,24 @@ const ShopPage = () => {
                 />
                 <div className="absolute flex flex-col gap-[30px] h-max inset-y-[0] items-start justify-start left-[5%] my-auto w-auto">
                   <div className="flex flex-col gap-4 items-start justify-start w-full">
-                    {/* <Text
-                      className="text-lg text-yellow-100 tracking-[-0.50px] w-auto"
+                  <Text
+                      className="text-lg text-yellow-100 tracking-[-0.50px]"
                       size="txtRubikSemiBold18Yellow100"
                     >
-                      Best Room Decor Items
+                      Best Medicine Items
                     </Text>
                     <Text
-                      className="leading-[60.00px] max-w-[465px] md:max-w-full text-4xl sm:text-[32px] md:text-[34px] text-white-A700 tracking-[-0.50px]"
+                      className="leading-[60px] max-w-[465px] md:max-w-full text-4xl sm:text-[32px] md:text-[34px] text-white tracking-[-0.50px]"
                       size="txtRalewayRomanBold36"
                     >
-                      Our goods have the best quality and materials in the world
-                    </Text> */}
+                      Our medicine have the best quality and suggested by expert
+                      doctors
+                    </Text>
                   </div>
-                  {/* <Button className="bg-yellow-100 cursor-pointer font-bold leading-[normal] min-w-[170px] py-[15px] text-bluegray-900  text-xl tracking-[-0.50px]">
+                  <Button className="bg-yellow-100 cursor-pointer font-bold min-w-[170px] py-[15px] text-bluegray-900 text-xl tracking-[-0.50px]"
+                  onClick={() => navigate("/shop")}>
                     Shop Now
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -197,7 +207,7 @@ const ShopPage = () => {
                   alt="slider"
                 />
               </div>
-              <div className="flex flex-col gap-[22px] items-start justify-start w-full">
+              {/* <div className="flex flex-col gap-[22px] items-start justify-start w-full">
                 <Text
                   className="text-black-900 text-xl w-full"
                   size="txtRalewayRomanSemiBold20"
@@ -214,14 +224,9 @@ const ShopPage = () => {
                   src="images/img_frame48095957.svg"
                   alt="frame48095957"
                 />
-              </div>
+              </div> */}
               <div className="flex flex-col gap-5 items-start justify-start w-full">
-                <Text
-                  className="text-black-900 text-xl w-full"
-                  size="txtRalewayRomanSemiBold20"
-                >
-                  Product Categories
-                </Text>
+
                 <div className="flex flex-col font-poppins gap-5 items-start justify-start w-full">
                   <ProductCategories
                     allCategory={allCategory}
@@ -230,7 +235,7 @@ const ShopPage = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-5 items-start justify-start w-full">
+              {/* <div className="flex flex-col gap-5 items-start justify-start w-full">
                 <Text
                   className="text-black-900 text-xl w-full"
                   size="txtRalewayRomanSemiBold20"
@@ -264,7 +269,7 @@ const ShopPage = () => {
                     Pillow
                   </Button>
                 </div>
-              </div>
+              </div> */}
               <div className="h-[400px] relative w-full">
                 <Img
                   className="h-[400px] m-auto object-cover rounded-[10px] w-[308px] md:w-full"
