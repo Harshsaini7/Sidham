@@ -14,6 +14,7 @@ import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import CartNavbar from "components/CartNavbar";
+import ShopPageImage from "../../assets/Shop or contact us page ki top photo.png";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -29,30 +30,30 @@ const ContactusPage = () => {
           <CartNavbar className="bg-white-A700 flex items-center justify-center md:px-5 px-[75px] py-[35px] w-full" />
           <div className="flex flex-col font-poppins items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
             <div className="flex flex-col items-start justify-start max-w-[1291px] mx-auto w-full">
-              <div className="h-[450px] relative w-full">
-                <Img
-                  className="h-[450px] m-auto object-cover w-full"
-                  src="images/img_rectangle28.png"
-                  alt="rectangleTwentyEight"
+              <div className="relative w-full h-[450px] md:h-[600px]">
+                <img
+                  className="w-full h-full object-cover"
+                  src={ShopPageImage}
+                  alt="Shop"
                 />
-                <div className="absolute flex flex-col gap-[30px] h-max inset-y-[0] items-start justify-start left-[5%] my-auto w-auto">
-                  <div className="flex flex-col gap-4 items-start justify-start w-full">
-                    <Text
-                      className="text-lg text-yellow-100 tracking-[-0.50px] w-auto"
-                      size="txtRubikSemiBold18Yellow100"
-                    >
-                      Best Room Decor Items
-                    </Text>
-                    <Text
-                      className="leading-[60.00px] max-w-[465px] md:max-w-full text-4xl sm:text-[32px] md:text-[34px] text-white-A700 tracking-[-0.50px]"
-                      size="txtRalewayRomanBold36"
-                    >
-                      Our goods have the best quality and materials in the world
-                    </Text>
+                <div className="absolute inset-y-0 left-[5%] flex flex-col gap-[30px] justify-center">
+                  <div className="flex flex-col gap-4 items-start">
+                    {/* <Text
+        className="text-lg text-yellow-100 tracking-[-0.50px]"
+        size="txtRubikSemiBold18Yellow100"
+      >
+        Best Room Decor Items
+      </Text>
+      <Text
+        className="leading-[60px] max-w-[465px] md:max-w-full text-4xl sm:text-[32px] md:text-[34px] text-white tracking-[-0.50px]"
+        size="txtRalewayRomanBold36"
+      >
+        Our goods have the best quality and materials in the world
+      </Text> */}
                   </div>
-                  <Button className="bg-yellow-100 cursor-pointer font-bold leading-[normal] min-w-[170px] py-[15px] text-bluegray-900 text-center text-xl tracking-[-0.50px]">
-                    Shop Now
-                  </Button>
+                  {/* <Button className="bg-yellow-100 cursor-pointer font-bold min-w-[170px] py-[15px] text-bluegray-900 text-xl tracking-[-0.50px]">
+      Shop Now
+    </Button> */}
                 </div>
               </div>
             </div>

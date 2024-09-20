@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
 import { setProduct, setCategory } from "slices/productSlice";
 import { useNavigate } from "react-router-dom";
+import ShopPageImage from "../../assets/Shop or contact us page ki top photo.png"
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -130,14 +131,14 @@ const ShopPage = () => {
           <div className="flex flex-col font-poppins items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
             <div className="flex flex-col items-start justify-start max-w-[1290px] mx-auto w-full">
               <div className="h-[450px] relative w-full">
-                <Img
+                <img
                   className="h-[450px] m-auto object-cover w-full"
-                  src="images/img_rectangle28.png"
+                  src={ShopPageImage}
                   alt="rectangleTwentyEight"
                 />
                 <div className="absolute flex flex-col gap-[30px] h-max inset-y-[0] items-start justify-start left-[5%] my-auto w-auto">
                   <div className="flex flex-col gap-4 items-start justify-start w-full">
-                    <Text
+                    {/* <Text
                       className="text-lg text-yellow-100 tracking-[-0.50px] w-auto"
                       size="txtRubikSemiBold18Yellow100"
                     >
@@ -148,11 +149,11 @@ const ShopPage = () => {
                       size="txtRalewayRomanBold36"
                     >
                       Our goods have the best quality and materials in the world
-                    </Text>
+                    </Text> */}
                   </div>
-                  <Button className="bg-yellow-100 cursor-pointer font-bold leading-[normal] min-w-[170px] py-[15px] text-bluegray-900 text-center text-xl tracking-[-0.50px]">
+                  {/* <Button className="bg-yellow-100 cursor-pointer font-bold leading-[normal] min-w-[170px] py-[15px] text-bluegray-900  text-xl tracking-[-0.50px]">
                     Shop Now
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>

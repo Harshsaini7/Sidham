@@ -22,6 +22,9 @@ import SummaryApi from "common";
 import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
 import { setProduct } from "slices/productSlice";
+import HomepageTopPhoto from "../../assets/Homepage Top photo.svg"
+import CategoryGrid from "components/CategoryGrid";
+import Safety from "../../assets/We guarantee the safety of your shopping.png"
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -99,7 +102,7 @@ const HomepagePage = () => {
                     className="text-black-900 text-xl tracking-[-0.50px] w-full"
                     size="txtRubikRomanRegular20"
                   >
-                    Interior Needs
+                    Health Needs
                   </Text>
                   <Text
                     className="leading-[60.00px] max-w-[615px] md:max-w-full sm:text-4xl md:text-[38px] text-[40px] text-black-900 tracking-[-0.50px]"
@@ -113,7 +116,7 @@ const HomepagePage = () => {
                     </span>
                     <span className="text-black-900 font-raleway text-left font-bold">
                       {" "}
-                      of furniture to decorate the corner of your house.
+                      of medicine to keep you health.
                     </span>
                   </Text>
                 </div>
@@ -124,9 +127,9 @@ const HomepagePage = () => {
                   Shop Now
                 </Button>
               </div>
-              <Img
+              <img
                 className="flex-1 md:flex-none h-[566px] sm:h-auto max-h-[566px] object-cover sm:w-[] md:w-[]"
-                src="images/img_nathanoakleyo.png"
+                src={HomepageTopPhoto}
                 alt="nathanoakleyo"
               />
             </div>
@@ -175,7 +178,7 @@ const HomepagePage = () => {
           </div>
         </div>
         <div className="flex flex-col items-center justify-center md:px-10 sm:px-5 px-[75px] w-full">
-          <List
+          {/* <List
             className="sm:flex-col flex-row gap-5 grid md:grid-cols-1 grid-cols-2 justify-center max-w-[1290px] mx-auto w-full"
             orientation="horizontal"
           >
@@ -241,7 +244,8 @@ const HomepagePage = () => {
                 />
               </div>
             </div>
-          </List>
+          </List> */}
+          <CategoryGrid/>
         </div>
         <div className="flex flex-col items-center justify-start md:px-10 sm:px-5 px-[75px] w-full">
           <div className="flex flex-col gap-[46px] items-center justify-start max-w-[1290px] mx-auto w-full">
@@ -493,7 +497,7 @@ const HomepagePage = () => {
             </div>
             <Img
               className="flex-1 md:flex-none md:h-[640px] sm:h-auto h-full max-h-[640px] object-cover sm:w-[] md:w-[]"
-              src="images/img_rectangle16.png"
+              src={Safety}
               alt="rectangleSixteen"
             />
           </div>
