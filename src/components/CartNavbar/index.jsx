@@ -4,6 +4,7 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { Img, SelectBox, Text, Button } from "components";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "services/operations/authAPI";
+import Logo from "../../assets/ecommercelogo.jpg"
 
 import "./index.css";
 
@@ -50,8 +51,8 @@ const CartNavbar = (props) => {
           <Link className="flex-shrink-0"
             to="/">
             <Img
-              className="h-[30px] w-[90px]"
-              src="images/img_car.svg"
+              className="h-[70px] w-[110px]"
+              src={Logo}
               alt="car"
             />
           </Link>
