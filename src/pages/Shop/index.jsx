@@ -33,7 +33,7 @@ const ShopPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(2000);
+  const [maxPrice, setMaxPrice] = useState(100000);
 
   const handleAddToCart = async (e, id, quantity) => {
     const res = await AddToCart(e, id, quantity, token, dispatch);

@@ -36,7 +36,7 @@ const CheckoutPage = () => {
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
+    contactNumber: "",
     address1: "",
     address2: "",
     city: "",
@@ -93,7 +93,7 @@ const CheckoutPage = () => {
         firstName: firstName || "",
         lastName: lastName || "",
         email: user.email || "",
-        phone: user.additionalDetails?.contactNumber || "",
+        contactNumber: user.additionalDetails?.contactNumber || "",
         address1: user.additionalDetails?.address1 || "",
         address2: user.additionalDetails?.address2 || "",
         city: user.additionalDetails?.city || "",
@@ -342,12 +342,12 @@ const CheckoutPage = () => {
                           Phone
                         </Text>
                         <input
-                          name="phone"
+                          name="contactNumber"
                           placeholder="Your phone here.."
                           className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
                           wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
                           type="tel"
-                          value={userData.phone}
+                          value={userData.contactNumber}
                           onChange={(e) => handleInputChange(e)}
                         />
                       </div>

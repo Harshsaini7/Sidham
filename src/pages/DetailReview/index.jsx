@@ -234,7 +234,7 @@ const DetailReviewPage = () => {
                       className="text-4xl sm:text-[32px] md:text-[34px] text-bluegray-900 tracking-[-0.50px] w-full"
                       size="txtRubikBold36"
                     >
-                      $ {currProduct.sellingPrice.toFixed(2)}
+                      Rs {currProduct.price.toFixed(2)}
                     </Text>
                     <div className="flex flex-col font-rubik gap-5 items-start justify-start w-full">
                       <Text
