@@ -357,7 +357,7 @@ const HomepagePage = () => {
               </div>
               <Button
                 className="common-pointer border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[218px] py-[18px] text-bluegray-900 text-center text-xl tracking-[-0.50px]"
-                onClick={() => navigate("/shopdetaildescription")}
+                onClick={() => navigate("/contactus")}
               >
                 Contact Us
               </Button>
