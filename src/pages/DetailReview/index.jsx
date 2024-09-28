@@ -26,7 +26,9 @@ import { FcLike } from "react-icons/fc";
 import { toast } from "react-toastify";
 import { getUserDetails } from "services/operations/profileAPI";
 import ReviewSection from "components/ReviewSection";
+// import ReactStars from "react-rating-stars-component";
 import ReactStars from "react-rating-stars-component";
+
 
 const DetailReviewPage = () => {
   const navigate = useNavigate();
@@ -301,16 +303,26 @@ const DetailReviewPage = () => {
                       {currProduct.productName}
                     </Text>
                     <div className="flex flex-row font-rubik gap-[15px] items-center justify-start w-full">
-                      <Img
+                      {/* <Img
                         className="h-5 w-[140px]"
                         src="images/img_frame135.svg"
                         alt="frame135"
-                      />
+                      /> */}
+
+
+                      <ReactStars
+                        count={5}
+                        size={24}
+                        value={currProduct.averageRating}
+                        edit={false}
+                        activeColor="#ffd700"
+                        />
+
                       <Text
-                        className="text-gray-500 text-sm tracking-[-0.50px] w-auto"
+                        className="text-gray-500 text-sm tracking-[-0.50px] w-auto mt-2"
                         size="txtRubikRegular14"
                       >
-                        ( 1 review )
+                        ( {currProduct.reviews.length} Reviews )
                       </Text>
                     </div>
                     <Text
