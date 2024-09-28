@@ -13,7 +13,6 @@ import {
   Text,
 } from "components";
 import { FiMinusCircle } from "react-icons/fi";
-
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
@@ -24,14 +23,15 @@ import AddToCart from "helpers/addToCart";
 import { setProduct } from "slices/productSlice";
 import { FcLike } from "react-icons/fc";
 // import toast from "react-hot-toast";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { getUserDetails } from "services/operations/profileAPI";
-
+import ReviewSection from "components/ReviewSection";
+import ReactStars from "react-rating-stars-component";
 
 const DetailReviewPage = () => {
   const navigate = useNavigate();
   const id = sessionStorage.getItem("productId");
-  const {user} = useSelector((state) => state.profile);
+  const { user } = useSelector((state) => state.profile);
   const { product } = useSelector((state) => state.product);
   const [currProduct, setCurrProduct] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -83,14 +83,14 @@ const DetailReviewPage = () => {
     setAddedToWishlist(addedToWishlist);
     try {
       const action = addedToWishlist ? "remove" : "add";
-      console.log("action" ,action);
+      console.log("action", action);
 
       const response = await fetch(SummaryApi.updateWishlist.url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           // Include any authentication tokens if required
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           productId: id,
@@ -100,8 +100,7 @@ const DetailReviewPage = () => {
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
-      }
-      else {
+      } else {
         toast.success("Wishlist Updated Successfully");
       }
 
@@ -140,6 +139,7 @@ const DetailReviewPage = () => {
 
       if (dataResponse.success && dataResponse.data) {
         setCurrProduct(dataResponse.data);
+        console.log("hui", dataResponse.data);
       } else {
         throw new Error(dataResponse.message || "Failed to fetch product");
       }
@@ -150,6 +150,8 @@ const DetailReviewPage = () => {
       setLoading(false);
     }
   };
+
+  
 
   useEffect(() => {
     fetchProduct();
@@ -172,22 +174,103 @@ const DetailReviewPage = () => {
   };
   useEffect(() => {
     // Initialize addedToWishlist based on whether the product is in the user's wishlist
-    if (user && user.additionalDetails && user.additionalDetails.wishlist && currProduct) {
+    if (
+      user &&
+      user.additionalDetails &&
+      user.additionalDetails.wishlist &&
+      currProduct
+    ) {
       const isInWishlist = user.additionalDetails.wishlist.some(
         (item) => item.productId === currProduct._id
       );
       setAddedToWishlist(!isInWishlist);
       console.log("isInWishlist", isInWishlist);
-    }
-    else{
+    } else {
       console.log("hello from else part");
     }
   }, [user, currProduct]);
+
   useEffect(() => {
     if (token && !user) {
       dispatch(getUserDetails(token, navigate));
+    } else {
+      setReviewForm((prevForm) => ({
+        ...prevForm,
+        name: user?.name,
+        email: user?.email,
+      }));
     }
   }, [user]);
+
+  const [reviewForm, setReviewForm] = useState({
+    rating: 5,
+    name: user?.name,
+    email: user?.email,
+    review: "",
+    saveInfo: false,
+  });
+
+  // Handler for form input changes
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setReviewForm((prevForm) => ({
+      ...prevForm,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Handler for rating change
+  const handleRatingChange = (newRating) => {
+    setReviewForm((prevForm) => ({
+      ...prevForm,
+      rating: newRating,
+    }));
+  };
+
+  // Handler for form submission
+  const handleSubmitReview =async (e) => {
+    e.preventDefault();
+    // Here you would typically send the reviewForm data to your backend
+    console.log("Review form data:", reviewForm);
+    // TODO: Add your API call to submit the review
+
+    try {
+      const response = await fetch(SummaryApi.addReview.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,  // Add the Bearer token to the request
+        },
+        body: JSON.stringify({
+          productId: id,   // Ensure 'id' is defined
+          review: reviewForm.review,   // Ensure 'reviewForm.review' is set
+          rating: reviewForm.rating,   // Ensure 'reviewForm.rating' is set
+        }),
+      });
+  
+      const result = await response.json();  // Parse the response as JSON
+      
+  
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to add review");
+      }
+
+      toast.success("Review added successfully");
+
+      setReviewForm((prevForm) => ({
+        ...prevForm,
+        review: "",
+      }));
+
+      fetchProduct();
+
+      
+  
+    } catch (err) {
+      console.log("Error while adding review:", err.message);
+      toast.error("Failed to add review");
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -311,7 +394,10 @@ const DetailReviewPage = () => {
                         className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px] mt-1"
                         onClick={() => {
                           // setAddedToWishlist(!addedToWishlist);
-                          handleUpdateWishlist(currProduct._id , !addedToWishlist);
+                          handleUpdateWishlist(
+                            currProduct._id,
+                            !addedToWishlist
+                          );
                         }}
                       >
                         {addedToWishlist && (
@@ -350,7 +436,7 @@ const DetailReviewPage = () => {
                     </div>
                   </div>
                 </div>
-                <List
+                {/* <List
                   className="flex flex-col font-rubik gap-[30px] items-start w-full"
                   orientation="vertical"
                 >
@@ -430,7 +516,22 @@ const DetailReviewPage = () => {
                       Quis ultricies eu libero tortor dictumst.
                     </Text>
                   </div>
-                </List>
+                </List> */}
+                {currProduct &&
+                  currProduct.reviews &&
+                  currProduct.reviews.length > 0 && (
+                    <ReviewSection reviews={currProduct?.reviews} />
+                  )}
+                {currProduct &&
+                  currProduct.reviews &&
+                  currProduct.reviews.length === 0 && (
+                    <Text
+                      className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
+                      size="txtRalewayBold24"
+                    >
+                      No Reviews Available For This Product
+                    </Text>
+                  )}
               </div>
               <div className="flex flex-col font-raleway gap-6 items-center justify-start w-full">
                 <Text
@@ -439,7 +540,10 @@ const DetailReviewPage = () => {
                 >
                   Write your review
                 </Text>
-                <div className="flex flex-col gap-8 items-start justify-start w-full md:w-full">
+                <form
+                  onSubmit={handleSubmitReview}
+                  className="flex flex-col gap-8 items-start justify-start w-full md:w-full"
+                >
                   <div className="flex flex-col gap-[50px] items-start justify-start w-full">
                     <div className="flex flex-col gap-[17px] items-start justify-start w-full">
                       <Text
@@ -448,10 +552,11 @@ const DetailReviewPage = () => {
                       >
                         Your Rating
                       </Text>
-                      <Img
-                        className="h-4 w-32"
-                        src="images/img_star_bluegray_100.svg"
-                        alt="star"
+                      <ReactStars
+                        count={5}
+                        onChange={handleRatingChange}
+                        size={24}
+                        activeColor="#ffd700"
                       />
                     </div>
                     <div className="flex flex-col gap-[31px] items-start justify-start w-full">
@@ -463,13 +568,14 @@ const DetailReviewPage = () => {
                           >
                             Your Name
                           </Text>
-                          <Input
-                            name="frame48096015"
+                          <input
+                            name="name"
                             placeholder="Write your name here...."
-                            className="font-rubik p-0 placeholder:text-gray-500 sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
-                            wrapClassName="border border-bluegray-100 border-solid pl-[18px] pr-[35px] py-5 w-full"
+                            className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
                             type="text"
-                          ></Input>
+                            value={reviewForm.name}
+                            // onChange={handleInputChange}
+                          />
                         </div>
                         <div className="flex flex-1 flex-col gap-[17px] items-start justify-start w-full">
                           <Text
@@ -478,13 +584,14 @@ const DetailReviewPage = () => {
                           >
                             Your Email
                           </Text>
-                          <Input
-                            name="frame48096015_One"
+                          <input
+                            name="email"
                             placeholder="Write your email here...."
-                            className="font-rubik p-0 placeholder:text-gray-500 sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
-                            wrapClassName="border border-bluegray-100 border-solid pl-[18px] pr-[35px] py-5 w-full"
+                            className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
                             type="email"
-                          ></Input>
+                            value={reviewForm.email}
+                            // onChange={handleInputChange}
+                          />
                         </div>
                       </div>
                       <div className="flex flex-col gap-[17px] items-start justify-start w-full">
@@ -494,14 +601,13 @@ const DetailReviewPage = () => {
                         >
                           Your Review
                         </Text>
-                        <div className="border border-bluegray-100 border-solid flex flex-col font-rubik h-[218px] md:h-auto items-start justify-start p-4 w-full">
-                          <Text
-                            className="text-gray-500 text-sm tracking-[-0.50px] w-auto"
-                            size="txtRubikRegular14"
-                          >
-                            Write your review here....
-                          </Text>
-                        </div>
+                        <textarea
+                          name="review"
+                          placeholder="Write your review here...."
+                          className="border border-bluegray-100 border-solid font-rubik h-[218px] md:h-auto items-start justify-start p-4 text-gray-500 text-sm tracking-[-0.50px] w-full rounded-md"
+                          value={reviewForm.review}
+                          onChange={handleInputChange}
+                        ></textarea>
                       </div>
                     </div>
                   </div>
@@ -509,15 +615,20 @@ const DetailReviewPage = () => {
                     <CheckBox
                       className="italic leading-[normal] sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px]"
                       inputClassName="border border-bluegray-100 border-solid h-[18px] mr-[5px] w-[18px]"
-                      name="savemynameemail_One"
-                      id="savemynameemail_One"
+                      name="saveInfo"
+                      id="saveInfo"
                       label="Save my name, email, and website in this browser for the next time I comment."
+                      checked={reviewForm.saveInfo}
+                      onChange={handleInputChange}
                     ></CheckBox>
-                    <Button className="bg-bluegray-900 border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[155px] py-[13px] text-base text-center text-white-A700 tracking-[-0.50px]">
+                    <Button
+                      type="submit"
+                      className="bg-bluegray-900 border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[155px] py-[13px] text-base text-center text-white-A700 tracking-[-0.50px] rounded-md"
+                    >
                       Submit
                     </Button>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
             <div className="flex flex-1 flex-col font-poppins gap-[21px] items-center justify-start w-full">

@@ -155,6 +155,14 @@ const SummaryApi = {
     googleLogin:{
         url : `${backendDomin}/api/google-login`,
         method : 'post'
+    },
+    userDetailById : {
+        url : `${backendDomin}/api/get-user-details`,
+        method : 'psot'
+    },
+    addReview : {
+        url : `${backendDomin}/api/add-rating`,
+        method : 'post'
     }
 
 }
