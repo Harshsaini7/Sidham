@@ -257,7 +257,10 @@ const DetailReviewPage = () => {
         throw new Error(result.message || "Failed to add review");
       }
 
-      toast.success("Review added successfully");
+      if(response.success)toast.success("Review added successfully");
+      else{
+        toast.error(response.message);
+      }
 
       setReviewForm((prevForm) => ({
         ...prevForm,
