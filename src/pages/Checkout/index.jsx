@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Img, Input, Line, SelectBox, Text } from "components";
+import { Button2, Form } from "antd";
+import { InputOTP } from "antd-input-otp";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
@@ -13,9 +15,16 @@ import SummaryApi from "../../common/index";
 import { FaAmazonPay } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { calculateDeliveryCharge } from "components/BuyProduct";
+// import "react-phone-number-input/style.css";
+// import PhoneInput from "react-phone-number-input";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import "./index.css";
 
 import PaymentModalComp from "./PaymentModal";
+import { format } from "date-fns";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "components/firebase";
 
 const unitedStatesUsOptionsList = [
   { label: "Domestic", value: "domestic" },
@@ -33,9 +42,14 @@ const CheckoutPage = () => {
   const [cod, setCod] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Online Payment");
   const [paymentModal, setPaymentModal] = useState(false);
-  const [deliveryData, setDeliveryData] = useState({});
+  const [deliveryData, setDeliveryData] = useState(false);
+  const [value, setValue] = useState(
+    user?.additionalDetails?.contactNumber
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [deliveryDate, setDeliveryDate] = useState(null);
+  const [phone, setPhone] = useState(0);
 
   const [userData, setUserData] = useState({
     firstName: "",
@@ -49,6 +63,20 @@ const CheckoutPage = () => {
     pincode: "",
     country: "domestic",
   });
+
+  const sendOtp = async () => {
+    try {
+      console.log("Sending OTP to:", value);
+
+      // Initialize reCAPTCHA
+      const recaptcha = new RecaptchaVerifier(auth, "recaptcha", {});
+
+      const confirmation = await signInWithPhoneNumber(auth, value, recaptcha);
+      console.log(confirmation);
+    } catch (err) {
+      console.error("Error during OTP request:", err);
+    }
+  };
 
   const fetchAdditionalDetails = async () => {
     if (!token) return;
@@ -76,15 +104,22 @@ const CheckoutPage = () => {
     }
   };
 
-  const deliveryCharge = async (cod) => {
-    try {
-      const response = await calculateDeliveryCharge(user, cod);
-      console.log("response", response);
-      setDeliveryData(response?.available_courier_companies[0]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [deliveryCharges, setDeliveryCharges] = useState({
+    // freight_charge: 0,
+    // cod_charges: 0,
+    // coverage_charges: 0,
+    // other_charges: 0,
+  });
+  const [totalDeliveryCharge, setTotalDeliveryCharge] = useState(0);
+  // const deliveryCharge = async (cod) => {
+  //   try {
+  //     const response = await calculateDeliveryCharge(user, cod);
+  //     console.log("response", response);
+  //     setDeliveryData(response?.available_courier_companies[0]);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     if (token && !user) {
@@ -108,7 +143,7 @@ const CheckoutPage = () => {
         firstName: firstName || "",
         lastName: lastName || "",
         email: user.email || "",
-        contactNumber: user.additionalDetails?.contactNumber || "",
+        contactNumber: user.additionalDetails?.contactNumber || null,
         address1: user.additionalDetails?.address1 || "",
         address2: user.additionalDetails?.address2 || "",
         city: user.additionalDetails?.city || "",
@@ -116,26 +151,30 @@ const CheckoutPage = () => {
         pincode: user.additionalDetails?.pincode || "",
         country: user.additionalDetails?.country || "domestic",
       }));
+      setValue(
+         user.additionalDetails?.contactNumber
+      );
     }
   }, [user]);
   const handleInputChange = (e) => {
-    if (!e || !e.target) {
-      console.error("Invalid event object:", e);
-      return;
-    }
+    setDeliveryData(false);
+    const { name, value } = e.target ? e.target : e;
 
-    const { name, value } = e.target;
-    if (!name) {
-      console.error("Input name is undefined:", e.target);
-      return;
-    }
+    // if (name === "contactNumber") {
+    //   // setValue(value ?( "+" + country?.toString() + value?.toString()) : "");
+    //   // setPhone("+" + country?.toString());
 
-    setUserData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    //   setUserData((prevData) => ({
+    //     ...prevData,
+    //     [name]: value,
+    //   }));
+    // } else {
+      setUserData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    // }
   };
-
   const handleCountryChange = (selectedOption) => {
     setUserData((prevData) => ({
       ...prevData,
@@ -144,6 +183,16 @@ const CheckoutPage = () => {
   };
   const handleSubmit = async () => {
     // e.preventDefault();
+    // const dataToSubmit = {
+    //   ...userData,
+    //   contactNumber: userData.contactNumber ? parseInt(userData.contactNumber, 10) : null
+    // };
+    // setUserData((prevData) => ({
+    //   ...prevData,
+    //   contactNumber: phone + userData.contactNumber,
+    // }))
+    console.log("user data", userData);
+
     const response = await fetch(SummaryApi.editAdditionalDetails.url, {
       method: SummaryApi.editAdditionalDetails.method,
       credentials: "include",
@@ -181,7 +230,7 @@ const CheckoutPage = () => {
     }
   };
 
-  const handleBuyProduct = async () => {
+  const handleBuyProduct = async (finalPrice) => {
     // await handleSubmit();
     let products = data.map((product) => ({
       _id: product.productId._id,
@@ -217,8 +266,8 @@ const CheckoutPage = () => {
       return;
     }
 
-    if (!additionalDetails.contactNumber) {
-      toast.error("Please provide a valid contact number");
+    if (!additionalDetails.contactNumber || additionalDetails?.contactNumber.length !== 10) {
+      toast.error("Please provide a valid 10 digit contact number");
       return;
     }
 
@@ -271,19 +320,38 @@ const CheckoutPage = () => {
   };
 
   const handlePlaceOrder = async () => {
+    setDeliveryData(false);
     try {
       await handleSubmit();
       const response = await calculateDeliveryCharge(user, cod);
-      setDeliveryData(response?.available_courier_companies[0]);
-      setPaymentModal(true);
+      const charges = response?.available_courier_companies[0] || {};
+      setDeliveryCharges(charges);
+      setDeliveryData(true);
+      setTotalDeliveryCharge(charges?.freight_charge + charges?.cod_charges);
+      console.log("charges", charges, " Days");
+
+      // Calculate estimated delivery date
+      const estimatedDeliveryDays = charges.estimated_delivery_days || 0;
+
+      // Get the current date
+      const currentDate = new Date();
+
+      // Calculate the estimated delivery date
+      const estimatedDeliveryDate = new Date(currentDate.getTime());
+      estimatedDeliveryDate.setDate(
+        currentDate.getDate() + estimatedDeliveryDays
+      );
+
+      // Format the estimated delivery date
+      const formattedDeliveryDate = format(estimatedDeliveryDate, "dd/MM/yyyy");
+
+      // Set the formatted delivery date
+      setDeliveryDate(formattedDeliveryDate);
     } catch (error) {
-      console.error("Error calculating delivery charge:", error);
-      toast.error("Failed to calculate delivery charge");
+      console.error("Error fetching delivery charges:", error);
+      toast.error("Failed to calculate delivery charges");
     }
   };
-
-
-
 
   useEffect(() => {
     if (cart && cart.length > 0) {
@@ -301,6 +369,48 @@ const CheckoutPage = () => {
       setTotalPrice(total);
     }
   }, [cart]);
+  useEffect(() => {
+    const fetchDeliveryCharges = async () => {
+      setDeliveryData(false);
+      try {
+        const response = await calculateDeliveryCharge(user, cod);
+        const charges = response?.available_courier_companies[0] || {};
+        setDeliveryCharges(charges);
+        setDeliveryData(true);
+        setTotalDeliveryCharge(charges?.freight_charge + charges?.cod_charges);
+
+        console.log("charges", charges, " Days");
+
+        // Calculate estimated delivery date
+        const estimatedDeliveryDays = charges.estimated_delivery_days || 0;
+
+        // Get the current date
+        const currentDate = new Date();
+
+        // Calculate the estimated delivery date
+        const estimatedDeliveryDate = new Date(currentDate.getTime());
+        estimatedDeliveryDate.setDate(
+          currentDate.getDate() + estimatedDeliveryDays
+        );
+
+        // Format the estimated delivery date
+        const formattedDeliveryDate = format(
+          estimatedDeliveryDate,
+          "dd/MM/yyyy"
+        );
+
+        // Set the formatted delivery date
+        setDeliveryDate(formattedDeliveryDate);
+      } catch (error) {
+        console.error("Error fetching delivery charges:", error);
+        toast.error("Failed to calculate delivery charges");
+      }
+    };
+
+    if (user && cart.length > 0) {
+      fetchDeliveryCharges();
+    }
+  }, [user, cart, cod]);
 
   return (
     <>
@@ -371,16 +481,18 @@ const CheckoutPage = () => {
                         >
                           Phone
                         </Text>
-                        <input
-                          name="contactNumber"
-                          placeholder="Your phone here.."
-                          className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
-                          wrapClassName="border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px] w-full"
-                          type="tel"
-                          value={userData.contactNumber}
-                          onChange={(e) => handleInputChange(e)}
-                        />
+
+                        
+                          <input
+                            name="contactNumber"
+                            placeholder="Enter phone number"
+                            value={userData.contactNumber}
+                            onChange={(e) => handleInputChange(e)}
+                            className="font-rubik leading-[normal] p-0 placeholder:text-gray-500 sm:px-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 border-solid pl-[22px] pr-[35px] py-[18px]"
+                          />
+                  
                       </div>
+
                       <div className="flex flex-1 flex-col gap-3 items-start justify-start w-full">
                         <Text
                           className="text-black-900 text-xl tracking-[-0.50px] w-full"
@@ -612,21 +724,62 @@ const CheckoutPage = () => {
                       ))}
                       <Line className="bg-black-900 h-px w-full" />
                     </div>
-                    <div className="flex flex-col gap-[25px] items-start justify-start w-full">
-                      <div className="flex flex-row items-center justify-between w-full">
-                        <Text
-                          className="text-gray-500 text-xl tracking-[-0.50px] w-auto"
-                          size="txtRalewayRomanRegular20"
-                        >
-                          Subtotal
-                        </Text>
+
+                    {/* Delivery Charges */}
+                    <div className="flex flex-col gap-[15px] justify-between w-full">
+                      <Text
+                        className="text-gray-500 text-xl tracking-[-0.50px] w-auto flex justify-between"
+                        size="txtRalewayRomanRegular20"
+                      >
+                        Delivery Charges:
                         <Text
                           className="text-black-900 text-xl tracking-[-0.50px] w-auto"
                           size="txtPoppinsSemiBold20"
                         >
-                          Rs {totalPrice.toFixed(2)}
+                          {" "}
+                          Rs {totalDeliveryCharge || 0}
                         </Text>
-                      </div>
+                      </Text>
+                      {/* <div className="flex flex-col gap-[10px] items-start justify-start w-full">
+                        <Text className="text-gray-500 text-sm">
+                          Delivery Charges: Rs{" "}
+                          {totalDeliveryCharge|| 0}
+                        </Text>
+                        {/* <Text className="text-gray-500 text-sm">
+                          COD Charges: Rs {deliveryCharges.cod_charges || 0}
+                        </Text>
+                        <Text className="text-gray-500 text-sm">
+                          Coverage Charges: Rs{" "}
+                          {deliveryCharges.coverage_charges || 0}
+                        </Text>
+                        <Text className="text-gray-500 text-sm">
+                          Other Charges: Rs {deliveryCharges.other_charges || 0}
+                        </Text> */}
+
+                      {/* <Text
+                        className="text-black-900 text-xl tracking-[-0.50px] w-auto"
+                        size="txtPoppinsSemiBold20"
+                      >
+                        Total Delivery Charge: Rs{" "}
+                        {totalDeliveryCharge}
+                      </Text> */}
+                    </div>
+
+                    <Line className="bg-black-900 h-px w-full" />
+
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <Text
+                        className="text-gray-500 text-xl tracking-[-0.50px] w-auto"
+                        size="txtRalewayRomanRegular20"
+                      >
+                        Subtotal (including delivery)
+                      </Text>
+                      <Text
+                        className="text-black-900 text-xl tracking-[-0.50px] w-auto"
+                        size="txtPoppinsSemiBold20"
+                      >
+                        Rs {totalPrice + totalDeliveryCharge}
+                      </Text>
                     </div>
                     <Line className="bg-black-900 h-px w-full" />
                     <div className="flex flex-row items-center justify-between w-full">
@@ -640,15 +793,48 @@ const CheckoutPage = () => {
                         className="text-black-900 text-xl tracking-[-0.50px] w-auto"
                         size="txtPoppinsSemiBold20"
                       >
-                        Rs {totalPrice.toFixed(2)}
+                        Rs {totalPrice + totalDeliveryCharge}
                       </Text>
                     </div>
-                    <Button
-                      className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full"
-                      onClick={handlePlaceOrder}
-                    >
-                      Place Order
-                    </Button>
+
+                    <Line className="bg-black-900 h-px w-full" />
+                    <Text className="text-lg">
+                      {/* <strong>Estimated Delivery:</strong> {deliveryDate} */}
+                      <strong>
+                        {"Delivery Time:"}
+                        {deliveryCharges.estimated_delivery_days}
+                        {" Days"}
+                      </strong>
+                    </Text>
+                    <div className="flex flex-col items-center justify-center w-full gap-3">
+                      {/* {!user?.additionalDetails?.contactNumberVerified && (
+                        <div className="w-full">
+                          <Button
+                            className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full"
+                            onClick={sendOtp}
+                          >
+                            Verify Mobile Number
+                          </Button>
+                          <div
+                            id="recaptcha"
+                            className="mt-[10px] mx-auto"
+                          ></div>
+                        </div>
+                      )} */}
+                      {/* {!deliveryData && ( */}
+                        <Button
+                          className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full"
+                          onClick={handlePlaceOrder}
+                        >
+                          Check Delivery Time
+                        </Button>
+                      {/* )} */}
+
+                      <Button className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full"
+                        onClick={() => handleBuyProduct(totalPrice + totalDeliveryCharge)}>
+                        Pay Now
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -660,7 +846,7 @@ const CheckoutPage = () => {
         </div>
         <CartSectionfooter className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
       </div>
-      {paymentModal && (
+      {/* {paymentModal && (
         <PaymentModalComp
           isOpen={paymentModal}
           onClose={() => setPaymentModal(false)}
@@ -669,7 +855,7 @@ const CheckoutPage = () => {
           user={user}
           onPayHandler={handleBuyProduct}
         />
-      )}
+      )} */}
     </>
   );
 };
