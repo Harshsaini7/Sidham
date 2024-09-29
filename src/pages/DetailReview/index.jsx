@@ -29,7 +29,6 @@ import ReviewSection from "components/ReviewSection";
 // import ReactStars from "react-rating-stars-component";
 import ReactStars from "react-rating-stars-component";
 
-
 const DetailReviewPage = () => {
   const navigate = useNavigate();
   const id = sessionStorage.getItem("productId");
@@ -43,6 +42,9 @@ const DetailReviewPage = () => {
   const [allProduct, setAllProduct] = useState([]);
   const [productCount, setProductCount] = useState(1);
   const [addedToWishlist, setAddedToWishlist] = useState(true);
+  const [ratingSection, setRatingSection] = useState(true);
+  const [descriptionSection, setDescriptionSection] = useState(false);
+  const [benefitSection, setBenefitSection] = useState(false);
 
   const handleAddToCart = async (e, id, quantity) => {
     const res = await AddToCart(e, id, quantity, token, dispatch);
@@ -153,8 +155,6 @@ const DetailReviewPage = () => {
     }
   };
 
-  
-
   useEffect(() => {
     fetchProduct();
   }, [id]);
@@ -230,10 +230,14 @@ const DetailReviewPage = () => {
   };
 
   // Handler for form submission
-  const handleSubmitReview =async (e) => {
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
     // Here you would typically send the reviewForm data to your backend
-    console.log("Review form data:", reviewForm);
+    // console.log("Review form data:", reviewForm);
+    if (!token) {
+      toast.error("Please Login");
+      return;
+    }
     // TODO: Add your API call to submit the review
 
     try {
@@ -241,26 +245,24 @@ const DetailReviewPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,  // Add the Bearer token to the request
+          Authorization: `Bearer ${token}`, // Add the Bearer token to the request
         },
         body: JSON.stringify({
-          productId: id,   // Ensure 'id' is defined
-          review: reviewForm.review,   // Ensure 'reviewForm.review' is set
-          rating: reviewForm.rating,   // Ensure 'reviewForm.rating' is set
+          productId: id, // Ensure 'id' is defined
+          review: reviewForm.review, // Ensure 'reviewForm.review' is set
+          rating: reviewForm.rating, // Ensure 'reviewForm.rating' is set
         }),
       });
-  
-      const result = await response.json();  // Parse the response as JSON
-      
-  
+
+      const result = await response.json(); // Parse the response as JSON
+
       if (!response.ok) {
         throw new Error(result.message || "Failed to add review");
       }
 
-      if(response.success){
+      if (response.success) {
         toast.success("Review added successfully");
-      }
-      else{
+      } else {
         toast.error(result.message);
         return;
       }
@@ -271,9 +273,6 @@ const DetailReviewPage = () => {
       }));
 
       fetchProduct();
-
-      
-  
     } catch (err) {
       console.log("Error while adding review:", err.message);
       toast.error("Failed to add review");
@@ -315,14 +314,13 @@ const DetailReviewPage = () => {
                         alt="frame135"
                       /> */}
 
-
                       <ReactStars
                         count={5}
                         size={24}
                         value={currProduct.averageRating}
                         edit={false}
                         activeColor="#ffd700"
-                        />
+                      />
 
                       <Text
                         className="text-gray-500 text-sm tracking-[-0.50px] w-auto mt-2"
@@ -436,120 +434,130 @@ const DetailReviewPage = () => {
               <div className="flex flex-col gap-[49px] items-start justify-start w-full">
                 <div className="flex flex-col items-center justify-start w-full">
                   <div className="flex flex-row gap-[50px] items-start justify-start w-full md:w-full">
-                    <Text
-                      className="common-pointer text-2xl md:text-[22px] text-gray-500 sm:text-xl tracking-[-0.50px] w-auto"
-                      size="txtJosefinSansRomanBold24Gray500"
-                      onClick={() => navigate("/shopdetaildescription")}
+                    <div
+                      className={`flex flex-col gap-2 items-start justify-start w-auto cursor-pointer ${
+                        descriptionSection ? "active-section" : ""
+                      }`}
+                      onClick={() => {
+                        setDescriptionSection(true);
+                        setRatingSection(false);
+                        setBenefitSection(false);
+                      }}
                     >
-                      Description
-                    </Text>
-                    <div className="flex flex-col gap-2 items-start justify-start w-auto">
                       <Text
-                        className="text-2xl md:text-[22px] text-bluegray-900 sm:text-xl tracking-[-0.50px] w-auto"
-                        size="txtJosefinSansRomanBold24"
+                        className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
+                          descriptionSection
+                            ? "text-bluegray-900"
+                            : "text-gray-500"
+                        }`}
+                        size={
+                          descriptionSection
+                            ? "txtJosefinSansRomanBold24"
+                            : "txtJosefinSansRomanBold24Gray500"
+                        }
+                      >
+                        Description
+                      </Text>
+                      {descriptionSection && (
+                        <Line className="bg-bluegray-900 h-1.5 w-full" />
+                      )}
+                    </div>
+
+                    <div
+                      className={`flex flex-col gap-2 items-start justify-start w-auto cursor-pointer ${
+                        benefitSection ? "active-section" : ""
+                      }`}
+                      onClick={() => {
+                        setDescriptionSection(false);
+                        setRatingSection(false);
+                        setBenefitSection(true);
+                      }}
+                    >
+                      <Text
+                        className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
+                          benefitSection ? "text-bluegray-900" : "text-gray-500"
+                        }`}
+                        size={
+                          benefitSection
+                            ? "txtJosefinSansRomanBold24"
+                            : "txtJosefinSansRomanBold24Gray500"
+                        }
+                      >
+                        Benefit
+                      </Text>
+                      {benefitSection && (
+                        <Line className="bg-bluegray-900 h-1.5 w-full" />
+                      )}
+                    </div>
+
+                    <div
+                      className={`flex flex-col gap-2 items-start justify-start w-auto cursor-pointer ${
+                        ratingSection ? "active-section" : ""
+                      }`}
+                      onClick={() => {
+                        setDescriptionSection(false);
+                        setRatingSection(true);
+                        setBenefitSection(false);
+                      }}
+                    >
+                      <Text
+                        className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
+                          ratingSection ? "text-bluegray-900" : "text-gray-500"
+                        }`}
+                        size={
+                          ratingSection
+                            ? "txtJosefinSansRomanBold24"
+                            : "txtJosefinSansRomanBold24Gray500"
+                        }
                       >
                         Review
                       </Text>
-                      <Line className="bg-bluegray-900 h-1.5 w-full" />
+                      {ratingSection && (
+                        <Line className="bg-bluegray-900 h-1.5 w-full" />
+                      )}
                     </div>
                   </div>
                 </div>
-                {/* <List
-                  className="flex flex-col font-rubik gap-[30px] items-start w-full"
-                  orientation="vertical"
-                >
-                  <div className="flex flex-1 flex-col gap-2.5 items-end justify-start my-0 w-full">
-                    <div className="flex flex-row sm:gap-10 items-center justify-between w-full">
-                      <div className="flex flex-row gap-[15px] items-center justify-start w-40">
-                        <Img
-                          className="h-[54px] md:h-auto rounded-[50%] w-[54px]"
-                          src="images/img_image_54x54.png"
-                          alt="image"
-                        />
-                        <div className="flex flex-col gap-[5px] items-start justify-start w-[91px]">
-                          <Text
-                            className="text-black-900 text-sm tracking-[-0.50px] w-auto"
-                            size="txtRubikRegular14Black900"
-                          >
-                            Ralph Edwards
-                          </Text>
-                          <Text
-                            className="text-bluegray-400 text-xs tracking-[-0.50px] w-auto"
-                            size="txtRubikRegular12"
-                          >
-                            2 minutes ago
-                          </Text>
-                        </div>
-                      </div>
-                      <Img
-                        className="h-4 w-32"
-                        src="images/img_star_orange_400.svg"
-                        alt="star"
-                      />
-                    </div>
-                    <Text
-                      className="leading-[35.00px] max-w-[565px] md:max-w-full text-black-900 text-sm tracking-[-0.50px]"
-                      size="txtRubikRegular14Black900"
-                    >
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. A
-                      justo turpis massa tristique augue dignissim volutpat.
-                      Quis ultricies eu libero tortor dictumst.
-                    </Text>
-                  </div>
-                  <div className="flex flex-1 flex-col gap-2.5 items-end justify-start my-0 w-full">
-                    <div className="flex flex-row sm:gap-10 items-center justify-between w-full">
-                      <div className="flex flex-row gap-[15px] items-center justify-start w-40">
-                        <Img
-                          className="h-[54px] md:h-auto rounded-[50%] w-[54px]"
-                          src="images/img_image_54x54.png"
-                          alt="image"
-                        />
-                        <div className="flex flex-col gap-[5px] items-start justify-start w-[91px]">
-                          <Text
-                            className="text-black-900 text-sm tracking-[-0.50px] w-auto"
-                            size="txtRubikRegular14Black900"
-                          >
-                            Ralph Edwards
-                          </Text>
-                          <Text
-                            className="text-bluegray-400 text-xs tracking-[-0.50px] w-auto"
-                            size="txtRubikRegular12"
-                          >
-                            2 minutes ago
-                          </Text>
-                        </div>
-                      </div>
-                      <Img
-                        className="h-4 w-32"
-                        src="images/img_star_orange_400.svg"
-                        alt="star"
-                      />
-                    </div>
-                    <Text
-                      className="leading-[35.00px] max-w-[565px] md:max-w-full text-black-900 text-sm tracking-[-0.50px]"
-                      size="txtRubikRegular14Black900"
-                    >
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. A
-                      justo turpis massa tristique augue dignissim volutpat.
-                      Quis ultricies eu libero tortor dictumst.
-                    </Text>
-                  </div>
-                </List> */}
-                {currProduct &&
-                  currProduct.reviews &&
-                  currProduct.reviews.length > 0 && (
-                    <ReviewSection reviews={currProduct?.reviews} />
-                  )}
-                {currProduct &&
-                  currProduct.reviews &&
-                  currProduct.reviews.length === 0 && (
+
+                {descriptionSection && (
+                  <div>
                     <Text
                       className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
                       size="txtRalewayBold24"
                     >
-                      No Reviews Available For This Product
+                      {currProduct?.description || "No Description Available"}
                     </Text>
-                  )}
+                  </div>
+                )}
+                {benefitSection && (
+                  <div>
+                    <Text
+                      className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
+                      size="txtRalewayBold24"
+                    >
+                      {currProduct?.benefit || "No Benefit Data Available"}
+                    </Text>
+                  </div>
+                )}
+                {ratingSection && (
+                  <div>
+                    {currProduct &&
+                      currProduct.reviews &&
+                      currProduct.reviews.length > 0 && (
+                        <ReviewSection reviews={currProduct?.reviews} />
+                      )}
+                    {currProduct &&
+                      currProduct.reviews &&
+                      currProduct.reviews.length === 0 && (
+                        <Text
+                          className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
+                          size="txtRalewayBold24"
+                        >
+                          No Reviews Available For This Product
+                        </Text>
+                      )}
+                  </div>
+                )}
               </div>
               <div className="flex flex-col font-raleway gap-6 items-center justify-start w-full">
                 <Text
