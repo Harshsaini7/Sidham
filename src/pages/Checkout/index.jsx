@@ -182,7 +182,7 @@ const CheckoutPage = () => {
   };
 
   const handleBuyProduct = async () => {
-    await handleSubmit();
+    // await handleSubmit();
     let products = data.map((product) => ({
       _id: product.productId._id,
       quantity: product.quantity,
@@ -272,6 +272,7 @@ const CheckoutPage = () => {
 
   const handlePlaceOrder = async () => {
     try {
+      await handleSubmit();
       const response = await calculateDeliveryCharge(user, cod);
       setDeliveryData(response?.available_courier_companies[0]);
       setPaymentModal(true);
@@ -280,6 +281,8 @@ const CheckoutPage = () => {
       toast.error("Failed to calculate delivery charge");
     }
   };
+
+
 
 
   useEffect(() => {
@@ -662,6 +665,9 @@ const CheckoutPage = () => {
           isOpen={paymentModal}
           onClose={() => setPaymentModal(false)}
           data={deliveryData}
+          productPrice={totalPrice}
+          user={user}
+          onPayHandler={handleBuyProduct}
         />
       )}
     </>

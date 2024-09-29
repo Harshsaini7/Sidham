@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from "components";
 
-const PaymentModalComp = ({ isOpen, onClose, data }) => {
+const PaymentModalComp = ({ isOpen, onClose, data , productPrice , user , onPayHandler }) => {
   if (!isOpen) return null;
 
   console.log("payment modal data", data);
@@ -17,26 +17,38 @@ const PaymentModalComp = ({ isOpen, onClose, data }) => {
         <h2 className="text-2xl font-bold mb-6 text-center">Delivery Information</h2>
         
         <div className="space-y-4 mb-6">
-          <Text className="text-lg"><strong>Courier:</strong> {data.courier_name}</Text>
+          {/* <Text className="text-lg"><strong>Courier:</strong> {data.courier_name}</Text> */}
+          <Text className="text-lg"><strong>Delivery Address:</strong> {user.additionalDetails.address1} {user.additionalDetails.address2} {user.additionalDetails.city} {user.additionalDetails.state} {user.additionalDetails.country} {user.additionalDetails.pincode}</Text>
           <Text className="text-lg"><strong>Delivery Charge:</strong> ₹{data.freight_charge || 0}</Text>
           <Text className="text-lg"><strong>COD Charges:</strong> ₹{data.cod_charges || 0}</Text>
           <Text className="text-lg"><strong>Coverage Charges:</strong> ₹{data.coverage_charges || 0}</Text>
           <Text className="text-lg"><strong>Other Charges:</strong> ₹{data.other_charges || 0}</Text>
           <Text className="text-lg"><strong>Estimated Delivery:</strong> {data.estimated_delivery_days} days</Text>
-          <Text className="text-lg"><strong>Delivery State:</strong> {data.state}</Text>
-          <Text className="text-lg"><strong>Tracking:</strong> {data.realtime_tracking}</Text>
+          {/* <Text className="text-lg"><strong>Delivery State:</strong> {data.state}</Text>
+          <Text className="text-lg"><strong>Tracking:</strong> {data.realtime_tracking}</Text> */}
+          <Text className="text-xl font-bold">Total Delivery Charge: ₹{totalCharges.toFixed(2)}</Text>
+
+          
+
         </div>
 
         <div className="border-t border-gray-300 pt-4 mb-6">
-          <Text className="text-xl font-bold">Total Delivery Charge: ₹{totalCharges.toFixed(2)}</Text>
+          <Text className="text-xl font-bold">Total Amount Payable: ₹{(productPrice + totalCharges).toFixed(2)}</Text>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-row gap-2 justify-center">
           <button
             onClick={onClose}
             className="bg-gray-800 text-white-A700 px-6 py-3 rounded hover:bg-gray-700"
           >
             Close
+          </button>
+
+          <button
+            onClick={onPayHandler}
+            className="bg-gray-800 text-white-A700 px-6 py-3 rounded hover:bg-gray-700"
+          >
+            Pay Now
           </button>
         </div>
       </div>
