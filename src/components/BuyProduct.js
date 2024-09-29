@@ -37,6 +37,55 @@ const generateUniqueOrderId = () => {
     return `ORD-${timestamp}-${randomComponent}`;
 };
 
+export const calculateDeliveryCharge = async (user , cod) => {
+    const shiprocketURL = "https://apiv2.shiprocket.in/v1/external";
+
+    try{
+        const loginResponse = await fetch(`${shiprocketURL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "email": EMAIL,
+                "password": PASSWORD
+            })
+        });
+
+        const loginData = await loginResponse.json();
+        const shiprocketToken = loginData.token;
+
+        if (!loginResponse.ok || !shiprocketToken) {
+            throw new Error('Login failed');
+        }
+
+        const deliveryChargeResponse = await fetch(`${shiprocketURL}/courier/serviceability?pickup_postcode=${user?.additionalDetails?.pincode}&delivery_postcode=136156&cod=${cod ? 1 : 0}&weight=1`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${shiprocketToken}`
+            }
+        });
+        const deliveryChargeData = await deliveryChargeResponse.json();
+        
+        // console.log("deliveryChargeResponse",deliveryChargeData?.data);
+        await fetch(`${shiprocketURL}/auth/logout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${shiprocketToken}`
+            }
+        });
+        return deliveryChargeData?.data;
+            
+    }
+
+    catch(error){
+        console.log(error);
+    }
+
+}
+
 const addOrderToShiprocket = async (products, totalPrice, user, token , cod) => {
     console.log("products", products);
 

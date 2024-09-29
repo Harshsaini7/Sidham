@@ -12,7 +12,10 @@ import { getUserDetails } from "../../services/operations/profileAPI";
 import SummaryApi from "../../common/index";
 import { FaAmazonPay } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
+import { calculateDeliveryCharge } from "components/BuyProduct";
 import "./index.css";
+
+import PaymentModalComp from "./PaymentModal";
 
 const unitedStatesUsOptionsList = [
   { label: "Domestic", value: "domestic" },
@@ -29,6 +32,8 @@ const CheckoutPage = () => {
   const [additionalDetails, setAdditionalDetails] = useState({});
   const [cod, setCod] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Online Payment");
+  const [paymentModal, setPaymentModal] = useState(false);
+  const [deliveryData, setDeliveryData] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -68,6 +73,16 @@ const CheckoutPage = () => {
       }
     } catch (error) {
       console.error("Error fetching additional details:", error);
+    }
+  };
+
+  const deliveryCharge = async (cod) => {
+    try {
+      const response = await calculateDeliveryCharge(user, cod);
+      console.log("response", response);
+      setDeliveryData(response?.available_courier_companies[0]);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -254,6 +269,18 @@ const CheckoutPage = () => {
     await fetchData();
     setLoading(false);
   };
+
+  const handlePlaceOrder = async () => {
+    try {
+      const response = await calculateDeliveryCharge(user, cod);
+      setDeliveryData(response?.available_courier_companies[0]);
+      setPaymentModal(true);
+    } catch (error) {
+      console.error("Error calculating delivery charge:", error);
+      toast.error("Failed to calculate delivery charge");
+    }
+  };
+
 
   useEffect(() => {
     if (cart && cart.length > 0) {
@@ -615,11 +642,7 @@ const CheckoutPage = () => {
                     </div>
                     <Button
                       className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] py-3.5 text-center text-lg text-yellow-100 tracking-[-0.50px] w-full"
-                      onClick={() => {
-                          handleSubmit();
-                      handleBuyProduct();
-                     
-                      }}
+                      onClick={handlePlaceOrder}
                     >
                       Place Order
                     </Button>
@@ -634,6 +657,13 @@ const CheckoutPage = () => {
         </div>
         <CartSectionfooter className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
       </div>
+      {paymentModal && (
+        <PaymentModalComp
+          isOpen={paymentModal}
+          onClose={() => setPaymentModal(false)}
+          data={deliveryData}
+        />
+      )}
     </>
   );
 };
