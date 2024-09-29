@@ -409,6 +409,10 @@ const DetailReviewPage = () => {
                       <Button
                         className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px] mt-1"
                         onClick={() => {
+                          if(!token){
+                            toast.error("Please Login");
+                            return;
+                          }
                           // setAddedToWishlist(!addedToWishlist);
                           handleUpdateWishlist(
                             currProduct._id,
