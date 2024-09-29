@@ -535,7 +535,7 @@ const DetailReviewPage = () => {
                       className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
                       size="txtRalewayBold24"
                     >
-                      {currProduct?.benefit || "No Benefit Data Available"}
+                      {currProduct?.benefits || "No Benefit Data Available"}
                     </Text>
                   </div>
                 )}
