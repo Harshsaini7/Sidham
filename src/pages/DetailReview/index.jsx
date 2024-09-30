@@ -28,6 +28,7 @@ import { getUserDetails } from "services/operations/profileAPI";
 import ReviewSection from "components/ReviewSection";
 // import ReactStars from "react-rating-stars-component";
 import ReactStars from "react-rating-stars-component";
+import Footer from "components/Footer";
 
 const DetailReviewPage = () => {
   const navigate = useNavigate();
@@ -752,7 +753,8 @@ const DetailReviewPage = () => {
         <div className="flex flex-col font-rubik items-start justify-start max-w-[1428px] mx-auto md:px-5 w-full">
           <CartColumnframe48095972 className="bg-gradient  flex flex-col gap-2 items-start justify-start max-w-[1278px] md:pl-10 sm:pl-5 pl-[59px] py-[46px] w-full" />
         </div>
-        <CartSectionfooter className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+        <Footer className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+
       </div>
     </>
   );

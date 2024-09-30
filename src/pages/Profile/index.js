@@ -7,6 +7,7 @@ import { getUserDetails } from '../../services/operations/profileAPI';
 import CartNavbar from 'components/CartNavbar';
 import CartSectionfooter from "components/CartSectionfooter";
 import { Button, Img, Text } from "components";
+import Footer from 'components/Footer';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -129,7 +130,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <CartSectionfooter className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+      <Footer className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+
       {openModal && <EditProfileDetails onClose={() => setOpenModal(false)} additionalDetails={additionalDetails} />}
     </div>
   );

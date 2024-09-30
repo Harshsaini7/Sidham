@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Img, Input, Line, List, SelectBox, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
-import CartSectionfooter from "components/CartSectionfooter";
+import CartSectionfooter from "components/";
 import  { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdDelete } from "react-icons/md";
@@ -16,6 +16,7 @@ import SummaryApi from "../../common/index";
 import displayINRCurrency from "../../helpers/displayCurrency"
 import EditProfileDetails from "components/BuyerEditDetails";
 import { setUserCart } from "../../slices/cartSlice";
+import Footer from "components/Footer";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -370,7 +371,8 @@ const CartPage = () => {
         <div className="flex flex-col items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
           <CartColumnframe48095972 className="bg-gradient  flex flex-col gap-2 items-start justify-start max-w-[1290px] mx-auto pl-[59px] md:px-5 py-[46px] w-full" />
         </div>
-        <CartSectionfooter className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+        <Footer className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+
       </div>
       {showModal && (
         <CODModal

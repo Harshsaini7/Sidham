@@ -9,6 +9,7 @@ import { getUserDetails } from "../../services/operations/profileAPI";
 import SummaryApi from "../../common/index";
 import displayINRCurrency from "../../helpers/displayCurrency";
 import TrackOrderModal from "./TrackOrderModal";
+import Footer from "components/Footer";
 
 const MyOrderPage = () => {
   const [orderDetails, setOrderDetails] = useState([]);
@@ -115,7 +116,8 @@ const MyOrderPage = () => {
           </div>
         </div>
       </div>
-      <CartSectionfooter className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+      <Footer className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+
       <TrackOrderModal
         isOpen={trackModalOpen} 
         onClose={() => setTrackModalOpen(false)} 

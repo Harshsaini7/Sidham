@@ -5,6 +5,7 @@ import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
 import TeamCardteam from "components/TeamCardteam";
+import Footer from "components/Footer";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -81,7 +82,8 @@ const TeamPage = () => {
         <div className="flex flex-col items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
           <CartColumnframe48095972 className="bg-gradient  flex flex-col gap-2 items-start justify-start max-w-[1290px] mx-auto pl-[59px] md:px-5 py-[46px] w-full" />
         </div>
-        <CartSectionfooter className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+        <Footer className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
+
       </div>
     </>
   );
