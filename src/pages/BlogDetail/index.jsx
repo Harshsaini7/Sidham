@@ -59,8 +59,7 @@ const BlogDetailPage = () => {
       }
       const data = await response.json();
       setBlog(data?.data);
-      console.log("hue hue",data?.data);
-
+      console.log("hue hue", data?.data);
     } catch (error) {
       console.error("Error fetching blog:", error);
       setError(error.message);
@@ -74,7 +73,6 @@ const BlogDetailPage = () => {
       const response = await fetch(SummaryApi.allBlog.url);
       const dataResponse = await response.json();
       setAllBlogs(dataResponse?.data || []);
-      
     } catch (error) {
       console.error("Error fetching all blogs:", error);
     }
@@ -115,46 +113,44 @@ const BlogDetailPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!token){
+    if (!token) {
       toast.error("Please Login");
       return;
     }
     console.log("Comment form data:", commentForm);
 
-    try{
-    const response = await fetch(SummaryApi.addComment.url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", 
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        blogId: id, // Ensure 'id' is defined
-        commentText: commentForm.comment,
-      }), 
-    }
-    );
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(result.message);
-    }
+    try {
+      const response = await fetch(SummaryApi.addComment.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          blogId: id, // Ensure 'id' is defined
+          commentText: commentForm.comment,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message);
+      }
 
-    toast.success("Comment Added Successfully");
-    setCommentForm({
-      comment : "",
-    })
-  } catch (error) {
-    toast.error(error.message);
-    console.error("Error:", error);
-  }
-      
+      toast.success("Comment Added Successfully");
+      fetchBlog();
+      setCommentForm({
+        comment: "",
+      });
+    } catch (error) {
+      toast.error(error.message);
+      console.error("Error:", error);
+    }
   };
 
   useEffect(() => {
     if (!user) {
       dispatch(getUserDetails(token, navigate));
-    }
-    else{
+    } else {
       console.log("user", user);
       setCommentForm((prevState) => ({
         ...prevState,
@@ -250,6 +246,32 @@ const BlogDetailPage = () => {
             </div>
             <div className="flex md:flex-col flex-row md:gap-10 gap-[110px] items-start justify-between w-full">
               <div className="flex flex-1 flex-col gap-[50px] items-start justify-start w-full">
+                <div className="flex flex-col gap-6 items-start justify-start w-full">
+                  <Text
+                    className="text-2xl md:text-[22px] text-black-900 sm:text-xl tracking-[-0.50px] w-full"
+                    size="txtRalewayBold24"
+                  >
+                    Comments ({blog.comments.length})
+                  </Text>
+                  <div className="max-h-[400px] overflow-y-auto w-full">
+                    {blog.comments.map((comment, index) => (
+                      <div
+                        key={index}
+                        className="mb-4 p-4 bg-white rounded-lg shadow"
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                          <Text className="font-semibold">
+                            {comment.user.name}
+                          </Text>
+                          <Text className="text-sm text-gray-500">
+                            {new Date(comment.date).toLocaleDateString()}
+                          </Text>
+                        </div>
+                        <Text>{comment.commentText}</Text>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <div className="flex flex-col gap-[30px] items-start justify-start w-full">
                   {/* <div className="flex flex-col gap-5 items-start justify-start w-full">
                     <Text
@@ -360,7 +382,6 @@ const BlogDetailPage = () => {
                               name="name"
                               placeholder="Write your name here...."
                               className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
-                    
                               type="text"
                               value={commentForm.name}
                               onChange={handleInputChange}
