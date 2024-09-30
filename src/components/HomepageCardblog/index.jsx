@@ -9,10 +9,10 @@ const HomepageCardblog = (props) => {
     <>
       <div className={props.className}>
         <div className="flex flex-col gap-6 items-start justify-start w-full">
-          <Img
+          <img
             className="h-[400px] sm:h-auto object-cover w-full"
             alt="rectangleEighteen"
-            src={props?.blogImage}
+            src={props?.rectangleeighteen}
           />
           <div className="flex flex-col gap-[19px] items-start justify-start w-full">
             <Text

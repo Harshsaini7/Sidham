@@ -58,6 +58,10 @@ const SummaryApi = {
         url: `${backendDomin}/api/get-blog`,
         method: 'get'
     },
+    addComment: {
+        url: `${backendDomin}/api/add-comment`,
+        method: 'post'
+    },
     updateProduct: {
         url: `${backendDomin}/api/update-product`,
         method: 'post'

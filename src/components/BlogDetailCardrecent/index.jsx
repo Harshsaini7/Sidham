@@ -17,13 +17,13 @@ const BlogDetailCardrecent = (props) => {
               className="text-base text-black-900 w-full"
               size="txtRalewayRomanBold16"
             >
-              {props?.howtochoosea}
+              {props?.title}
             </Text>
             <Text
               className="text-gray-500 text-sm tracking-[-0.50px] w-full"
               size="txtRubikRegular14"
             >
-              {props?.december272021}
+              {props?.date}
             </Text>
           </div>
         </div>

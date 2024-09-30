@@ -1,4 +1,4 @@
-import React, { useEffect , useState} from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
@@ -18,6 +18,9 @@ import HomepageCardblog from "components/HomepageCardblog";
 import CartNavbar from "components/CartNavbar";
 import SummaryApi from "common";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserDetails } from "services/operations/profileAPI";
+import { toast } from "react-toastify";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -26,37 +29,38 @@ const homeOptionsList = [
 ];
 
 const BlogDetailPage = () => {
-  const navigate = useNavigate();
- 
+  const { user } = useSelector((state) => state.profile);
 
+  const navigate = useNavigate();
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const id = sessionStorage.getItem("blogId");
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchBlog = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${SummaryApi.blogDetails.url}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            blogId: id,
-          }),
-        }
-      );
+      const id = sessionStorage.getItem("blogId");
+      const response = await fetch(`${SummaryApi.blogDetails.url}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ blogId: id }),
+      });
 
-      // console.log("response", response);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
       setBlog(data?.data);
-      console.log(data.data);
+      console.log("hue hue",data?.data);
+
     } catch (error) {
       console.error("Error fetching blog:", error);
       setError(error.message);
@@ -65,16 +69,110 @@ const BlogDetailPage = () => {
     }
   };
 
+  const fetchAllBlogs = async () => {
+    try {
+      const response = await fetch(SummaryApi.allBlog.url);
+      const dataResponse = await response.json();
+      setAllBlogs(dataResponse?.data || []);
+      
+    } catch (error) {
+      console.error("Error fetching all blogs:", error);
+    }
+  };
+
   useEffect(() => {
     fetchBlog();
+    fetchAllBlogs();
   }, []);
- 
+
+  const filteredBlogs = allBlogs.filter(
+    (blog) =>
+      blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      blog.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const [commentForm, setCommentForm] = useState({
+    name: "",
+    email: "",
+    comment: "",
+    saveInfo: false,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCommentForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleCheckboxChange = (e) => {
+    setCommentForm((prevState) => ({
+      ...prevState,
+      saveInfo: e.target.checked,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if(!token){
+      toast.error("Please Login");
+      return;
+    }
+    console.log("Comment form data:", commentForm);
+
+    try{
+    const response = await fetch(SummaryApi.addComment.url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", 
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        blogId: id, // Ensure 'id' is defined
+        commentText: commentForm.comment,
+      }), 
+    }
+    );
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message);
+    }
+
+    toast.success("Comment Added Successfully");
+    setCommentForm({
+      comment : "",
+    })
+  } catch (error) {
+    toast.error(error.message);
+    console.error("Error:", error);
+  }
+      
+  };
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(getUserDetails(token, navigate));
+    }
+    else{
+      console.log("user", user);
+      setCommentForm((prevState) => ({
+        ...prevState,
+        name: user?.name,
+        email: user?.email,
+      }));
+    }
+  }, [user, navigate]);
+
+  const recentBlogs = filteredBlogs.slice(0, 4);
+
   const blogDetailCardrecentPropList = [
     {},
     { image: "images/img_image_70x70.png" },
     { image: "images/img_image_14.png" },
     { image: "images/img_image_15.png" },
   ];
+
   const homepageCardblogPropList = [
     {},
     { rectangleeighteen: "images/img_rectangle18_400x416.png" },
@@ -137,25 +235,23 @@ const BlogDetailPage = () => {
                     </div>
                   </div>
                 </div>
-                <Text
-                  className="text-base text-center text-gray-500 tracking-[-0.50px] w-full"
-                  size="txtRubikRegular16"
-                >
-                  <>
-                    {blog?.description}
-                  </>
-                </Text>
               </div>
               <Img
                 className="h-[450px] md:h-auto object-cover w-full"
                 src={blog?.blogImage[0]}
                 alt="rectangle1488"
               />
+              <Text
+                className="text-base text-center text-gray-500 tracking-[-0.50px] w-full"
+                size="txtRubikRegular16"
+              >
+                <>{blog?.description}</>
+              </Text>
             </div>
             <div className="flex md:flex-col flex-row md:gap-10 gap-[110px] items-start justify-between w-full">
               <div className="flex flex-1 flex-col gap-[50px] items-start justify-start w-full">
                 <div className="flex flex-col gap-[30px] items-start justify-start w-full">
-                  <div className="flex flex-col gap-5 items-start justify-start w-full">
+                  {/* <div className="flex flex-col gap-5 items-start justify-start w-full">
                     <Text
                       className="md:text-3xl sm:text-[28px] text-[32px] text-black-900 tracking-[-0.50px] w-full"
                       size="txtRalewayRomanBold32Black900"
@@ -239,7 +335,7 @@ const BlogDetailPage = () => {
                         Minimalist
                       </Button>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="flex flex-col gap-6 items-center justify-start w-full">
                     <Text
                       className="text-2xl md:text-[22px] text-black-900 sm:text-xl tracking-[-0.50px] w-full"
@@ -247,7 +343,10 @@ const BlogDetailPage = () => {
                     >
                       Leave a Comment
                     </Text>
-                    <div className="flex flex-col gap-8 items-start justify-start w-full">
+                    <form
+                      onSubmit={handleSubmit}
+                      className="flex flex-col gap-8 items-start justify-start w-full"
+                    >
                       <div className="flex flex-col gap-[31px] items-start justify-start w-full">
                         <div className="flex md:flex-col flex-row gap-4 items-start justify-start w-full">
                           <div className="flex flex-1 flex-col gap-[17px] items-start justify-start w-full">
@@ -257,13 +356,15 @@ const BlogDetailPage = () => {
                             >
                               Your Name
                             </Text>
-                            <Input
-                              name="frame48096015"
+                            <input
+                              name="name"
                               placeholder="Write your name here...."
-                              className="font-rubik p-0 placeholder:text-gray-500 sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
-                              wrapClassName="border border-bluegray-100 border-solid pl-[18px] pr-[35px] py-5 w-full"
+                              className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
+                    
                               type="text"
-                            ></Input>
+                              value={commentForm.name}
+                              onChange={handleInputChange}
+                            ></input>
                           </div>
                           <div className="flex flex-1 flex-col gap-[17px] items-start justify-start w-full">
                             <Text
@@ -272,13 +373,14 @@ const BlogDetailPage = () => {
                             >
                               Your Email
                             </Text>
-                            <Input
-                              name="frame48096015_One"
+                            <input
+                              name="email"
                               placeholder="Write your email here...."
-                              className="font-rubik p-0 placeholder:text-gray-500 sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
-                              wrapClassName="border border-bluegray-100 border-solid pl-[18px] pr-[35px] py-5 w-full"
+                              className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
                               type="email"
-                            ></Input>
+                              value={commentForm.email}
+                              onChange={handleInputChange}
+                            ></input>
                           </div>
                         </div>
                         <div className="flex flex-col gap-[17px] items-start justify-start w-full">
@@ -288,40 +390,45 @@ const BlogDetailPage = () => {
                           >
                             Your Comment
                           </Text>
-                          <div className="border border-bluegray-100 border-solid flex flex-col font-rubik h-[218px] md:h-auto items-start justify-start p-4 w-full">
-                            <Text
-                              className="text-gray-500 text-sm tracking-[-0.50px] w-auto"
-                              size="txtRubikRegular14"
-                            >
-                              Write your review here....
-                            </Text>
-                          </div>
+                          <textarea
+                            name="comment"
+                            placeholder="Write your comment here...."
+                            className="border border-bluegray-100 border-solid flex font-rubik h-[218px] md:h-auto items-start justify-start p-4 w-full text-gray-500 text-sm tracking-[-0.50px]"
+                            value={commentForm.comment}
+                            onChange={handleInputChange}
+                          ></textarea>
                         </div>
                       </div>
                       <div className="flex flex-col font-poppins gap-[30px] items-start justify-start w-full">
-                        <CheckBox
+                        {/* <CheckBox
                           className="italic leading-[normal] text-gray-500 text-left text-sm tracking-[-0.50px]"
                           inputClassName="border border-bluegray-100 border-solid h-[18px] mr-[5px] w-[18px]"
-                          name="savemynameemail_One"
-                          id="savemynameemail_One"
+                          name="saveInfo"
+                          id="saveInfo"
+                          onChange={handleCheckboxChange}
                           label="Save my name, email, and website in this browser for the next time I comment."
-                        ></CheckBox>
-                        <Button className="bg-bluegray-900 border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[155px] py-[13px] text-base text-center text-white-A700 tracking-[-0.50px]">
+                        ></CheckBox> */}
+                        <Button
+                          type="submit"
+                          className="bg-bluegray-900 border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[155px] py-[13px] text-base text-center text-white-A700 tracking-[-0.50px]"
+                        >
                           Submit
                         </Button>
                       </div>
-                    </div>
+                    </form>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col gap-[50px] items-start justify-start w-[328px]">
                 <div className="flex flex-row items-start justify-start w-full">
-                  <Input
-                    name="frame48096101"
+                  <input
+                    name="search"
                     placeholder="Find Something..."
-                    className="leading-[normal] md:h-auto p-0 placeholder:text-black-900_3f sm:h-auto sm:pr-5 text-black-900_3f text-left text-sm tracking-[-0.50px] w-full"
-                    wrapClassName="bg-gray-53 pb-3.5 pl-3 pr-[35px] pt-[17px] w-[68%]"
-                  ></Input>
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
+                    // wrapClassName="bg-gray-53 pb-3.5 pl-3 pr-[35px] pt-[17px] w-[68%]"
+                  ></input>
                   <Button className="bg-bluegray-900 cursor-pointer font-semibold leading-[normal] min-w-[107px] py-4 text-center text-sm text-yellow-100 tracking-[-0.50px]">
                     Search
                   </Button>
@@ -337,16 +444,18 @@ const BlogDetailPage = () => {
                     className="flex flex-col gap-5 items-start w-full"
                     orientation="vertical"
                   >
-                    {blogDetailCardrecentPropList.map((props, index) => (
-                      <React.Fragment key={`BlogDetailCardrecent${index}`}>
-                        <BlogDetailCardrecent
-                          className="flex flex-1 flex-col gap-2 items-start justify-center my-0 w-full"
-                          {...props}
-                        />
-                      </React.Fragment>
+                    {recentBlogs.map((blog, index) => (
+                      <BlogDetailCardrecent
+                        key={blog._id}
+                        className="flex flex-1 flex-col gap-2 items-start justify-center my-0 w-full"
+                        title={blog.title}
+                        date={new Date(blog.createdAt).toLocaleDateString()}
+                        image={blog.blogImage[0]}
+                      />
                     ))}
                   </List>
                 </div>
+
                 <div className="flex flex-col font-josefinsans gap-5 items-start justify-start w-full">
                   <Text
                     className="text-gray-900 text-xl w-full"
@@ -391,7 +500,7 @@ const BlogDetailPage = () => {
                     </Button>
                   </div>
                 </div>
-                <div className="flex flex-col font-josefinsans gap-5 items-start justify-start w-full">
+                {/* <div className="flex flex-col font-josefinsans gap-5 items-start justify-start w-full">
                   <Text
                     className="text-gray-900 text-xl w-full"
                     size="txtJosefinSansRomanSemiBold20"
@@ -474,7 +583,7 @@ const BlogDetailPage = () => {
                       </Button>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -496,21 +605,20 @@ const BlogDetailPage = () => {
                 things I need to pay attention to when choosing furniture
               </Text>
             </div>
-            <List
-              className="sm:flex-col flex-row gap-5 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-start w-full"
-              orientation="horizontal"
-            >
-              {homepageCardblogPropList.map((props, index) => (
-                <React.Fragment key={`HomepageCardblog${index}`}>
-                  <HomepageCardblog
-                    className="flex flex-1 flex-col gap-2 items-start justify-start w-full"
-                    {...props}
-                  />
-                </React.Fragment>
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 gap-5 w-full">
+              {filteredBlogs.map((blog) => (
+                <HomepageCardblog
+                  key={blog._id}
+                  className="flex flex-1 flex-col gap-2 items-start justify-start w-full"
+                  rectangleeighteen={blog.blogImage[0]}
+                  title={blog.title}
+                  date={new Date(blog.createdAt).toLocaleDateString()}
+                />
               ))}
-            </List>
+            </div>
           </div>
         </div>
+
         <div className="flex flex-col items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
           <CartColumnframe48095972 className="bg-gradient  flex flex-col gap-2 items-start justify-start max-w-[1291px] mx-auto pl-[59px] md:px-5 py-[46px] w-full" />
         </div>
