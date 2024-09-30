@@ -34,7 +34,6 @@ import Footer from "components/Footer";
 import leaf1 from "../../assets/leaf1.svg";
 import leaf2 from "../../assets/leaf2.svg";
 
-
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
   { label: "Option2", value: "option2" },
@@ -144,21 +143,25 @@ const HomepagePage = () => {
             </div>
           </div>
         </div>
-        <div className="bg-black-900 flex flex-col items-center justify-center md:px-10 sm:px-5 px-[143px] py-[25px] w-full">
-          <div className="flex flex-col gap-[46px] items-center justify-start  mx-auto w-full ">
+        <div className="bg-black-900 flex flex-col items-center justify-center md:px-10 sm:px-5 px-[143px] py-[25px] w-full relative">
+          <Img
+            className="h-[125px] w-[125px] absolute top-0 left-0"
+            src={leaf2}
+            alt="Leaf 2"
+          />
+          <Img
+            className="h-[125px] w-[125px] absolute top-0 right-0"
+            src={leaf1}
+            alt="Leaf 1"
+          />
+          <div className="flex flex-col gap-[46px] items-center justify-start mx-auto w-full">
             <Text
               className="text-center text-gray-53 text-4xl tracking-[-0.50px] w-full"
               size="txtRubikRegular20"
             >
               Our Certifications
             </Text>
-            <div className="flex flex-wrap justify-center items-center w-full gap-8  realtive">
-
-              <Img
-                className="h-[125px] w-[125px] absolute left-8"
-                src={leaf2}
-                alt="ISO Logo"
-                />
+            <div className="flex flex-wrap justify-center items-center w-full gap-8">
               <Img
                 className="h-[125px] w-[125px] object-contain"
                 src={moaLogo}
@@ -183,11 +186,6 @@ const HomepagePage = () => {
                 className="h-[125px] w-[125px] object-contain"
                 src={tradeMarkLogo}
                 alt="Trademark Logo"
-              />
-              <Img
-                className="h-[125px] w-[125px] absolute right-8"
-                src={leaf1}
-                alt="ISO Logo"
               />
             </div>
           </div>
