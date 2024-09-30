@@ -270,7 +270,7 @@ const ShopPage = () => {
                   </Button>
                 </div>
               </div> */}
-              <div className="h-[400px] relative w-full">
+              {/* <div className="h-[400px] relative w-full">
                 <Img
                   className="h-[400px] m-auto object-cover rounded-[10px] w-[308px] md:w-full"
                   src="images/img_rectangle29.png"
@@ -287,7 +287,7 @@ const ShopPage = () => {
                     Buy Now
                   </Button>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="flex flex-1 flex-col font-rubik gap-[50px] items-center justify-start w-full">
               <form

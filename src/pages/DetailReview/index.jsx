@@ -409,7 +409,7 @@ const DetailReviewPage = () => {
                       <Button
                         className="border border-bluegray-100 border-solid flex h-[43px] items-center justify-center p-3 w-[43px] mt-1"
                         onClick={() => {
-                          if(!token){
+                          if (!token) {
                             toast.error("Please Login");
                             return;
                           }
@@ -432,273 +432,229 @@ const DetailReviewPage = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-col font-josefinsans items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
-          <div className="flex md:flex-col flex-row gap-[50px] items-start justify-start max-w-[1290px] mx-auto w-full">
-            <div className="flex flex-1 flex-col gap-[50px] items-start justify-start w-full">
-              <div className="flex flex-col gap-[49px] items-start justify-start w-full">
-                <div className="flex flex-col items-center justify-start w-full">
-                  <div className="flex flex-row gap-[50px] items-start justify-start w-full md:w-full">
-                    <div
-                      className={`flex flex-col gap-2 items-start justify-start w-auto cursor-pointer ${
-                        descriptionSection ? "active-section" : ""
-                      }`}
-                      onClick={() => {
-                        setDescriptionSection(true);
-                        setRatingSection(false);
-                        setBenefitSection(false);
-                      }}
-                    >
-                      <Text
-                        className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
-                          descriptionSection
-                            ? "text-bluegray-900"
-                            : "text-gray-500"
-                        }`}
-                        size={
-                          descriptionSection
-                            ? "txtJosefinSansRomanBold24"
-                            : "txtJosefinSansRomanBold24Gray500"
-                        }
-                      >
-                        Description
-                      </Text>
-                      {descriptionSection && (
-                        <Line className="bg-bluegray-900 h-1.5 w-full" />
-                      )}
-                    </div>
-
-                    <div
-                      className={`flex flex-col gap-2 items-start justify-start w-auto cursor-pointer ${
-                        benefitSection ? "active-section" : ""
-                      }`}
-                      onClick={() => {
-                        setDescriptionSection(false);
-                        setRatingSection(false);
-                        setBenefitSection(true);
-                      }}
-                    >
-                      <Text
-                        className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
-                          benefitSection ? "text-bluegray-900" : "text-gray-500"
-                        }`}
-                        size={
-                          benefitSection
-                            ? "txtJosefinSansRomanBold24"
-                            : "txtJosefinSansRomanBold24Gray500"
-                        }
-                      >
-                        Benefit
-                      </Text>
-                      {benefitSection && (
-                        <Line className="bg-bluegray-900 h-1.5 w-full" />
-                      )}
-                    </div>
-
-                    <div
-                      className={`flex flex-col gap-2 items-start justify-start w-auto cursor-pointer ${
-                        ratingSection ? "active-section" : ""
-                      }`}
-                      onClick={() => {
-                        setDescriptionSection(false);
-                        setRatingSection(true);
-                        setBenefitSection(false);
-                      }}
-                    >
-                      <Text
-                        className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
-                          ratingSection ? "text-bluegray-900" : "text-gray-500"
-                        }`}
-                        size={
-                          ratingSection
-                            ? "txtJosefinSansRomanBold24"
-                            : "txtJosefinSansRomanBold24Gray500"
-                        }
-                      >
-                        Review
-                      </Text>
-                      {ratingSection && (
-                        <Line className="bg-bluegray-900 h-1.5 w-full" />
-                      )}
-                    </div>
-                  </div>
+        <div className="flex flex-col font-josefinsans items-center justify-start md:px-10 sm:px-5 px-[75px] w-full">
+          <div className="flex flex-col gap-[50px] items-center justify-start max-w-[1290px] mx-auto w-full">
+            <div className="flex flex-col items-center justify-start w-full">
+              <div className="flex flex-row gap-[50px] items-start justify-center w-full md:w-full">
+                <div
+                  className={`flex flex-col gap-2 items-center justify-start w-auto cursor-pointer ${
+                    descriptionSection ? "active-section" : ""
+                  }`}
+                  onClick={() => {
+                    setDescriptionSection(true);
+                    setRatingSection(false);
+                    setBenefitSection(false);
+                  }}
+                >
+                  <Text
+                    className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
+                      descriptionSection ? "text-bluegray-900" : "text-gray-500"
+                    }`}
+                    size={
+                      descriptionSection
+                        ? "txtJosefinSansRomanBold24"
+                        : "txtJosefinSansRomanBold24Gray500"
+                    }
+                  >
+                    Description
+                  </Text>
+                  {descriptionSection && (
+                    <Line className="bg-bluegray-900 h-1.5 w-full" />
+                  )}
                 </div>
 
-                {descriptionSection && (
-                  <div>
-                    <Text
-                      className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
-                      size="txtRalewayBold24"
-                    >
-                      {currProduct?.description || "No Description Available"}
-                    </Text>
-                  </div>
-                )}
-                {benefitSection && (
-                  <div>
-                    <Text
-                      className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
-                      size="txtRalewayBold24"
-                    >
-                      {currProduct?.benefits || "No Benefit Data Available"}
-                    </Text>
-                  </div>
-                )}
-                {ratingSection && (
-                  <div>
-                    {currProduct &&
-                      currProduct.reviews &&
-                      currProduct.reviews.length > 0 && (
-                        <ReviewSection reviews={currProduct?.reviews} />
-                      )}
-                    {currProduct &&
-                      currProduct.reviews &&
-                      currProduct.reviews.length === 0 && (
-                        <Text
-                          className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
-                          size="txtRalewayBold24"
-                        >
-                          No Reviews Available For This Product
-                        </Text>
-                      )}
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-col font-raleway gap-6 items-center justify-start w-full">
-                <Text
-                  className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
-                  size="txtRalewayBold24"
+                <div
+                  className={`flex flex-col gap-2 items-center justify-start w-auto cursor-pointer ${
+                    benefitSection ? "active-section" : ""
+                  }`}
+                  onClick={() => {
+                    setDescriptionSection(false);
+                    setRatingSection(false);
+                    setBenefitSection(true);
+                  }}
                 >
-                  Write your review
-                </Text>
-                <form
-                  onSubmit={handleSubmitReview}
-                  className="flex flex-col gap-8 items-start justify-start w-full md:w-full"
+                  <Text
+                    className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
+                      benefitSection ? "text-bluegray-900" : "text-gray-500"
+                    }`}
+                    size={
+                      benefitSection
+                        ? "txtJosefinSansRomanBold24"
+                        : "txtJosefinSansRomanBold24Gray500"
+                    }
+                  >
+                    Benefit
+                  </Text>
+                  {benefitSection && (
+                    <Line className="bg-bluegray-900 h-1.5 w-full" />
+                  )}
+                </div>
+
+                <div
+                  className={`flex flex-col gap-2 items-center justify-start w-auto cursor-pointer ${
+                    ratingSection ? "active-section" : ""
+                  }`}
+                  onClick={() => {
+                    setDescriptionSection(false);
+                    setRatingSection(true);
+                    setBenefitSection(false);
+                  }}
                 >
-                  <div className="flex flex-col gap-[50px] items-start justify-start w-full">
-                    <div className="flex flex-col gap-[17px] items-start justify-start w-full">
-                      <Text
-                        className="text-black-900 text-lg tracking-[-0.50px] w-full"
-                        size="txtRalewayRomanSemiBold18"
-                      >
-                        Your Rating
-                      </Text>
-                      <ReactStars
-                        count={5}
-                        onChange={handleRatingChange}
-                        size={24}
-                        activeColor="#ffd700"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-[31px] items-start justify-start w-full">
-                      <div className="flex md:flex-col flex-row gap-4 items-start justify-start w-full">
-                        <div className="flex flex-1 flex-col gap-[17px] items-start justify-start w-full">
-                          <Text
-                            className="text-black-900 text-lg tracking-[-0.50px] w-auto"
-                            size="txtRalewayRomanSemiBold18"
-                          >
-                            Your Name
-                          </Text>
-                          <input
-                            name="name"
-                            placeholder="Write your name here...."
-                            className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
-                            type="text"
-                            value={reviewForm.name}
-                            // onChange={handleInputChange}
-                          />
-                        </div>
-                        <div className="flex flex-1 flex-col gap-[17px] items-start justify-start w-full">
-                          <Text
-                            className="text-black-900 text-lg tracking-[-0.50px] w-auto"
-                            size="txtRalewayRomanSemiBold18"
-                          >
-                            Your Email
-                          </Text>
-                          <input
-                            name="email"
-                            placeholder="Write your email here...."
-                            className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
-                            type="email"
-                            value={reviewForm.email}
-                            // onChange={handleInputChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-[17px] items-start justify-start w-full">
-                        <Text
-                          className="text-black-900 text-lg tracking-[-0.50px] w-full"
-                          size="txtRalewayRomanSemiBold18"
-                        >
-                          Your Review
-                        </Text>
-                        <textarea
-                          name="review"
-                          placeholder="Write your review here...."
-                          className="border border-bluegray-100 border-solid font-rubik h-[218px] md:h-auto items-start justify-start p-4 text-gray-500 text-sm tracking-[-0.50px] w-full rounded-md"
-                          value={reviewForm.review}
-                          onChange={handleInputChange}
-                        ></textarea>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col font-poppins gap-[30px] items-start justify-start w-full">
-                    <CheckBox
-                      className="italic leading-[normal] sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px]"
-                      inputClassName="border border-bluegray-100 border-solid h-[18px] mr-[5px] w-[18px]"
-                      name="saveInfo"
-                      id="saveInfo"
-                      label="Save my name, email, and website in this browser for the next time I comment."
-                      checked={reviewForm.saveInfo}
-                      onChange={handleInputChange}
-                    ></CheckBox>
-                    <Button
-                      type="submit"
-                      className="bg-bluegray-900 border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[155px] py-[13px] text-base text-center text-white-A700 tracking-[-0.50px] rounded-md"
-                    >
-                      Submit
-                    </Button>
-                  </div>
-                </form>
+                  <Text
+                    className={`text-2xl md:text-[22px] sm:text-xl tracking-[-0.50px] w-auto ${
+                      ratingSection ? "text-bluegray-900" : "text-gray-500"
+                    }`}
+                    size={
+                      ratingSection
+                        ? "txtJosefinSansRomanBold24"
+                        : "txtJosefinSansRomanBold24Gray500"
+                    }
+                  >
+                    Review
+                  </Text>
+                  {ratingSection && (
+                    <Line className="bg-bluegray-900 h-1.5 w-full" />
+                  )}
+                </div>
               </div>
             </div>
-            <div className="flex flex-1 flex-col font-poppins gap-[21px] items-center justify-start w-full">
-              <div className="bg-gray-53 flex flex-col items-start justify-start md:px-10 sm:px-5 px-[43px] py-6 w-full">
-                <div className="flex sm:flex-col flex-row gap-[42px] items-start justify-start w-full">
-                  <div className="flex flex-1 flex-col gap-[23px] items-start justify-start w-full">
-                    <div className="flex flex-col gap-[31px] items-start justify-start w-full">
-                      <Text
-                        className="text-bluegray-900 text-lg tracking-[-0.50px] w-full"
-                        size="txtRubikRegular18Bluegray900"
-                      >
-                        Living Room
-                      </Text>
-                      <Text
-                        className="max-w-[313px] md:max-w-full text-4xl sm:text-[32px] md:text-[34px] text-black-900 tracking-[-0.50px]"
-                        size="txtRalewayBold36Black900"
-                      >
-                        The best foam padded chair
-                      </Text>
-                    </div>
-                    <Button className="border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[155px] py-[13px] text-base text-bluegray-900 text-center tracking-[-0.50px]">
-                      Shop Now
-                    </Button>
-                  </div>
-                  <Img
-                    className="h-[301px] md:h-auto max-h-[301px] object-cover sm:w-[]"
-                    src="images/img_sammoghadamkh.png"
-                    alt="sammoghadamkh"
-                  />
+
+            <div className="w-full">
+              {descriptionSection && (
+                <div className="w-full text-center">
+                  <Text
+                    className="text-2xl md:text-[22px] text-black-900 sm:text-xl tracking-[-0.50px] w-full"
+                    size="txtRalewayBold24"
+                  >
+                    {currProduct?.description || "No Description Available"}
+                  </Text>
                 </div>
-              </div>
-              <PagerIndicator
-                className="flex h-[15px] justify-center w-[75px]"
-                count={3}
-                activeCss="inline-block cursor-pointer rounded-[50%] h-[15px] bg-bluegray-900 w-[15px]"
-                activeIndex={1}
-                inactiveCss="inline-block cursor-pointer rounded-[50%] h-[15px] bg-gray-200 w-[15px]"
-                selectedWrapperCss="inline-block md:ml-[0] mx-[7.50px] sm:ml-[0]"
-                unselectedWrapperCss="inline-block md:ml-[0] mx-[7.50px] sm:ml-[0]"
-              />
+              )}
+              {benefitSection && (
+                <div className="w-full text-center">
+                  <Text
+                    className="text-2xl md:text-[22px] text-black-900 sm:text-xl tracking-[-0.50px] w-full"
+                    size="txtRalewayBold24"
+                  >
+                    {currProduct?.benefits || "No Benefit Data Available"}
+                  </Text>
+                </div>
+              )}
+              {ratingSection && (
+                <div className="w-full flex flex-col items-center justify-center">
+                  {currProduct &&
+                    currProduct.reviews &&
+                    currProduct.reviews.length > 0 && (
+                      <ReviewSection reviews={currProduct?.reviews} />
+                    )}
+                  {currProduct &&
+                    currProduct.reviews &&
+                    currProduct.reviews.length === 0 && (
+                      <Text
+                        className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
+                        size="txtRalewayBold24"
+                      >
+                        No Reviews Available For This Product
+                      </Text>
+                    )}
+
+                  <div className="flex flex-col font-raleway gap-6 items-center justify-center w-full max-w-[800px] mt-10">
+                    <Text
+                      className="text-2xl md:text-[22px] text-black-900 text-center sm:text-xl tracking-[-0.50px] w-full"
+                      size="txtRalewayBold24"
+                    >
+                      Write your review
+                    </Text>
+                    <form
+                      onSubmit={handleSubmitReview}
+                      className="flex flex-col gap-8 items-center justify-center w-full md:w-full"
+                    >
+                      <div className="flex flex-col gap-[50px] items-center justify-center w-full">
+                        <div className="flex flex-col gap-[17px] items-center justify-center w-full">
+                          <Text
+                            className="text-black-900 text-lg tracking-[-0.50px] w-full text-center"
+                            size="txtRalewayRomanSemiBold18"
+                          >
+                            Your Rating
+                          </Text>
+                          <ReactStars
+                            count={5}
+                            onChange={handleRatingChange}
+                            size={24}
+                            activeColor="#ffd700"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-[31px] items-center justify-center w-full">
+                          <div className="flex md:flex-col flex-row gap-4 items-center justify-center w-full">
+                            <div className="flex flex-1 flex-col gap-[17px] items-center justify-center w-full">
+                              <Text
+                                className="text-black-900 text-lg tracking-[-0.50px] w-auto"
+                                size="txtRalewayRomanSemiBold18"
+                              >
+                                Your Name
+                              </Text>
+                              <input
+                                name="name"
+                                placeholder="Write your name here...."
+                                className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
+                                type="text"
+                                value={reviewForm.name}
+                              />
+                            </div>
+                            <div className="flex flex-1 flex-col gap-[17px] items-center justify-center w-full">
+                              <Text
+                                className="text-black-900 text-lg tracking-[-0.50px] w-auto"
+                                size="txtRalewayRomanSemiBold18"
+                              >
+                                Your Email
+                              </Text>
+                              <input
+                                name="email"
+                                placeholder="Write your email here...."
+                                className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
+                                type="email"
+                                value={reviewForm.email}
+                              />
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-[17px] items-center justify-center w-full">
+                            <Text
+                              className="text-black-900 text-lg tracking-[-0.50px] w-full text-center"
+                              size="txtRalewayRomanSemiBold18"
+                            >
+                              Your Review
+                            </Text>
+                            <textarea
+                              name="review"
+                              placeholder="Write your review here...."
+                              className="border border-bluegray-100 border-solid font-rubik h-[218px] md:h-auto items-start justify-start p-4 text-gray-500 text-sm tracking-[-0.50px] w-full rounded-md"
+                              value={reviewForm.review}
+                              onChange={handleInputChange}
+                            ></textarea>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col font-poppins gap-[30px] items-center justify-center w-full">
+                        <CheckBox
+                          className="italic leading-[normal] sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px]"
+                          inputClassName="border border-bluegray-100 border-solid h-[18px] mr-[5px] w-[18px]"
+                          name="saveInfo"
+                          id="saveInfo"
+                          label="Save my name, email, and website in this browser for the next time I comment."
+                          checked={reviewForm.saveInfo}
+                          onChange={handleInputChange}
+                        ></CheckBox>
+                        <Button
+                          type="submit"
+                          className="bg-bluegray-900 border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[155px] py-[13px] text-base text-center text-white-A700 tracking-[-0.50px] rounded-md"
+                        >
+                          Submit
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

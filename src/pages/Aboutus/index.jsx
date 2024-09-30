@@ -44,26 +44,23 @@ const AboutusPage = () => {
                     className="leading-[60.00px] max-w-[626px] md:max-w-full text-5xl sm:text-[38px] md:text-[44px] text-black-900 tracking-[-0.50px]"
                     size="txtRalewayRomanBold48"
                   >
-                    Provide the best quality ingredients for home products
+                    About Us : Provide the best quality Ayurvedic Medicines
                   </Text>
                   <Text
                     className="leading-[35.00px] max-w-[626px] md:max-w-full text-base text-gray-500 tracking-[-0.50px]"
                     size="txtRubikRegular16"
                   >
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit
-                    dictumst posuere, lectus dis vehicula augue elementum quam
-                    risus. Placerat dictum lobortis lacinia volutpat morbi cum
-                    justo commodo est aliquam, facilisi consequat ligula vivamus
-                    faucibus
+                    Sidham Pharmacy, established in 2019, has aimed to provide exceptional services for mind, body and soul. We are working continuously to achieve excellence in these areas. We have vast experience in this field and understand the importance and requirements of the patients.
+                    The products and therapy sessions are designed by keeping individual needs in mind and these products and sessions are suitable for all age groups and caters to the individual requirements. We also organise special therapy sessions for athletes, sciatica pain, cervical pain and many more, we use ayurvedic plants for our/their products and use ancient techniques for manufacturing, means our products is cruelty free [NO ANIMAL PRODUCT IS USED IN THE MAKING OF OUR PRODUCTS].
                   </Text>
                 </div>
-                <Button className="border border-black-900 border-solid cursor-pointer font-semibold leading-[normal] min-w-[172px] py-[11px] text-black-900 text-center text-lg tracking-[-0.50px]">
+                {/* <Button className="border border-black-900 border-solid cursor-pointer font-semibold leading-[normal] min-w-[172px] py-[11px] text-black-900 text-center text-lg tracking-[-0.50px]">
                   Meet our Team
-                </Button>
+                </Button> */}
               </div>
               <div className="flex flex-col gap-[22px] items-start justify-start w-full">
                 <div className="flex flex-col gap-[7px] items-start justify-start w-auto">
-                  <div className="flex flex-row font-raleway gap-2.5 items-center justify-start w-auto">
+                  {/* <div className="flex flex-row font-raleway gap-2.5 items-center justify-start w-auto">
                     <Text
                       className="text-black-900 text-lg tracking-[0.12px] w-auto"
                       size="txtRalewayRomanBold18"
@@ -83,15 +80,15 @@ const AboutusPage = () => {
                         5.0
                       </Text>
                     </div>
-                  </div>
-                  <Text
+                  </div> */}
+                  {/* <Text
                     className="text-black-900_7f text-xs tracking-[-0.50px] w-auto"
                     size="txtRubikRegular12Black9007f"
                   >
                     Trusted by many people from all over the world
-                  </Text>
+                  </Text> */}
                 </div>
-                <div className="flex relative w-[230px]">
+                {/* <div className="flex relative w-[230px]">
                   <div className="flex my-auto w-[81%]">
                     <div className="flex my-auto w-[76%]">
                       <div className="flex my-auto w-[68%]">
@@ -124,7 +121,7 @@ const AboutusPage = () => {
                   >
                     3K+
                   </Text>
-                </div>
+                </div> */}
               </div>
             </div>
             <Img
