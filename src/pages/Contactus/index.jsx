@@ -69,7 +69,7 @@ const ContactusPage = () => {
   };
 
   useEffect(() => {
-    if (!user) {
+    if (!user && token) {
       dispatch(getUserDetails(token, navigate));
     }
   }, [user]);

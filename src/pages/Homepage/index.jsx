@@ -31,6 +31,9 @@ import isoLogo from "../../assets/iso_logo.svg";
 import gmpLogo from "../../assets/gmp_logo.svg";
 import tradeMarkLogo from "../../assets/tradeMarkLogo.svg";
 import Footer from "components/Footer";
+import leaf1 from "../../assets/leaf1.svg";
+import leaf2 from "../../assets/leaf2.svg";
+
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -122,7 +125,7 @@ const HomepagePage = () => {
                     </span>
                     <span className="text-black-900 font-raleway text-left font-bold">
                       {" "}
-                      of medicine to keep you health.
+                      of medicine to keep you healthy
                     </span>
                   </Text>
                 </div>
@@ -141,39 +144,50 @@ const HomepagePage = () => {
             </div>
           </div>
         </div>
-        <div className="bg-black-900 flex flex-col items-center justify-center md:px-10 sm:px-5 px-[173px] py-[41px] w-full">
-          <div className="flex flex-col gap-[46px] items-center justify-start max-w-[1094px] mx-auto w-full">
+        <div className="bg-black-900 flex flex-col items-center justify-center md:px-10 sm:px-5 px-[143px] py-[25px] w-full">
+          <div className="flex flex-col gap-[46px] items-center justify-start  mx-auto w-full ">
             <Text
-              className="text-center text-gray-53 text-xl tracking-[-0.50px] w-full"
+              className="text-center text-gray-53 text-4xl tracking-[-0.50px] w-full"
               size="txtRubikRegular20"
             >
-              Various brands have used our products
+              Our Certifications
             </Text>
-            <div className="flex flex-wrap justify-center items-center w-full gap-8">
+            <div className="flex flex-wrap justify-center items-center w-full gap-8  realtive">
+
               <Img
-                className="h-[175px] w-[175px] object-contain"
+                className="h-[125px] w-[125px] absolute left-8"
+                src={leaf2}
+                alt="ISO Logo"
+                />
+              <Img
+                className="h-[125px] w-[125px] object-contain"
                 src={moaLogo}
                 alt="MOA Logo"
               />
               <Img
-                className="h-[175px] w-[175px] object-contain"
+                className="h-[125px] w-[125px] object-contain"
                 src={fssai}
                 alt="FSSAI Logo"
               />
               <Img
-                className="h-[175px] w-[175px] object-contain"
+                className="h-[125px] w-[125px] object-contain"
                 src={isoLogo}
                 alt="ISO Logo"
               />
               <Img
-                className="h-[175px] w-[175px] object-contain"
+                className="h-[125px] w-[125px] object-contain"
                 src={gmpLogo}
                 alt="GMP Logo"
               />
               <Img
-                className="h-[175px] w-[175px] object-contain"
+                className="h-[125px] w-[125px] object-contain"
                 src={tradeMarkLogo}
                 alt="Trademark Logo"
+              />
+              <Img
+                className="h-[125px] w-[125px] absolute right-8"
+                src={leaf1}
+                alt="ISO Logo"
               />
             </div>
           </div>
