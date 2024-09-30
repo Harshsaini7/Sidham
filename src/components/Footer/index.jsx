@@ -1,8 +1,10 @@
 import React from "react";
 import { Button, Img, Text } from "components";
 import Logo from "../../assets/ecommercelogo.jpg"
+import { useNavigate } from "react-router-dom";
 
 const Footer = (props) => {
+  const navigate = useNavigate();
   function handleNavigate3() {
     window.location.href = "https://twitter.com/login/";
   }
@@ -24,24 +26,27 @@ const Footer = (props) => {
               </Text>
               <div className="flex flex-col gap-6 items-start justify-start w-auto">
                 <Text
-                  className="text-gray-50_a3 text-sm tracking-[-0.50px] w-auto"
+                  className="text-gray-50_a3 text-sm tracking-[-0.50px] w-auto cursor-pointer"
                   size="txtRubikRegular14Gray50a3"
+                  onClick={() => navigate("/aboutus")}
                 >
                   About Us
                 </Text>
                 <Text
-                  className="text-gray-50_a3 text-sm tracking-[-0.50px] w-auto"
+                  className="text-gray-50_a3 text-sm tracking-[-0.50px] w-auto cursor-pointer" 
                   size="txtRubikRegular14Gray50a3"
+                  onClick={() => navigate("/returnandrefund")}
                 >
-                  Best Products
+                  Return & Refund Policy
                 </Text>
                 <Text
-                  className="text-gray-50_a3 text-sm tracking-[-0.50px] w-auto"
+                  className="text-gray-50_a3 text-sm tracking-[-0.50px] w-auto cursor-pointer"
                   size="txtRubikRegular14Gray50a3"
+                  onClick={() => navigate("/tnc")}
                 >
-                  Our Projects
+                  Terms & Conditions
                 </Text>
-                <Text
+                {/* <Text
                   className="text-gray-50_a3 text-sm tracking-[-0.50px] w-auto"
                   size="txtRubikRegular14Gray50a3"
                 >
@@ -52,7 +57,7 @@ const Footer = (props) => {
                   size="txtRubikRegular14Gray50a3"
                 >
                   Setting & Privacy
-                </Text>
+                </Text> */}
               </div>
             </div>
             

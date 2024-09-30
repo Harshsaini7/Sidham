@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -31,6 +31,13 @@ const AboutusPage = () => {
   const [sliderState, setsliderState] = React.useState(0);
   const sliderRef1 = React.useRef(null);
   const [sliderState1, setsliderState1] = React.useState(0);
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth' // Optional for smooth scrolling
+    });
+  }, []); 
 
   return (
     <>
@@ -51,8 +58,19 @@ const AboutusPage = () => {
                     className="leading-[35.00px] max-w-[626px] md:max-w-full text-base text-gray-500 tracking-[-0.50px]"
                     size="txtRubikRegular16"
                   >
-                    Sidham Pharmacy, established in 2019, has aimed to provide exceptional services for mind, body and soul. We are working continuously to achieve excellence in these areas. We have vast experience in this field and understand the importance and requirements of the patients.
-                    The products and therapy sessions are designed by keeping individual needs in mind and these products and sessions are suitable for all age groups and caters to the individual requirements. We also organise special therapy sessions for athletes, sciatica pain, cervical pain and many more, we use ayurvedic plants for our/their products and use ancient techniques for manufacturing, means our products is cruelty free [NO ANIMAL PRODUCT IS USED IN THE MAKING OF OUR PRODUCTS].
+                    Sidham Pharmacy, established in 2019, has aimed to provide
+                    exceptional services for mind, body and soul. We are working
+                    continuously to achieve excellence in these areas. We have
+                    vast experience in this field and understand the importance
+                    and requirements of the patients. The products and therapy
+                    sessions are designed by keeping individual needs in mind
+                    and these products and sessions are suitable for all age
+                    groups and caters to the individual requirements. We also
+                    organise special therapy sessions for athletes, sciatica
+                    pain, cervical pain and many more, we use ayurvedic plants
+                    for our/their products and use ancient techniques for
+                    manufacturing, means our products is cruelty free [NO ANIMAL
+                    PRODUCT IS USED IN THE MAKING OF OUR PRODUCTS].
                   </Text>
                 </div>
                 {/* <Button className="border border-black-900 border-solid cursor-pointer font-semibold leading-[normal] min-w-[172px] py-[11px] text-black-900 text-center text-lg tracking-[-0.50px]">
@@ -174,7 +192,7 @@ const AboutusPage = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
+        {/* <div className="flex flex-col items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
           <div className="flex flex-col gap-[53px] items-center justify-start max-w-[1290px] mx-auto w-full">
             <div className="flex flex-col gap-[13px] items-center justify-start w-full">
               <Text
@@ -243,35 +261,35 @@ const AboutusPage = () => {
               unselectedWrapperCss="inline-block"
             />
           </div>
-        </div>
+        </div> */}
         <div className="h-[535px] md:h-[892px] md:px-5 relative w-full">
           <div className="absolute bg-yellow-100 bottom-[0] h-[440px] inset-x-[0] mx-auto w-full"></div>
           <div className="absolute flex md:flex-col flex-row md:gap-10 h-full inset-y-[0] items-center justify-between max-w-[1365px] my-auto right-[0] w-full">
-            <div className="flex sm:flex-1 flex-col gap-[30px] items-start justify-start w-[525px] sm:w-full">
+            <div className="flex sm:flex-1 flex-col gap-[30px] items-start justify-start w-[525px] sm:w-full ">
               <div className="flex flex-col gap-[18px] items-start justify-start w-full">
                 <Text
                   className="text-2xl md:text-[22px] text-bluegray-900 sm:text-xl tracking-[-0.50px] w-full"
                   size="txtRubikRegular24"
                 >
-                  Interior Modern
+                  Free Checkup
                 </Text>
                 <Text
                   className="leading-[60.00px] max-w-[525px] md:max-w-full sm:text-4xl md:text-[38px] text-[40px] text-black-900 tracking-[-0.50px]"
                   size="txtRalewayRomanBold40"
                 >
-                  Arrange your home in such a way with our modern interiors
+                  Need consultaion from our expert doctors?
                 </Text>
               </div>
               <Button
                 className="common-pointer border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[218px] py-[18px] text-bluegray-900 text-center text-xl tracking-[-0.50px]"
-                onClick={() => navigate("/shopdetaildescription")}
+                onClick={() => navigate("/contactus")}
               >
-                Shop Now
+                Contact Us
               </Button>
             </div>
             <Img
-              className="sm:flex-1 h-[535px] md:h-auto object-cover w-[535px] sm:w-full"
-              src="images/img_insideweather.png"
+              className="sm:flex-1 h-[535px] md:h-auto object-cover w-[535px] sm:w-full "
+              src="assets\images\images\need consultation.png"
               alt="insideweather"
             />
           </div>
@@ -286,7 +304,7 @@ const AboutusPage = () => {
                 How happy are they with{" "}
               </span>
               <span className="text-black-900 font-raleway font-bold">
-                our service
+                our service (Google Reviews)
               </span>
             </Text>
             <div className="flex flex-col gap-[30px] items-center justify-start w-full">
@@ -507,7 +525,6 @@ const AboutusPage = () => {
           <CartColumnframe48095972 className="bg-gradient  flex flex-col gap-2 items-start justify-start max-w-[1290px] mx-auto pl-[59px] md:px-5 py-[46px] w-full" />
         </div>
         <Footer className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
-
       </div>
     </>
   );

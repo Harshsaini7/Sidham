@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Accordion,
@@ -16,6 +16,10 @@ import Header from "components/Header";
 import CartNavbar from "components/CartNavbar";
 import ShopPageImage from "../../assets/shop page photo.svg";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { getUserDetails } from "services/operations/profileAPI";
+import SummaryApi from "common";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -23,9 +27,53 @@ const homeOptionsList = [
   { label: "Option3", value: "option3" },
 ];
 
-
 const ContactusPage = () => {
+  const { user } = useSelector((state) => state.profile);
+  const { token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("hue huhe hue" , message);
+    if (!token) {
+      toast.error("Please Login");
+    }
+
+    
+
+    try {
+      const response = await fetch(SummaryApi.uploadContactUs.url, {
+        method: SummaryApi.uploadContactUs.method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: user?.name,
+          email: user?.email,
+          comment: message,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to add review");
+      }
+      toast.success("Message Sent Successfully");
+      setMessage("");
+    } catch (error) {
+      toast.error("Failed To Send Message");
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(getUserDetails(token, navigate));
+    }
+  }, [user]);
   return (
     <>
       <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[100px] items-start justify-start mx-auto w-auto sm:w-full md:w-full">
@@ -33,7 +81,7 @@ const ContactusPage = () => {
           <CartNavbar className="bg-white-A700 flex items-center justify-center md:px-5 px-[75px] py-[35px] w-full" />
           <div className="flex flex-col font-poppins items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">
             <div className="flex flex-col items-start justify-start max-w-[1291px] mx-auto w-full">
-            <div className="h-[450px] relative w-full">
+              <div className="h-[450px] relative w-full">
                 <img
                   className="h-[450px] m-auto object-cover w-full"
                   src={ShopPageImage}
@@ -41,7 +89,7 @@ const ContactusPage = () => {
                 />
                 <div className="absolute flex flex-col gap-[30px] h-max inset-y-[0] items-start justify-start left-[5%] my-auto w-auto">
                   <div className="flex flex-col gap-4 items-start justify-start w-full">
-                  <Text
+                    <Text
                       className="text-lg text-yellow-100 tracking-[-0.50px]"
                       size="txtRubikSemiBold18Yellow100"
                     >
@@ -55,8 +103,10 @@ const ContactusPage = () => {
                       doctors
                     </Text>
                   </div>
-                  <Button className="bg-yellow-100 cursor-pointer font-bold min-w-[170px] py-[15px] text-bluegray-900 text-xl tracking-[-0.50px]"
-                  onClick={() => navigate("/shop")}>
+                  <Button
+                    className="bg-yellow-100 cursor-pointer font-bold min-w-[170px] py-[15px] text-bluegray-900 text-xl tracking-[-0.50px]"
+                    onClick={() => navigate("/shop")}
+                  >
                     Shop Now
                   </Button>
                 </div>
@@ -162,7 +212,10 @@ const ContactusPage = () => {
               >
                 Contact Us
               </Text>
-              <div className="flex flex-col gap-8 items-start justify-start w-full">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-8 items-start justify-start w-full"
+              >
                 <div className="flex flex-col gap-[31px] items-start justify-start w-full">
                   <div className="flex md:flex-col flex-row gap-4 items-start justify-start w-full">
                     <div className="flex flex-1 flex-col gap-[17px] items-start justify-start w-full">
@@ -172,13 +225,15 @@ const ContactusPage = () => {
                       >
                         Your Name
                       </Text>
-                      <Input
-                        name="frame48096015"
-                        placeholder="Write your name here...."
-                        className="font-rubik p-0 placeholder:text-gray-500 sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
+                      <input
+                        name="name"
+                        placeholder="Your name"
+                        className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
                         wrapClassName="border border-bluegray-100 border-solid pl-[18px] pr-[35px] py-5 w-full"
                         type="text"
-                      ></Input>
+                        value={user?.name || ""}
+                        readOnly
+                      />
                     </div>
                     <div className="flex flex-1 flex-col gap-[17px] items-start justify-start w-full">
                       <Text
@@ -187,13 +242,15 @@ const ContactusPage = () => {
                       >
                         Your Email
                       </Text>
-                      <Input
-                        name="frame48096015_One"
-                        placeholder="Write your email here...."
-                        className="font-rubik p-0 placeholder:text-gray-500 sm:pr-5 text-gray-500 text-left text-sm tracking-[-0.50px] w-full"
+                      <input
+                        name="email"
+                        placeholder="Your email"
+                        className="font-rubik p-3 placeholder:text-gray-500 text-gray-500 text-left text-sm tracking-[-0.50px] w-full border border-bluegray-100 rounded-md h-12"
                         wrapClassName="border border-bluegray-100 border-solid pl-[18px] pr-[35px] py-5 w-full"
                         type="email"
-                      ></Input>
+                        value={user?.email || ""}
+                        readOnly
+                      />
                     </div>
                   </div>
                   <div className="flex flex-col gap-[17px] items-start justify-start w-full">
@@ -203,22 +260,23 @@ const ContactusPage = () => {
                     >
                       Your Comment
                     </Text>
-                    <div className="border border-bluegray-100 border-solid flex flex-col font-rubik h-[218px] md:h-auto items-start justify-start p-4 w-full">
-                      <Text
-                        className="text-gray-500 text-sm tracking-[-0.50px] w-auto"
-                        size="txtRubikRegular14"
-                      >
-                        Write your review here....
-                      </Text>
-                    </div>
+                    <textarea
+                      className="border border-bluegray-100 border-solid flex flex-col font-rubik h-[218px] md:h-auto items-start justify-start p-4 w-full"
+                      placeholder="Write your comment here...."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col font-poppins items-start justify-start w-full">
-                  <Button className="bg-bluegray-900 border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[140px] py-[13px] text-base text-center text-white-A700 tracking-[-0.50px]">
+                  <Button
+                    type="submit"
+                    className="bg-bluegray-900 border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[140px] py-[13px] text-base text-center text-white-A700 tracking-[-0.50px]"
+                  >
                     Send
                   </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>

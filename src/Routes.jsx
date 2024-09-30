@@ -6,6 +6,8 @@ import Login2 from "pages/Login";
 import DetailReviewPage from "pages/DetailReview";
 import MyOrderPage from "pages/MyOrder";
 import Signup from "pages/Signup";
+import ReturnAndRefund from "pages/ReturnAndRefund";
+import Tnc from "pages/Tnc";
 // import Profile from "pages/Profile";
 const Aboutus = React.lazy(() => import("pages/Aboutus"));
 const Contactus = React.lazy(() => import("pages/Contactus"));
@@ -50,6 +52,9 @@ const ProjectRoutes = () => {
         <Route path="/dhiwise-dashboard" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/myorder" element = {<MyOrderPage/>}/>
+        <Route path="/tnc" element = {<Tnc/>}/>
+        <Route path="returnandrefund" element = {<ReturnAndRefund/>}/>
+        
 
       </Routes>
     </React.Suspense>

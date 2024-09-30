@@ -167,6 +167,10 @@ const SummaryApi = {
     addReview : {
         url : `${backendDomin}/api/add-rating`,
         method : 'post'
+    },
+    uploadContactUs : {
+        url : `${backendDomin}/api/contact-us`,
+        method : 'post'
     }
 
 }

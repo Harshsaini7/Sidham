@@ -27,6 +27,7 @@ import CategoryGrid from "components/CategoryGrid";
 import Safety from "../../assets/We guarantee the safety of your shopping.png"
 import Footer from "components/Footer";
 
+
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
   { label: "Option2", value: "option2" },

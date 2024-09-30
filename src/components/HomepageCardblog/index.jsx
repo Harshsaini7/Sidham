@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Button, Img, Line, Text } from "components";
 import { useNavigate } from "react-router-dom";
 
 const HomepageCardblog = (props) => {
+  useEffect(() => {
+    console.log("props", props);
+  },[])
   const navigate = useNavigate();
   return (
     <>
@@ -12,7 +15,7 @@ const HomepageCardblog = (props) => {
           <img
             className="h-[400px] sm:h-auto object-cover w-full"
             alt="rectangleEighteen"
-            src={props?.rectangleeighteen}
+            src={props?.blogImage[0]}
           />
           <div className="flex flex-col gap-[19px] items-start justify-start w-full">
             <Text
