@@ -22,11 +22,15 @@ import SummaryApi from "common";
 import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
 import { setProduct } from "slices/productSlice";
-import HomepageTopPhoto from "../../assets/Homepage Top photo.svg"
+import HomepageTopPhoto from "../../assets/Homepage Top photo.svg";
 import CategoryGrid from "components/CategoryGrid";
-import Safety from "../../assets/We guarantee the safety of your shopping.png"
+import Safety from "../../assets/We guarantee the safety of your shopping.png";
+import fssai from "../../assets/fssai_logo.svg";
+import moaLogo from "../../assets/moa_logo.svg";
+import isoLogo from "../../assets/iso_logo.svg";
+import gmpLogo from "../../assets/gmp_logo.svg";
+import tradeMarkLogo from "../../assets/tradeMarkLogo.svg";
 import Footer from "components/Footer";
-
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -35,9 +39,9 @@ const homeOptionsList = [
 ];
 
 const HomepagePage = () => {
-  const {token} = useSelector((state)=>state.auth)
-  const {product} = useSelector((state)=>state.product)
-  const dispatch = useDispatch()
+  const { token } = useSelector((state) => state.auth);
+  const { product } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const sliderRef = React.useRef(null);
@@ -80,11 +84,11 @@ const HomepagePage = () => {
     console.log(dataResponse?.data || []);
   };
 
-  const handleAddToCart = async(e,id,quantity)=>{
-    const res=await AddToCart(e,id,quantity,token,dispatch)  
- //    console.log(res);
- //    fetchUserAddToCart()
- }
+  const handleAddToCart = async (e, id, quantity) => {
+    const res = await AddToCart(e, id, quantity, token, dispatch);
+    //    console.log(res);
+    //    fetchUserAddToCart()
+  };
 
   useEffect(() => {
     fetchAllProduct();
@@ -145,36 +149,31 @@ const HomepagePage = () => {
             >
               Various brands have used our products
             </Text>
-            <div className="flex md:flex-col flex-row md:gap-[50px] items-center justify-between w-full">
+            <div className="flex flex-wrap justify-center items-center w-full gap-8">
               <Img
-                className="h-12 w-[220px]"
-                src="images/img_search.svg"
-                alt="search"
+                className="h-[175px] w-[175px] object-contain"
+                src={moaLogo}
+                alt="MOA Logo"
               />
               <Img
-                className="h-12 w-[125px]"
-                src="images/img_companylogocompany109_gray_53.svg"
-                alt="companylogocomp"
+                className="h-[175px] w-[175px] object-contain"
+                src={fssai}
+                alt="FSSAI Logo"
               />
               <Img
-                className="h-12 w-[92px]"
-                src="images/img_companylogocompany109.svg"
-                alt="companylogocomp_One"
+                className="h-[175px] w-[175px] object-contain"
+                src={isoLogo}
+                alt="ISO Logo"
               />
               <Img
-                className="h-12 w-[141px]"
-                src="images/img_companylogocompany109_gray_53_48x141.svg"
-                alt="companylogocomp_Two"
+                className="h-[175px] w-[175px] object-contain"
+                src={gmpLogo}
+                alt="GMP Logo"
               />
               <Img
-                className="h-12 w-[134px]"
-                src="images/img_companylogocompany109_gray_53_48x134.svg"
-                alt="companylogocomp_Three"
-              />
-              <Img
-                className="h-12 w-[132px]"
-                src="images/img_companylogocompany109_gray_53_48x132.svg"
-                alt="companylogocomp_Four"
+                className="h-[175px] w-[175px] object-contain"
+                src={tradeMarkLogo}
+                alt="Trademark Logo"
               />
             </div>
           </div>
@@ -247,7 +246,7 @@ const HomepagePage = () => {
               </div>
             </div>
           </List> */}
-          <CategoryGrid/>
+          <CategoryGrid />
         </div>
         <div className="flex flex-col items-center justify-start md:px-10 sm:px-5 px-[75px] w-full">
           <div className="flex flex-col gap-[46px] items-center justify-start max-w-[1290px] mx-auto w-full">
@@ -303,24 +302,25 @@ const HomepagePage = () => {
                             navigate(`/detailreview`);
                           }}
                         >
-                        <HomepageCardproduct
-                          key={`HomepageCardproduct${index}`}
-                          className="flex flex-1 flex-col gap-4 items-start justify-start w-full"
-                          {...product}
-                          renderActions={() => (
-                            <div className="flex flex-row justify-center w-full">
-                              <Button
-                                className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
-                                onClick={(e) => handleAddToCart(e,product._id,1)}
-                              >
-                                Add to Cart
-                              </Button>
-                            </div>
-                          )}
-                        />
+                          <HomepageCardproduct
+                            key={`HomepageCardproduct${index}`}
+                            className="flex flex-1 flex-col gap-4 items-start justify-start w-full"
+                            {...product}
+                            renderActions={() => (
+                              <div className="flex flex-row justify-center w-full">
+                                <Button
+                                  className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
+                                  onClick={(e) =>
+                                    handleAddToCart(e, product._id, 1)
+                                  }
+                                >
+                                  Add to Cart
+                                </Button>
+                              </div>
+                            )}
+                          />
                         </div>
                       ))}
-                     
                     </div>
                   </List>
                 </React.Fragment>
@@ -540,7 +540,6 @@ const HomepagePage = () => {
           <CartColumnframe48095972 className="bg-gradient  flex flex-col gap-2 items-start justify-start max-w-[1290px] mx-auto pl-[59px] md:px-5 py-[46px] w-full" />
         </div>
         <Footer className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
-
       </div>
     </>
   );
