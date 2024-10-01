@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-import "./index.css"
+import "./index.css";
 
-import {
-  Button,
-  Img,
-  Input,
-  Line,
-  List,
-  PagerIndicator,
-  SelectBox,
-  Slider,
-  Text,
-} from "components";
+import { Img, List } from "components";
+import { Button, PagerIndicator, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
@@ -34,6 +25,10 @@ import tradeMarkLogo from "../../assets/tradeMarkLogo.svg";
 import Footer from "components/Footer";
 import leaf1 from "../../assets/leaf1.svg";
 import leaf2 from "../../assets/leaf2.svg";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import CertificationsSection from "components/OurCertification";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -49,6 +44,35 @@ const HomepagePage = () => {
 
   const sliderRef = React.useRef(null);
   const [sliderState, setsliderState] = React.useState(0);
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    swipe: true,
+    swipeToSlide: true,
+    touchThreshold: 10,
+    responsive: [
+      {
+        breakpoint: 1050,
+        settings: {
+          slidesToShow: 2 || sliderSettings.slidesToShow,
+          slidesToScroll: 1 || sliderSettings.slidesToScroll,
+        },
+      },
+      {
+        breakpoint: 550,
+        settings: {
+          slidesToShow: 1 || sliderSettings.slidesToShow,
+          slidesToScroll: 1 || sliderSettings.slidesToScroll,
+          arrows: true,
+        },
+      },
+    ],
+  };
   const homepageCardproductPropList = [
     { save: "images/img_save.svg" },
     { image: "images/img_image_7.png" },
@@ -100,7 +124,7 @@ const HomepagePage = () => {
 
   return (
     <>
-      <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[100px] items-center justify-start mx-auto w-auto sm:w-full md:w-full">
+      <div className="bg-gray-50 flex flex-col font-rubik sm:gap-10 md:gap-10 gap-[100px] items-center justify-start mx-auto w-auto sm:w-full md:w-full overflow-x-hidden">
         <div className="flex flex-col items-start justify-start w-full">
           <CartNavbar className="bg-white-A700 flex items-center justify-center md:px-5 px-[75px] py-[35px] w-full" />
           <div className="bg-orange-50 flex flex-col items-start justify-start md:px-10 sm:px-5 px-[75px] py-20 w-full">
@@ -156,13 +180,13 @@ const HomepagePage = () => {
             alt="Leaf 1"
           />
           <div className="flex flex-col gap-[46px] items-center justify-start mx-auto w-full">
-            <Text
+            {/* <Text
               className="text-center text-gray-53 text-4xl tracking-[-0.50px] w-full"
               size="txtRubikRegular20"
             >
               Our Certifications
-            </Text>
-            <div className="flex flex-wrap justify-center items-center w-full gap-8">
+            </Text> */}
+            {/* <div className="flex flex-wrap justify-center items-center w-full gap-8">
               <Img
                 className="h-[125px] w-[125px] object-contain"
                 src={moaLogo}
@@ -188,7 +212,8 @@ const HomepagePage = () => {
                 src={tradeMarkLogo}
                 alt="Trademark Logo"
               />
-            </div>
+            </div> */}
+            <CertificationsSection />
           </div>
         </div>
         <div className="flex flex-col items-center justify-center md:px-10 sm:px-5 px-[75px] w-full">
@@ -287,69 +312,28 @@ const HomepagePage = () => {
                 times
               </Text>
             </div>
-            <Slider
-              autoPlay
-              autoPlayInterval={2000}
-              activeIndex={sliderState}
-              responsive={{
-                0: { items: 1 },
-                550: { items: 1 },
-                1050: { items: 1 },
-              }}
-              onSlideChanged={(e) => {
-                setsliderState(e?.item);
-              }}
-              ref={sliderRef}
-              className="w-full"
-              items={[...Array(3)].map(() => (
-                <React.Fragment key={Math.random()}>
-                  <List
-                    className="flex flex-col gap-[47px] items-center mx-2.5"
-                    orientation="vertical"
-                  >
-                    <div className="gap-[19px] grid sm:grid-cols-1 md:grid-cols-2 grid-cols-4 items-start justify-start w-full">
-                      {allProduct.slice(0, 8).map((product, index) => (
-                        <div
-                          onClick={() => {
-                            sessionStorage.setItem("productId", product._id);
-                            navigate(`/detailreview`);
-                          }}
-                        >
-                          <HomepageCardproduct
-                            key={`HomepageCardproduct${index}`}
-                            className="flex flex-1 flex-col gap-4 items-start justify-start w-full"
-                            {...product}
-                            renderActions={() => (
-                              <div className="flex flex-row justify-center w-full">
-                                <Button
-                                  className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
-                                  onClick={(e) =>
-                                    handleAddToCart(e, product._id, 1)
-                                  }
-                                >
-                                  Add to Cart
-                                </Button>
-                              </div>
-                            )}
-                          />
+            <div className="w-full">
+              <Slider {...sliderSettings}>
+                {allProduct.slice(0, 8).map((product, index) => (
+                  <div key={index} className="px-2">
+                    <HomepageCardproduct
+                      className="flex flex-col gap-4 items-start justify-start w-full"
+                      {...product}
+                      renderActions={() => (
+                        <div className="flex flex-row justify-center w-full">
+                          <Button
+                            className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
+                            onClick={(e) => handleAddToCart(e, product._id, 1)}
+                          >
+                            Add to Cart
+                          </Button>
                         </div>
-                      ))}
-                    </div>
-                  </List>
-                </React.Fragment>
-              ))}
-            />
-
-            <PagerIndicator
-              className="flex gap-[15px] h-[15px] items-center justify-center max-w-[1289px] w-full"
-              count={3}
-              activeCss="inline-block cursor-pointer rounded-[50%] h-[15px] bg-bluegray-900 w-[15px]"
-              activeIndex={sliderState}
-              inactiveCss="inline-block cursor-pointer rounded-[50%] h-[15px] bg-gray-200 w-[15px]"
-              sliderRef={sliderRef}
-              selectedWrapperCss="inline-block"
-              unselectedWrapperCss="inline-block"
-            />
+                      )}
+                    />
+                  </div>
+                ))}
+              </Slider>
+            </div>
           </div>
         </div>
         <div className="h-[535px] md:h-[892px] md:px-5 relative w-full">

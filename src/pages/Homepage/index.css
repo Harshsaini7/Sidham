@@ -4,4 +4,21 @@
       display: flex;
   }
 }
+.slick-list {
+  touch-action: pan-y;
+}
+
+.slick-slide {
+  transition: opacity 0.3s ease;
+}
+
+.slick-slide:not(.slick-active) {
+  opacity: 0.5;
+}
+
+@media (max-width: 550px) {
+  .slick-dots {
+    bottom: -30px;
+  }
+}
 

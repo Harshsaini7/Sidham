@@ -1,0 +1,46 @@
+.certifications-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.certifications-desktop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.certifications-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .certifications-desktop {
+    display: none;
+  }
+
+  .certifications-mobile {
+    display: block;
+  }
+
+  .cert-slide {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+  }
+
+  /* Slider customization for mobile */
+  .slick-dots {
+    bottom: -30px;
+  }
+
+  .slick-dots li button:before {
+    color: #fff;
+  }
+
+  .slick-dots li.slick-active button:before {
+    color: #fff;
+  }
+}
