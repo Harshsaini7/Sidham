@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import "./index.css";
-
+import { toast } from 'react-toastify';
 import { Img, List } from "components";
 import { Button, PagerIndicator, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";

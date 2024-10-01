@@ -17,6 +17,9 @@ import CartNavbar from "components/CartNavbar";
 import CartSectionfooter from "components/CartSectionfooter";
 import TeamCardteam from "components/TeamCardteam";
 import Footer from "components/Footer";
+import CertificationsSection from "components/OurCertification";
+import leaf1 from "../../assets/leaf1.svg";
+import leaf2 from "../../assets/leaf2.svg"; 
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -150,46 +153,52 @@ const AboutusPage = () => {
             />
           </div>
         </div>
-        <div className="bg-black-900 flex flex-col items-start justify-start md:px-10 sm:px-5 px-[173px] py-[41px] w-full">
-          <div className="flex flex-col gap-[46px] items-center justify-start max-w-[1094px] mx-auto w-full">
-            <Text
-              className="text-center text-gray-53 text-xl tracking-[-0.50px] w-full"
+        <div className="bg-black-900 flex flex-col items-center justify-center md:px-10 sm:px-5 px-[143px] py-[25px] w-full relative">
+          <Img
+            className="h-[125px] w-[125px] absolute top-0 left-0 hidden sm-flex1000"
+            src={leaf2}
+            alt="Leaf 2"
+          />
+          <Img
+            className="h-[125px] w-[125px] absolute top-0 right-0 hidden sm-flex1000"
+            src={leaf1}
+            alt="Leaf 1"
+          />
+          <div className="flex flex-col gap-[46px] items-center justify-start mx-auto w-full">
+            {/* <Text
+              className="text-center text-gray-53 text-4xl tracking-[-0.50px] w-full"
               size="txtRubikRegular20"
             >
-              Various brands have used our products
-            </Text>
-            <div className="flex md:flex-col flex-row md:gap-[50px] items-start justify-between w-full">
+              Our Certifications
+            </Text> */}
+            {/* <div className="flex flex-wrap justify-center items-center w-full gap-8">
               <Img
-                className="h-12 w-[220px]"
-                src="images/img_search.svg"
-                alt="search"
+                className="h-[125px] w-[125px] object-contain"
+                src={moaLogo}
+                alt="MOA Logo"
               />
               <Img
-                className="h-12 w-[125px]"
-                src="images/img_companylogocompany109_gray_53.svg"
-                alt="companylogocomp"
+                className="h-[125px] w-[125px] object-contain"
+                src={fssai}
+                alt="FSSAI Logo"
               />
               <Img
-                className="h-12 w-[92px]"
-                src="images/img_companylogocompany109.svg"
-                alt="companylogocomp_One"
+                className="h-[125px] w-[125px] object-contain"
+                src={isoLogo}
+                alt="ISO Logo"
               />
               <Img
-                className="h-12 w-[141px]"
-                src="images/img_companylogocompany109_gray_53_48x141.svg"
-                alt="companylogocomp_Two"
+                className="h-[125px] w-[125px] object-contain"
+                src={gmpLogo}
+                alt="GMP Logo"
               />
               <Img
-                className="h-12 w-[134px]"
-                src="images/img_companylogocompany109_gray_53_48x134.svg"
-                alt="companylogocomp_Three"
+                className="h-[125px] w-[125px] object-contain "
+                src={tradeMarkLogo}
+                alt="Trademark Logo"
               />
-              <Img
-                className="h-12 w-[132px]"
-                src="images/img_companylogocompany109_gray_53_48x132.svg"
-                alt="companylogocomp_Four"
-              />
-            </div>
+            </div> */}
+            <CertificationsSection />
           </div>
         </div>
         {/* <div className="flex flex-col items-start justify-start md:px-10 sm:px-5 px-[75px] w-full">

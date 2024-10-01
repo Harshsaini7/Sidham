@@ -4,6 +4,7 @@ import { apiConnector } from "../apiConnector"
 import { logout } from "./authAPI"
 import { toast } from 'react-toastify';
 
+
 const BASE_URL = process.env.REACT_APP_BASE_URL
 
 const  GET_USER_DETAILS_API = `${BASE_URL}/user-details`

@@ -15,6 +15,7 @@ import toast from "react-hot-toast"
 import { login } from 'services/operations/authAPI';
 import GoogleLoginButton from 'components/GoogleLoginButton';
 
+
 const AuthLogin = ({ title, subtitle, subtext }) => {
   const clientId = '571441638341-45rnsf56sp2qa2tr5tbdd31m9b3jin7n.apps.googleusercontent.com';
   const [showPassword, setShowPassword] = useState(false); // Correctly setting up state
