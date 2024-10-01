@@ -217,6 +217,21 @@ const HomepagePage = () => {
           </div>
         </div>
         <div className="flex flex-col items-center justify-center md:px-10 sm:px-5 px-[75px] w-full">
+        <Text
+                className="sm:text-4xl md:text-[38px] text-[40px] text-black-900 text-center tracking-[-0.50px] w-full"
+                size="txtRalewayBold40"
+              >
+                <span className="text-black-900 font-raleway font-bold">
+                  Our{" "}
+                </span>
+                <span className="text-black-900 font-raleway font-bold">
+                  Categories
+                </span>
+                {/* <span className="text-black-900 font-raleway font-bold">
+                  {" "}
+                  Product
+                </span> */}
+              </Text>
           {/* <List
             className="sm:flex-col flex-row gap-5 grid md:grid-cols-1 grid-cols-2 justify-center max-w-[1290px] mx-auto w-full"
             orientation="horizontal"
@@ -284,7 +299,10 @@ const HomepagePage = () => {
               </div>
             </div>
           </List> */}
-          <CategoryGrid />
+          <div className="mt-10">
+            <CategoryGrid className="w-full " />
+          </div>
+          
         </div>
         <div className="flex flex-col items-center justify-start md:px-10 sm:px-5 px-[75px] w-full">
           <div className="flex flex-col gap-[46px] items-center justify-start max-w-[1290px] mx-auto w-full">
