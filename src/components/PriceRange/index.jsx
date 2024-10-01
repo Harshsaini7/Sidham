@@ -18,7 +18,7 @@ const PriceRangeSlider = ({ minPrice, maxPrice, onPriceChange }) => {
       <Range
         step={1}
         min={0}
-        max={100000}
+        max={30000}
         values={values}
         onChange={handleChange}
         renderTrack={({ props, children }) => (
