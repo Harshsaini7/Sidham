@@ -10,7 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
 import { setProduct, setCategory } from "slices/productSlice";
 import { useNavigate } from "react-router-dom";
-import ShopPageImage from "../../assets/shop page photo.svg";
+import ShopPageImage from "../../assets/contactusimage.svg"
+
 import Footer from "components/Footer";
 import PriceRangeSlider from "components/PriceRange";
 

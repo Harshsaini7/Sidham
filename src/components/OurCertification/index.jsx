@@ -37,16 +37,16 @@ const CertificationsSection = () => {
 
   return (
     <div className="bg-black-900 flex flex-col items-center justify-center md:px-10 sm:px-5 px-[143px] py-[25px] w-full relative">
-      {/* <Img
-        className="h-[125px] w-[125px] absolute top-0 left-0"
+      <Img
+        className="h-[125px] w-[125px] absolute top-0 left-0 sm-flex1001"
         src={leaf2}
         alt="Leaf 2"
       />
       <Img
-        className="h-[125px] w-[125px] absolute top-0 right-0"
+        className="h-[125px] w-[125px] absolute top-0 right-0 sm-flex1001"
         src={leaf1}
         alt="Leaf 1"
-      /> */}
+      />
       <div className="flex flex-col gap-[30px] items-center justify-start mx-auto w-full">
         <Text
           className="text-center text-gray-53 text-3xl tracking-[-0.50px] w-full"

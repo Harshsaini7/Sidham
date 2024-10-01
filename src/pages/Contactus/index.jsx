@@ -14,7 +14,8 @@ import CartColumnframe48095972 from "components/CartColumnframe48095972";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import CartNavbar from "components/CartNavbar";
-import ShopPageImage from "../../assets/shop page photo.svg";
+// import ShopPageImage from "../../assets/shop page photo.svg";
+import ShopPageImage from "../../assets/contactusimage.svg"
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -115,7 +116,7 @@ const ContactusPage = () => {
                       Best Medicine Items
                     </Text>
                     <Text
-                      className="leading-[60px] max-w-[465px] md:max-w-full text-4xl sm:text-[32px] md:text-[34px] text-white tracking-[-0.50px]"
+                      className="leading-[60px] max-w-[465px] md:max-w-full text-4xl sm:text-[32px] md:text-[34px] text-white-A700 tracking-[-0.50px]"
                       size="txtRalewayRomanBold36"
                     >
                       Our medicine have the best quality and suggested by expert

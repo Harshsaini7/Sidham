@@ -1,0 +1,6 @@
+@media (max-width: 640px) { /* Adjust the max-width as per your definition of small screens */
+  .sm-25 {
+      flex-direction: row;
+      /* You can add other styles specific to small screens here */
+  }
+}
