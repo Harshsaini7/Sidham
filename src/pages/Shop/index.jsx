@@ -10,8 +10,9 @@ import { useDispatch, useSelector } from "react-redux";
 import AddToCart from "helpers/addToCart";
 import { setProduct, setCategory } from "slices/productSlice";
 import { useNavigate } from "react-router-dom";
-import ShopPageImage from "../../assets/shop page photo.svg"
+import ShopPageImage from "../../assets/shop page photo.svg";
 import Footer from "components/Footer";
+import PriceRangeSlider from "components/PriceRange";
 
 const homeOptionsList = [
   { label: "Option1", value: "option1" },
@@ -32,7 +33,9 @@ const ShopPage = () => {
 
   const [allProduct, setAllProduct] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(sessionStorage.getItem("selectedCategory") ?? "");
+  const [selectedCategory, setSelectedCategory] = useState(
+    sessionStorage.getItem("selectedCategory") ?? ""
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
@@ -77,13 +80,13 @@ const ShopPage = () => {
 
   useEffect(() => {
     console.log("product", product);
-    if(!product || product?.length === 0) {
+    if (!product || product?.length === 0) {
       fetchAllProduct();
     } else {
       setAllProduct(product);
     }
 
-    if(!category || category?.length === 0) {
+    if (!category || category?.length === 0) {
       fetchAllCategory();
     } else {
       setAllCategory(category);
@@ -91,6 +94,11 @@ const ShopPage = () => {
 
     // fetchAllCategory();
   }, []);
+  const handlePriceChange = (min, max) => {
+    setMinPrice(min);
+    setMaxPrice(max);
+    
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -125,12 +133,10 @@ const ShopPage = () => {
   };
 
   useEffect(() => {
-
     setTimeout(() => {
       sessionStorage.setItem("selectedCategory", "");
     }, 5000);
-
-  },[]);
+  }, []);
 
   return (
     <>
@@ -147,7 +153,7 @@ const ShopPage = () => {
                 />
                 <div className="absolute flex flex-col gap-[30px] h-max inset-y-[0] items-start justify-start left-[5%] my-auto w-auto">
                   <div className="flex flex-col gap-4 items-start justify-start w-full">
-                  <Text
+                    <Text
                       className="text-lg text-yellow-100 tracking-[-0.50px]"
                       size="txtRubikSemiBold18Yellow100"
                     >
@@ -161,8 +167,10 @@ const ShopPage = () => {
                       doctors
                     </Text>
                   </div>
-                  <Button className="bg-yellow-100 cursor-pointer font-bold min-w-[170px] py-[15px] text-bluegray-900 text-xl tracking-[-0.50px]"
-                  onClick={() => navigate("/shop")}>
+                  <Button
+                    className="bg-yellow-100 cursor-pointer font-bold min-w-[170px] py-[15px] text-bluegray-900 text-xl tracking-[-0.50px]"
+                    onClick={() => navigate("/shop")}
+                  >
                     Shop Now
                   </Button>
                 </div>
@@ -202,10 +210,10 @@ const ShopPage = () => {
                     placeholder="$2000"
                   />
                 </div>
-                <Img
-                  className="h-4 w-[233px]"
-                  src="images/img_slider.svg"
-                  alt="slider"
+                <PriceRangeSlider
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                  onPriceChange={handlePriceChange}
                 />
               </div>
               {/* <div className="flex flex-col gap-[22px] items-start justify-start w-full">
@@ -227,7 +235,6 @@ const ShopPage = () => {
                 />
               </div> */}
               <div className="flex flex-col gap-5 items-start justify-start w-full">
-
                 <div className="flex flex-col font-poppins gap-5 items-start justify-start w-full">
                   <ProductCategories
                     allCategory={allCategory}
@@ -370,7 +377,6 @@ const ShopPage = () => {
           <CartColumnframe48095972 className="bg-gradient  flex flex-col gap-2 items-start justify-start max-w-[1290px] mx-auto pl-[59px] md:px-5 py-[46px] w-full" />
         </div>
         <Footer className="bg-black-900 flex font-raleway gap-2 items-center justify-center md:px-5 px-[75px] py-[50px] w-full" />
-
       </div>
     </>
   );
