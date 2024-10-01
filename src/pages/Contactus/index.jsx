@@ -77,19 +77,19 @@ const ContactusPage = () => {
   const faqData = [
     {
       question: "How can I make refund from your website?",
-      answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Id a enim, consectetur cursus. At mattis nulla in pretium. Condimentum sagittis mauris augue maecenas fusce commodo neque purus et. Integer eu amet at pretium id ultrices faucibus. In vestibulum pretium, potenti molestie."
+      answer: "Offer credit for future purchases.Replacement/Exchange: Replace defective/incorrect items.Bank Transfer: Directly transfer funds back to the customer's account."
     },
     {
-      question: "How to buy a product?",
-      answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Id a enim, consectetur cursus. At mattis nulla in pretium. Condimentum sagittis mauris augue maecenas fusce commodo neque purus et. Integer eu amet at pretium id ultrices faucibus. In vestibulum pretium, potenti molestie."
+      question: "What Certification do Sidham Pharmacy have?",
+      answer: "we have multiple certification like ISO Certified 9001 : 2015 , fssai , GMP certified , Registered Trademarks , Licence from Ministry Of Ayush"
     },
     {
       question: "Do you offer international shipping?",
-      answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Id a enim, consectetur cursus. At mattis nulla in pretium. Condimentum sagittis mauris augue maecenas fusce commodo neque purus et. Integer eu amet at pretium id ultrices faucibus. In vestibulum pretium, potenti molestie."
+      answer: "Yes, we offer international shipping."
     },
     {
-      question: "Kya haal hai aryan bhai?",
-      answer: " Badhiya hai , bas chal raha hai"
+      question: "How to reach customer support?",
+      answer: "1.⁠ ⁠Call the business's phone number (8570031091, 9588383903) 2.⁠ ⁠Send an email (sidhampharmacy@gmail.com 3.Check social media platforms"
     }
   ];
 

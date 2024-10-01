@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+import "./index.css"
 
 import {
   Button,
@@ -145,12 +146,12 @@ const HomepagePage = () => {
         </div>
         <div className="bg-black-900 flex flex-col items-center justify-center md:px-10 sm:px-5 px-[143px] py-[25px] w-full relative">
           <Img
-            className="h-[125px] w-[125px] absolute top-0 left-0"
+            className="h-[125px] w-[125px] absolute top-0 left-0 hidden sm-flex1000"
             src={leaf2}
             alt="Leaf 2"
           />
           <Img
-            className="h-[125px] w-[125px] absolute top-0 right-0"
+            className="h-[125px] w-[125px] absolute top-0 right-0 hidden sm-flex1000"
             src={leaf1}
             alt="Leaf 1"
           />
@@ -183,7 +184,7 @@ const HomepagePage = () => {
                 alt="GMP Logo"
               />
               <Img
-                className="h-[125px] w-[125px] object-contain"
+                className="h-[125px] w-[125px] object-contain "
                 src={tradeMarkLogo}
                 alt="Trademark Logo"
               />
@@ -355,7 +356,7 @@ const HomepagePage = () => {
           <div className="absolute bg-yellow-100 bottom-[0] h-[440px] inset-x-[0] mx-auto w-full"></div>
           <div className="absolute flex md:flex-col flex-row md:gap-10 h-full inset-y-[0] items-center justify-between max-w-[1365px] my-auto right-[0] w-full">
             <div className="flex sm:flex-1 flex-col gap-[30px] items-start justify-start w-[525px] sm:w-full ">
-              <div className="flex flex-col gap-[18px] items-start justify-start w-full">
+              <div className="flex flex-col gap-[18px] items-start justify-start w-full mx-[60px]">
                 <Text
                   className="text-2xl md:text-[22px] text-bluegray-900 sm:text-xl tracking-[-0.50px] w-full"
                   size="txtRubikRegular24"
@@ -370,7 +371,7 @@ const HomepagePage = () => {
                 </Text>
               </div>
               <Button
-                className="common-pointer border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[218px] py-[18px] text-bluegray-900 text-center text-xl tracking-[-0.50px]"
+                className="common-pointer border-2 border-bluegray-900 border-solid cursor-pointer font-medium leading-[normal] min-w-[218px] py-[18px] text-bluegray-900 text-center text-xl tracking-[-0.50px] mx-[60px]"
                 onClick={() => navigate("/contactus")}
               >
                 Contact Us

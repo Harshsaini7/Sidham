@@ -1,0 +1,7 @@
+/* styles.css */
+@media (min-width: 640px) {
+  .sm-flex1000 {
+      display: flex;
+  }
+}
+

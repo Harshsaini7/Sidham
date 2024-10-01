@@ -202,7 +202,8 @@ const CartNavbar = (props) => {
       {/* Mobile menu, show/hide based on menu state */}
       {menuOpen && (
         <div className="sm-block lg-hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3"
+            onClick={() => setMenuOpen(false)}>
             <Link
               className="text-gray-700 hover:text-black-900 block px-3 py-2 rounded-md text-base font-medium"
               to="/shop"
