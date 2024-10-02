@@ -22,3 +22,67 @@
   }
 }
 
+
+/* Mobile-friendly styles */
+@media (max-width: 640px) {
+  .bg-gray-100 {
+    background-color: white;
+  }
+
+  .p-4 {
+    padding: 1rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+
+  .text-green-800 {
+    color: #1a5d1a;
+  }
+
+  .text-green-500 {
+    color: #22c55e;
+  }
+
+  .space-x-4 {
+    gap: 1rem;
+  }
+
+  .w-64 {
+    width: 80%;
+  }
+
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+
+  .bg-green-500 {
+    background-color: #22c55e;
+  }
+
+  .text-yellow-400 {
+    color: #facc15;
+  }
+}
+
+/* Slick carousel adjustments */
+.slick-list {
+  padding-left: 1rem !important;
+}
+
+.slick-slide {
+  padding-right: 1rem;
+}
+
+.slick-track {
+  display: flex !important;
+}
+
+.slick-slide > div {
+  height: 100%;
+}

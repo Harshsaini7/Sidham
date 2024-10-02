@@ -66,7 +66,7 @@ const HomepagePage = () => {
       {
         breakpoint: 550,
         settings: {
-          slidesToShow: 1 || sliderSettings.slidesToShow,
+          slidesToShow: 2 || sliderSettings.slidesToShow,
           slidesToScroll: 1 || sliderSettings.slidesToScroll,
           arrows: true,
         },
@@ -328,26 +328,26 @@ const HomepagePage = () => {
               </Text>
             </div>
             <div className="w-full">
-              <Slider {...sliderSettings}>
-                {allProduct.slice(0, 8).map((product, index) => (
-                  <div key={index} className="px-2">
-                    <HomepageCardproduct
-                      className="flex flex-col gap-4 items-start justify-start w-full"
-                      {...product}
-                      renderActions={() => (
-                        <div className="flex flex-row justify-center w-full">
-                          <Button
-                            className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
-                            onClick={(e) => handleAddToCart(e, product._id, 1)}
-                          >
-                            Add to Cart
-                          </Button>
-                        </div>
-                      )}
-                    />
-                  </div>
-                ))}
-              </Slider>
+            <Slider {...sliderSettings}>
+  {allProduct.slice(0, 8).map((product, index) => (
+    <div key={index} className="px-2">
+      <HomepageCardproduct
+        className="flex flex-col gap-4 items-start justify-start w-full"
+        {...product}
+        renderActions={() => (
+          <div className="flex flex-row justify-center w-full">
+            <Button
+              className="common-pointer bg-bluegray-900 cursor-pointer font-bold leading-[normal] min-w-[107px] py-[11px] rounded-[21px] text-center text-sm text-yellow-100 tracking-[-0.50px] mx-auto"
+              onClick={(e) => handleAddToCart(e, product._id, 1)}
+            >
+              Add to Cart
+            </Button>
+          </div>
+        )}
+      />
+    </div>
+  ))}
+</Slider>
             </div>
           </div>
         </div>
@@ -435,8 +435,8 @@ const HomepagePage = () => {
                         className="leading-[25.00px] max-w-[276px] md:max-w-full text-gray-500 text-sm tracking-[-0.50px]"
                         size="txtRubikRegular14"
                       >
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry Lorem Ipsum has{" "}
+                        Enjoy swift delivery on all orders, ensuring you get
+                        your items right on time.
                       </Text>
                     </div>
                   </div>
@@ -457,8 +457,8 @@ const HomepagePage = () => {
                         className="leading-[25.00px] max-w-[276px] md:max-w-full text-gray-500 text-sm tracking-[-0.50px]"
                         size="txtRubikRegular14"
                       >
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry Lorem Ipsum has{" "}
+                        Your products are handled with care and delivered
+                        securely to your doorstep.
                       </Text>
                     </div>
                   </div>
@@ -479,8 +479,8 @@ const HomepagePage = () => {
                         className="leading-[25.00px] max-w-[276px] md:max-w-full text-gray-500 text-sm tracking-[-0.50px]"
                         size="txtRubikRegular14"
                       >
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry Lorem Ipsum has{" "}
+                        Shop with confidence – return your items within a full
+                        year for any reason.
                       </Text>
                     </div>
                   </div>
@@ -495,14 +495,14 @@ const HomepagePage = () => {
                         className="text-black-900 text-xl tracking-[-0.50px] w-full"
                         size="txtRalewaySemiBold20"
                       >
-                        24 hours CS
+                        24 Hours CS
                       </Text>
                       <Text
                         className="leading-[25.00px] max-w-[276px] md:max-w-full text-gray-500 text-sm tracking-[-0.50px]"
                         size="txtRubikRegular14"
                       >
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry Lorem Ipsum has{" "}
+                        Our customer service team is here for you anytime, day
+                        or night.
                       </Text>
                     </div>
                   </div>
@@ -516,6 +516,7 @@ const HomepagePage = () => {
             />
           </div>
         </div>
+
         <div className="flex flex-col items-center justify-center md:px-10 sm:px-5 px-[75px] w-full">
           <div className="flex flex-col gap-[50px] items-center justify-start max-w-[1290px] mx-auto w-full">
             <div className="flex flex-col gap-[13px] items-center justify-start w-full">
