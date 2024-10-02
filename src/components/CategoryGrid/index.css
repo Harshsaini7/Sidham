@@ -1,17 +1,26 @@
 .custom-grid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1rem; /* This corresponds to gap-4 in Tailwind */
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* Default 2 columns for mobile */
+  gap: 0.5rem; /* Smaller gap for mobile */
 }
 
+/* Medium screens */
 @media (min-width: 768px) {
   .custom-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)); /* This is for md:grid-cols-2 */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
   }
 }
 
+/* Large screens */
 @media (min-width: 1024px) {
   .custom-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)); /* This is for lg:grid-cols-4 */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+@media (min-width: 1024px) {
+  .lg2-block {
+    display: block;
   }
 }
