@@ -467,11 +467,11 @@ const BlogDetailPage = () => {
                   >
                     {recentBlogs.map((blog, index) => (
                       <BlogDetailCardrecent
-                        key={blog._id}
+                        key={blog?._id}
                         className="flex flex-1 flex-col gap-2 items-start justify-center my-0 w-full"
-                        title={blog.title}
-                        date={new Date(blog.createdAt).toLocaleDateString()}
-                        image={blog.blogImage[0]}
+                        title={blog?.title}
+                        date={new Date(blog?.createdAt).toLocaleDateString()}
+                        image={blog?.blogImage?.[0]}
                       />
                     ))}
                   </List>
@@ -629,11 +629,11 @@ const BlogDetailPage = () => {
             <div className="grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 gap-5 w-full">
               {filteredBlogs.map((blog) => (
                 <HomepageCardblog
-                  key={blog._id}
+                  key={blog?._id}
                   className="flex flex-1 flex-col gap-2 items-start justify-start w-full"
-                  rectangleeighteen={blog.blogImage[0]}
-                  title={blog.title}
-                  date={new Date(blog.createdAt).toLocaleDateString()}
+                  rectangleeighteen={blog?.blogImage?.[0]}
+                  title={blog?.title}
+                  date={new Date(blog?.createdAt).toLocaleDateString()}
                 />
               ))}
             </div>

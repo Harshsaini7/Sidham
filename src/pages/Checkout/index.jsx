@@ -232,11 +232,17 @@ const CheckoutPage = () => {
   };
 
   const handleBuyProduct = async (finalPrice) => {
+
     // await handleSubmit();
     let products = data.map((product) => ({
       _id: product.productId._id,
       quantity: product.quantity,
     }));
+
+    if(!deliveryData){
+      toast.error("Please click on check delivery date");
+      return;
+    }
 
     if (products.length === 0) {
       toast.error("Cart is empty");

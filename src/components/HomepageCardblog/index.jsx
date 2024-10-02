@@ -15,7 +15,7 @@ const HomepageCardblog = (props) => {
           <img
             className="h-[400px] sm:h-auto object-cover w-full"
             alt="rectangleEighteen"
-            src={props?.blogImage[0]}
+            src={props?.rectangleeighteen}
           />
           <div className="flex flex-col gap-[19px] items-start justify-start w-full">
             <Text
@@ -50,7 +50,7 @@ const HomepageCardblog = (props) => {
                     className="text-black-900 text-sm tracking-[-0.50px] w-auto"
                     size="txtRubikRegular14Black900"
                   >
-                    {props?.december102022}
+                    {props?.date}
                   </Text>
                 </div>
               </div>

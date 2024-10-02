@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import "./index.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { Img, List } from "components";
 import { Button, PagerIndicator, Text } from "components";
 import CartColumnframe48095972 from "components/CartColumnframe48095972";
@@ -217,21 +217,19 @@ const HomepagePage = () => {
           </div>
         </div>
         <div className="flex flex-col items-center justify-center md:px-10 sm:px-5 px-[75px] w-full">
-        <Text
-                className="sm:text-4xl md:text-[38px] text-[40px] text-black-900 text-center tracking-[-0.50px] w-full"
-                size="txtRalewayBold40"
-              >
-                <span className="text-black-900 font-raleway font-bold">
-                  Our{" "}
-                </span>
-                <span className="text-black-900 font-raleway font-bold">
-                  Categories
-                </span>
-                {/* <span className="text-black-900 font-raleway font-bold">
+          <Text
+            className="sm:text-4xl md:text-[38px] text-[40px] text-black-900 text-center tracking-[-0.50px] w-full"
+            size="txtRalewayBold40"
+          >
+            <span className="text-black-900 font-raleway font-bold">Our </span>
+            <span className="text-black-900 font-raleway font-bold">
+              Categories
+            </span>
+            {/* <span className="text-black-900 font-raleway font-bold">
                   {" "}
                   Product
                 </span> */}
-              </Text>
+          </Text>
           {/* <List
             className="sm:flex-col flex-row gap-5 grid md:grid-cols-1 grid-cols-2 justify-center max-w-[1290px] mx-auto w-full"
             orientation="horizontal"
@@ -302,7 +300,6 @@ const HomepagePage = () => {
           <div className="mt-10">
             <CategoryGrid className="w-full " />
           </div>
-          
         </div>
         <div className="flex flex-col items-center justify-start md:px-10 sm:px-5 px-[75px] w-full">
           <div className="flex flex-col gap-[46px] items-center justify-start max-w-[1290px] mx-auto w-full">
@@ -540,11 +537,14 @@ const HomepagePage = () => {
               className="sm:flex-col flex-row gap-5 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-start w-full"
               orientation="horizontal"
             >
-              {allBlog.map((props, index) => (
+              {allBlog.map((blog, index) => (
                 <React.Fragment key={`HomepageCardblog${index}`}>
                   <HomepageCardblog
+                    key={blog?._id}
                     className="flex flex-1 flex-col gap-2 items-start justify-start w-full"
-                    {...props}
+                    rectangleeighteen={blog?.blogImage?.[0]}
+                    title={blog?.title}
+                    date={new Date(blog?.createdAt).toLocaleDateString()}
                   />
                 </React.Fragment>
               ))}
